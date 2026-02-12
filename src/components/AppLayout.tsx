@@ -88,7 +88,10 @@ const AppLayout: React.FC = () => {
 
       {/* Hero */}
       <div id="hero-section">
-        <HeroSection onNavigate={navigateTo} />
+        <HeroSection 
+          bannerUrl="https://d64gsuwffb70l.cloudfront.net/698a3e1733669e4bf0335d17_1770667565190_18673510.jpg"
+          onScrollToProducts={() => navigateTo('astuces')} 
+        />
       </div>
 
       {/* Games */}
