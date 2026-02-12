@@ -1,15 +1,20 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Insider Hack Gaming - Page non trouvée</title>
-  <script>
-    // Redirection vers la page d'accueil
-    window.location.href = '/InsiderGamingtriks/';
+  <script type="module">
+    // Redirection silencieuse vers la page d'accueil de l'app SPA
+    // Cette approche permet à React Router de gérer la navigation correctement
+    sessionStorage.redirect = window.location.pathname;
+    window.location.pathname = '/InsiderGamingtriks/';
   </script>
 </head>
 <body>
-  <p>Redirection vers la page d'accueil...</p>
+  <div style="font-family: system-ui, sans-serif; text-align: center; padding: 50px;">
+    <h1>Chargement...</h1>
+    <p>Redirection vers la page d'accueil</p>
+  </div>
 </body>
 </html>
