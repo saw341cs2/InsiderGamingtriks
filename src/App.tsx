@@ -45,3 +45,29 @@ const App = () => (
 );
 
 export default App;
+import React from 'react';
+import banner from '../assets/Banner.png'; // Chemin relatif vers ton image
+
+function App() {
+  return (
+    <div className="App">
+      <img src={banner} alt="Bannière Insider Gaming Tricks" style={{ width: '100%', maxHeight: '400px', objectFit: 'cover' }} />
+      {/* Le reste de ton site */}
+    </div>
+  );
+}
+
+
+import React from 'react';
+import banner from '../Banner.png'; // ✅ Chemin corrigé
+
+function App() {
+  return (
+    <div className="App">
+      <img src={banner} alt="Bannière Insider Gaming Tricks" style={{ width: '100%', maxHeight: '400px', objectFit: 'cover' }} />
+      {/* Le reste de ton site */}
+    </div>
+  );
+}
+
+export default App;
