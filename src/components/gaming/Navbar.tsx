@@ -25,7 +25,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate }) => {
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => onNavigate('accueil')}>
             <Crosshair className="w-7 h-7 text-red-500" />
             <span className="text-white font-bold text-lg tracking-wider">
-              INSIDER<span className="text-red-500">GAMING TRICKS</span>
+              #INSIDER<span className="text-red-500">GAMING TRICKS</span>
             </span>
           </div>
 
