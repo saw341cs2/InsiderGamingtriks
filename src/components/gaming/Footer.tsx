@@ -74,7 +74,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <div className="flex items-center gap-2 mb-4">
               <Crosshair className="w-6 h-6 text-red-500" />
               <span className="text-white font-bold text-lg tracking-wider">
-                INSIDER<span className="text-red-500">GAMING</span>
+                INSIDER<span className="text-red-500">GAMING TRICKS</span>
               </span>
             </div>
             <p className="text-gray-500 text-sm leading-relaxed mb-6">
