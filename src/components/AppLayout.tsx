@@ -89,7 +89,7 @@ const AppLayout: React.FC = () => {
       {/* Hero */}
       <div id="hero-section">
         <HeroSection 
-          bannerUrl="/banniere.png"
+          bannerUrl={`/Banner.png?v=${Date.now()}`}
         />
       </div>
 
