@@ -89,7 +89,7 @@ const AppLayout: React.FC = () => {
       {/* Hero */}
       <div id="hero-section">
         <HeroSection 
-          bannerUrl="/gaming-banner (1).jpg"
+          bannerUrl="/banierre2.png?v=1"
         />
       </div>
 
