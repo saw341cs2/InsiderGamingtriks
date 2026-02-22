@@ -8,17 +8,12 @@ export default defineConfig({
   plugins: [react()],
 
   build: {
-    outDir: "docs",
-  },
-
-  server: {
-    host: "::",
-    port: 8080,
+    outDir: "docs"
   },
 
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
-  },
+      "@": path.resolve(__dirname, "./src")
+    }
+  }
 });
