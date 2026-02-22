@@ -1,19 +1,10 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react-swc";
-import path from "path";
+import { defineConfig } from "vite"
+import react from "@vitejs/plugin-react"
 
 export default defineConfig({
   base: "/InsiderGamingtriks/",
-
   plugins: [react()],
-
   build: {
-    outDir: "docs"
-  },
-
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./src")
-    }
+    outDir: "dist"
   }
-});
+})
