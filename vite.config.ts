@@ -24,3 +24,7 @@ export default defineConfig({
     },
   },
 }));
+      export default defineConfig({
+  base: "/InsiderGamingtriks/",
+  plugins: [react()],
+})
