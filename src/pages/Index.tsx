@@ -25,7 +25,7 @@ const Index: React.FC = () => {
 
   return (
     <AppProvider>
-      <HeroSection bannerUrl="/InsiderGamingTricks/Banner.png" />
+      <HeroSection bannerUrl="Banner.png" />
       <div className="space-y-12 md:space-y-16">
         <div id="astuces">
           <AstucesSection onNavigate={handleNavigate} />
