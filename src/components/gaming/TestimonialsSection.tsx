@@ -7,7 +7,7 @@ const testimonials = [
     game: 'CS2',
     avatar: 'AF',
     rank: 'Global Elite',
-    text: 'Grâce aux guides d\'Insider Gaming Tricks, j\'ai grimpé de Gold Nova à Global Elite en 3 mois. Les smoke lineups sont incroyables.',
+    text: 'Grâce aux guides, j\'ai grimpé de Gold Nova à Global Elite en 3 mois. Les smoke lineups sont incroyables.',
     rating: 5,
     color: 'from-orange-500 to-yellow-600',
   },

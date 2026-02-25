@@ -74,7 +74,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <div className="flex items-center gap-2 mb-4">
               <Crosshair className="w-6 h-6 text-red-500" />
               <span className="text-white font-bold text-lg tracking-wider">
-                #Insider<span className="text-red-500">Gaming Tricks</span>
+                #FPS<span className="text-red-500">Gaming</span>
               </span>
             </div>
             <p className="text-gray-500 text-sm leading-relaxed mb-6">
@@ -190,7 +190,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
       <div className="border-t border-gray-800/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-gray-600 text-xs">
-            © 2026 Insider Gaming Tricks. Tous droits réservés.
+            © 2026. Tous droits réservés.
           </p>
           <p className="text-gray-600 text-xs flex items-center gap-1">
             Fait avec <Heart className="w-3 h-3 text-red-500" /> pour la communauté FPS

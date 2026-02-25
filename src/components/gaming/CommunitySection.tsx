@@ -104,7 +104,7 @@ const CommunitySection: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="text-white font-bold text-lg">Discord</h3>
-                  <p className="text-indigo-300 text-sm">Insider Gaming</p>
+                  <p className="text-indigo-300 text-sm">Communauté FPS</p>
                 </div>
               </div>
 

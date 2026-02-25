@@ -5,7 +5,7 @@ import NotFound from './pages/NotFound';
 
 function App() {
   return (
-    <BrowserRouter basename="/InsiderGamingtriks/">
+    <BrowserRouter basename="/InsiderGamingTricks/">
       <Routes>
         <Route path="/" element={<AppLayout />}>
           <Route index element={<Index />} />

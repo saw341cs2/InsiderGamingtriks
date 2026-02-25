@@ -12,7 +12,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ bannerUrl }) => {
         <div className="absolute inset-0">
           <img
             src={bannerUrl}
-            alt="Insider Gaming Tricks - Bannière"
+            alt="Banniere"
             className="w-full h-full object-cover"
           />
         </div>
@@ -20,7 +20,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ bannerUrl }) => {
       {/* Title overlay */}
       <div className="absolute inset-0 flex items-center justify-center bg-black/40">
         <h1 className="text-6xl md:text-8xl font-black text-white tracking-wider">
-          <span className="text-red-500">#</span>Insider Gaming Tricks
+          <span className="text-red-500">#</span>FPS Gaming
         </h1>
       </div>
     </div>

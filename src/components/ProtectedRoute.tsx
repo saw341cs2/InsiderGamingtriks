@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Crosshair, Lock } from 'lucide-react';
 import { useAppContext } from '@/contexts/AppContext';
@@ -38,14 +39,14 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
             #Insider<span className="text-red-500">Gaming Tricks</span>
           </h1>
           <p className="text-gray-400 mb-8">
-            Ce contenu est réservés aux membres inscrits.
+            Ce contenu est réservé aux membres inscrits.
           </p>
           <button
             onClick={() => setAuthModalOpen(true)}
             className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-bold rounded-lg transition-all"
           >
             <Lock className="w-5 h-5" />
-            Se connecter / S'inscrire
+            Se connecter / s'inscrire
           </button>
         </div>
         <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
