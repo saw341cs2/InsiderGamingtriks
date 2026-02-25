@@ -17,6 +17,12 @@ const HeroSection: React.FC<HeroSectionProps> = ({ bannerUrl }) => {
           />
         </div>
       )}
+      {/* Title overlay */}
+      <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+        <h1 className="text-6xl md:text-8xl font-black text-white tracking-wider">
+          <span className="text-red-500">#</span>Insider Gaming Tricks
+        </h1>
+      </div>
     </div>
   );
 };
