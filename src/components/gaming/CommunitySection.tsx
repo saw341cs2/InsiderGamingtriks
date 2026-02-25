@@ -142,8 +142,10 @@ const CommunitySection: React.FC = () => {
               </div>
 
               <a
-                href="#"
+                href="https://discord.gg/XsHYc4tQpx"
                 className="block w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-center rounded-xl transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 Rejoindre le Discord
               </a>
