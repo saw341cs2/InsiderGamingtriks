@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { AppProvider } from '@/contexts/AppContext';
-import HeroSection from '@/components/gaming/HeroSection';
 import AstucesSection from '@/components/gaming/AstucesSection';
 import GamesSection from '@/components/gaming/GamesSection';
 import NewsSection from '@/components/gaming/NewsSection';
@@ -25,7 +24,6 @@ const Index: React.FC = () => {
 
   return (
     <AppProvider>
-      <HeroSection />
       <div className="space-y-12 md:space-y-16">
         <div id="astuces">
           <AstucesSection onNavigate={handleNavigate} />
