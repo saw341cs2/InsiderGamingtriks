@@ -6,7 +6,7 @@ interface HeroSectionProps {
 
 const HeroSection: React.FC<HeroSectionProps> = ({ bannerUrl }) => {
   return (
-    <div className="relative w-full h-[700px] overflow-hidden bg-gray-950">
+    <div className="relative w-full h-[700px] overflow-hidden" style={{ backgroundColor: '#030712' }}>
       {/* Background - only show if bannerUrl is provided */}
       {bannerUrl && (
         <div className="absolute inset-0">
