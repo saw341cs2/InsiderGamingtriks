@@ -4,14 +4,15 @@ import { Play, ExternalLink, Clock, Eye, ThumbsUp, ChevronRight } from 'lucide-r
 const videos = [
   {
     id: 1,
-    title: 'CS2 - Les 10 Smokes que TOUT le monde doit connaître',
-    thumbnail: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=640&h=360&fit=crop',
-    duration: '14:32',
-    views: '12K',
-    likes: '890',
-    date: 'Il y a 2 jours',
+    title: 'Test Vidéo - Insider Gaming Tricks',
+    thumbnail: 'https://img.youtube.com/vi/Q00VsHKm5Z4/maxresdefault.jpg',
+    duration: 'Video Test',
+    views: '0',
+    likes: '0',
+    date: 'Aujourd\'hui',
     game: 'CS2',
     featured: true,
+    youtubeId: 'Q00VsHKm5Z4',
   },
   {
     id: 2,
@@ -142,13 +143,14 @@ const VideosSection: React.FC = () => {
                 {/* Thumbnail / Player */}
                 <div className="lg:col-span-3 relative aspect-video cursor-pointer" onClick={() => setPlayingId(playingId === featured.id ? null : featured.id)}>
                   {playingId === featured.id ? (
-                    <div className="w-full h-full bg-gray-800 flex items-center justify-center">
-                      <div className="text-center">
-                        <Play className="w-16 h-16 text-red-500 mx-auto mb-3" />
-                        <p className="text-gray-400 text-sm">Lecture en cours...</p>
-                        <p className="text-gray-500 text-xs mt-1">Regarde sur YouTube pour la vidéo complète</p>
-                      </div>
-                    </div>
+                    <iframe
+                      className="w-full h-full"
+                      src={`https://www.youtube.com/embed/${(featured as any).youtubeId}?autoplay=1`}
+                      title={featured.title}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
                   ) : (
                     <>
                       <img src={featured.thumbnail} alt={featured.title} className="w-full h-full object-cover" />
