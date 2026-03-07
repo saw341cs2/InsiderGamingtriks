@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '0 9 * * *'   # 9h00 UTC
     - cron: '0 18 * * *'  # 18h00 UTC
-  workflow_dispatch:      # Pour tester manuellement
+  workflow_dispatch:      # Permet de lancer manuellement
 
 jobs:
   fetch-news:
@@ -24,39 +24,51 @@ jobs:
 
       - name: Fetch and post gaming news
         env:
-          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}  # À configurer dans les secrets
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
         run: |
-          # Script inline pour récupérer 2 news et les poster
           node -e '
           const axios = require("axios");
 
-          // Récupérer 2 news gaming
+          if (!process.env.NEWS_API_KEY) {
+            console.error("❌ Erreur : NEWS_API_KEY n\'est pas défini dans les secrets.");
+            process.exit(1);
+          }
+
           axios.get("https://newsapi.org/v2/everything", {
             params: {
               q: "gaming",
               language: "en",
               sortBy: "publishedAt",
               pageSize: 2,
-              apiKey: "YOUR_NEWS_API_KEY"  // À remplacer par votre clé
+              apiKey: process.env.NEWS_API_KEY
             }
           })
           .then(response => {
             const articles = response.data.articles;
-            console.log("✅ Found 2 gaming news:");
+            if (articles.length === 0) {
+              console.log("✅ Aucune nouvelle gaming trouvée.");
+              return;
+            }
+            console.log(`✅ ${articles.length} nouvelles gaming trouvées :`);
             articles.forEach((article, index) => {
-              console.log(`\n${index + 1}. ${article.title}\n   ${article.url}`);
+              console.log(`\n${index + 1}. ${article.title}\n   Lien : ${article.url}`);
             });
 
-            // Poster sur Discord (si vous avez un webhook)
+            // Poster sur Discord si le webhook est configuré
             if (process.env.DISCORD_WEBHOOK_URL) {
+              console.log("\n📤 Envoi vers Discord...");
               articles.forEach(article => {
                 axios.post(process.env.DISCORD_WEBHOOK_URL, {
                   content: `🎮 **${article.title}**\n${article.url}`
                 });
               });
+              console.log("✅ Envoyé sur Discord !");
+            } else {
+              console.log("\nℹ️ DISCORD_WEBHOOK_URL non configuré. Les news sont affichées dans les logs.");
             }
           })
           .catch(error => {
-            console.error("❌ Error fetching news:", error.message);
+            console.error("❌ Erreur lors de la récupération des news :", error.message);
           });
           '
