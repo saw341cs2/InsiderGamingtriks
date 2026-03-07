@@ -1,0 +1,62 @@
+name: Gaming News Bot
+
+on:
+  schedule:
+    - cron: '0 9 * * *'   # 9h00 UTC
+    - cron: '0 18 * * *'  # 18h00 UTC
+  workflow_dispatch:      # Pour tester manuellement
+
+jobs:
+  fetch-news:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm init -y && npm install axios
+
+      - name: Fetch and post gaming news
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}  # À configurer dans les secrets
+        run: |
+          # Script inline pour récupérer 2 news et les poster
+          node -e '
+          const axios = require("axios");
+
+          // Récupérer 2 news gaming
+          axios.get("https://newsapi.org/v2/everything", {
+            params: {
+              q: "gaming",
+              language: "en",
+              sortBy: "publishedAt",
+              pageSize: 2,
+              apiKey: "YOUR_NEWS_API_KEY"  // À remplacer par votre clé
+            }
+          })
+          .then(response => {
+            const articles = response.data.articles;
+            console.log("✅ Found 2 gaming news:");
+            articles.forEach((article, index) => {
+              console.log(`\n${index + 1}. ${article.title}\n   ${article.url}`);
+            });
+
+            // Poster sur Discord (si vous avez un webhook)
+            if (process.env.DISCORD_WEBHOOK_URL) {
+              articles.forEach(article => {
+                axios.post(process.env.DISCORD_WEBHOOK_URL, {
+                  content: `🎮 **${article.title}**\n${article.url}`
+                });
+              });
+            }
+          })
+          .catch(error => {
+            console.error("❌ Error fetching news:", error.message);
+          });
+          '
