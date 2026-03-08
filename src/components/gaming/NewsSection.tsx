@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Newspaper, Clock, RefreshCw } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/lib/supabase';
-import { Newspaper, ExternalLink, Clock, RefreshCw, AlertCircle } from 'lucide-react';
 
 interface NewsArticle {
   uri: string;
@@ -12,42 +13,54 @@ interface NewsArticle {
   source: { title: string };
 }
 
-const fallbackNews = [
-  { uri: '1', title: 'Counter-Strike 2 : Nouvelle mise à jour majeure avec de nouvelles cartes', body: 'Valve déploie une mise à jour massive pour CS2 incluant de nouvelles cartes compétitives et des ajustements d\'armes.', url: '#', image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=250&fit=crop', dateTimePub: '2026-02-09', source: { title: 'Gaming News' } },
-  { uri: '2', title: 'Battlefield : La saison 4 arrive avec du contenu inédit', body: 'EA annonce la saison 4 de Battlefield avec de nouvelles armes, véhicules et une carte inspirée de batailles historiques.', url: '#', image: 'https://images.unsplash.com/photo-1552820728-8b83bb6b2b28?w=400&h=250&fit=crop', dateTimePub: '2026-02-08', source: { title: 'EA News' } },
-  { uri: '3', title: 'Call of Duty Warzone : Nouveau mode de jeu Ranked', body: 'Activision lance le mode Ranked tant attendu pour Warzone avec un système de classement compétitif.', url: '#', image: 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=400&h=250&fit=crop', dateTimePub: '2026-02-08', source: { title: 'Activision Blog' } },
-  { uri: '4', title: 'Esport : Le Major CS2 2026 annoncé à Paris', body: 'Le prochain Major Counter-Strike se tiendra à Paris avec une prize pool record de 2 millions de dollars.', url: '#', image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&h=250&fit=crop', dateTimePub: '2026-02-07', source: { title: 'Esports World' } },
-  { uri: '5', title: 'Guide : Les meilleures sensibilités souris pour FPS en 2026', body: 'Analyse des sensibilités utilisées par les joueurs pro dans CS2, Valorant et Call of Duty.', url: '#', image: 'https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=400&h=250&fit=crop', dateTimePub: '2026-02-07', source: { title: 'Pro Settings' } },
-  { uri: '6', title: 'Battlefield : Patch notes 3.2 - Équilibrage des véhicules', body: 'DICE publie un patch majeur rééquilibrant les véhicules aériens et terrestres suite aux retours de la communauté.', url: '#', image: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=400&h=250&fit=crop', dateTimePub: '2026-02-06', source: { title: 'DICE Updates' } },
-  { uri: '7', title: 'Call of Duty : Nouveau DLC Zombies annoncé', body: 'Treyarch dévoile le prochain chapitre du mode Zombies avec une nouvelle carte et des armes Wonder inédites.', url: '#', image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&h=250&fit=crop', dateTimePub: '2026-02-06', source: { title: 'CoD Blog' } },
-  { uri: '8', title: 'CS2 : Changements de l\'économie en compétitif', body: 'Valve modifie le système économique en mode compétitif pour favoriser des rounds plus dynamiques.', url: '#', image: 'https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?w=400&h=250&fit=crop', dateTimePub: '2026-02-05', source: { title: 'Valve News' } },
-  { uri: '9', title: 'Tournoi Communautaire : Inscriptions ouvertes', body: 'Le premier tournoi communautaire est ouvert ! Inscris-toi sur notre Discord.', url: '#', image: 'https://images.unsplash.com/photo-1542751110-97427bbecf20?w=400&h=250&fit=crop', dateTimePub: '2026-02-05', source: { title: 'Communauté' } },
-];
+interface DailyNewsRow {
+  id: string;
+  title: string;
+  body: string | null;
+  url: string | null;
+  image: string | null;
+  publish_date: string;
+  source: string | null;
+  created_at: string;
+}
 
 const NewsSection: React.FC = () => {
   const [articles, setArticles] = useState<NewsArticle[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const { toast } = useToast();
 
   const fetchNews = async () => {
     setLoading(true);
-    setError(false);
+    
     try {
-      const { data, error: fnError } = await supabase.functions.invoke('fetch-gaming-news', {
-        body: { query: 'FPS gaming Counter-Strike Battlefield Call of Duty esports', count: 9 },
-      });
+      const { data, error } = await supabase
+        .from('daily_news')
+        .select('*')
+        .order('publish_date', { ascending: false })
+        .limit(9);
 
-      if (fnError) throw fnError;
-
-      const arts = data?.articles?.results;
-      if (arts && arts.length > 0) {
-        setArticles(arts);
-      } else {
-        setArticles(fallbackNews as any);
+      if (error) {
+        console.error('Erreur Supabase:', error);
+        toast({
+          title: 'Erreur de chargement',
+          description: 'Impossible de charger les news',
+          variant: 'destructive',
+        });
+      } else if (data && data.length > 0) {
+        // Transformer les données pour le format attendu
+        const transformedArticles = data.map((item: DailyNewsRow) => ({
+          uri: String(item.id),
+          title: item.title,
+          body: item.body || '',
+          url: item.url || '#',
+          image: item.image || '',
+          dateTimePub: item.publish_date,
+          source: { title: item.source || 'InsiderGamingtriks' },
+        }));
+        setArticles(transformedArticles);
       }
-    } catch (err) {
-      console.error('News fetch error:', err);
-      setArticles(fallbackNews as any);
+    } catch (error) {
+      console.error('Erreur:', error);
     } finally {
       setLoading(false);
     }
@@ -74,13 +87,13 @@ const NewsSection: React.FC = () => {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-600/10 border border-red-600/20 rounded-full text-red-400 text-xs font-semibold uppercase tracking-widest mb-4">
               <Newspaper className="w-3.5 h-3.5" />
-              Actualités
+              Actualites
             </div>
             <h2 className="text-3xl md:text-5xl font-black text-white mb-4">
               News <span className="text-red-500">Gaming</span>
             </h2>
             <p className="text-gray-400 max-w-xl">
-              L'actualité FPS en temps réel. Mises à jour, patchs, tournois et annonces.
+              Les news gaming sont publiees automatiquement chaque matin a 7h.
             </p>
           </div>
           <button
@@ -109,8 +122,31 @@ const NewsSection: React.FC = () => {
           </div>
         )}
 
+        {/* No News Yet */}
+        {!loading && articles.length === 0 && (
+          <div className="text-center py-20">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-gray-800 rounded-full mb-6">
+              <Newspaper className="w-10 h-10 text-gray-500" />
+            </div>
+            <h3 className="text-2xl font-bold text-white mb-2">
+              Les news arrivent bientot!
+            </h3>
+            <p className="text-gray-400 max-w-md mx-auto mb-6">
+              Les news gaming sont publiees automatiquement chaque jour a 7h du matin par notre bot IA.
+            </p>
+            <div className="bg-gray-800 rounded-lg p-4 max-w-lg mx-auto text-left">
+              <p className="text-sm text-gray-400 mb-2">
+                <span className="text-yellow-400 font-bold">Prochaine etape:</span>
+              </p>
+              <p className="text-sm text-gray-300">
+                Utilise ton bot GitHub Actions pour generer les news. Le bot ecrit les news dans la base de donnees et elles s'afficheront ici automatiquement.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Articles Grid */}
-        {!loading && (
+        {!loading && articles.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {articles.slice(0, 9).map((article, index) => (
               <a
@@ -123,7 +159,7 @@ const NewsSection: React.FC = () => {
                 {/* Image */}
                 <div className="relative h-48 overflow-hidden">
                   <img
-                    src={article.image || `https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=250&fit=crop`}
+                    src={article.image || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=250&fit=crop'}
                     alt={article.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     onError={(e) => {
@@ -131,11 +167,19 @@ const NewsSection: React.FC = () => {
                     }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent" />
-                  {index === 0 && (
-                    <div className="absolute top-3 left-3 px-2 py-1 bg-red-600 rounded text-xs font-bold text-white">
-                      NOUVEAU
-                    </div>
-                  )}
+                  {/* Badges */}
+                  <div className="absolute top-3 left-3 flex gap-2">
+                    {index === 0 && (
+                      <div className="px-2 py-1 bg-red-600 rounded text-xs font-bold text-white">
+                        NOUVEAU
+                      </div>
+                    )}
+                    {article.dateTimePub && (
+                      <div className="px-2 py-1 bg-black/70 rounded text-xs text-white">
+                        {formatDate(article.dateTimePub)}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {/* Content */}

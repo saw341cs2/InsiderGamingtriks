@@ -4,15 +4,14 @@ import { Play, ExternalLink, Clock, Eye, ThumbsUp, ChevronRight } from 'lucide-r
 const videos = [
   {
     id: 1,
-    title: 'Test Vidéo - Insider Gaming Tricks',
-    thumbnail: 'https://img.youtube.com/vi/Q00VsHKm5Z4/maxresdefault.jpg',
-    duration: 'Video Test',
-    views: '0',
-    likes: '0',
-    date: 'Aujourd\'hui',
+    title: 'CS2 - Les 10 Smokes que TOUT le monde doit connatre',
+    thumbnail: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=640&h=360&fit=crop',
+    duration: '14:32',
+    views: '12K',
+    likes: '890',
+    date: 'Il y a 1 jour',
     game: 'CS2',
     featured: true,
-    youtubeId: 'Q00VsHKm5Z4',
   },
   {
     id: 2,
@@ -21,18 +20,18 @@ const videos = [
     duration: '18:45',
     views: '8.5K',
     likes: '720',
-    date: 'Il y a 5 jours',
+    date: 'Il y a 2 jours',
     game: 'CoD',
     featured: false,
   },
   {
     id: 3,
-    title: 'Battlefield - Guide Pilotage Hélicoptère (De Noob à Pro)',
+    title: 'Battlefield - Guide Pilotage Helico (De Noob a Pro)',
     thumbnail: 'https://images.unsplash.com/photo-1552820728-8b83bb6b2b28?w=640&h=360&fit=crop',
     duration: '22:10',
     views: '6.2K',
     likes: '540',
-    date: 'Il y a 1 semaine',
+    date: 'Il y a 2 jours',
     game: 'BF',
     featured: false,
   },
@@ -43,7 +42,7 @@ const videos = [
     duration: '11:20',
     views: '15K',
     likes: '1.2K',
-    date: 'Il y a 1 semaine',
+    date: 'Il y a 3 jours',
     game: 'CS2',
     featured: false,
   },
@@ -54,40 +53,40 @@ const videos = [
     duration: '09:55',
     views: '9.8K',
     likes: '680',
-    date: 'Il y a 2 semaines',
+    date: 'Il y a 3 jours',
     game: 'CoD',
     featured: false,
   },
   {
     id: 6,
-    title: 'Battlefield - Stratégies Squad Avancées',
+    title: 'Battlefield - Strategies Squad Avancees',
     thumbnail: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=640&h=360&fit=crop',
     duration: '16:40',
     views: '4.1K',
     likes: '380',
-    date: 'Il y a 2 semaines',
+    date: 'Il y a 4 jours',
     game: 'BF',
     featured: false,
   },
   {
     id: 7,
-    title: 'CS2 - Économie & Buy Rounds Expliqués',
+    title: 'CS2 - Economie et Buy Rounds Expliques',
     thumbnail: 'https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?w=640&h=360&fit=crop',
     duration: '13:15',
     views: '7.3K',
     likes: '510',
-    date: 'Il y a 3 semaines',
+    date: 'Il y a 4 jours',
     game: 'CS2',
     featured: false,
   },
   {
     id: 8,
-    title: 'Warzone - Drop Spots Secrets (Personne ne les connaît)',
+    title: 'Warzone - Drop Spots Secrets (Personne ne les connoit)',
     thumbnail: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=640&h=360&fit=crop',
     duration: '20:05',
     views: '11K',
     likes: '950',
-    date: 'Il y a 3 semaines',
+    date: 'Il y a 5 jours',
     game: 'CoD',
     featured: false,
   },
@@ -100,20 +99,17 @@ const gameTagColors: Record<string, string> = {
 };
 
 const VideosSection: React.FC = () => {
-  const [selectedGame, setSelectedGame] = useState<string>('all');
-  const [playingId, setPlayingId] = useState<number | null>(null);
-
-  const featured = videos.find((v) => v.featured);
-  const filtered = videos.filter((v) => !v.featured && (selectedGame === 'all' || v.game === selectedGame));
+  const [activeVideo, setActiveVideo] = useState<number | null>(1);
 
   return (
-    <section id="videos-section" className="bg-black py-20 md:py-28">
+    <section id="videos-section" className="bg-gray-950 py-20 md:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-600/10 border border-red-600/20 rounded-full text-red-400 text-xs font-semibold uppercase tracking-widest mb-4">
-              YouTube
+              <Play className="w-3.5 h-3.5" />
+              Vidéos
             </div>
             <h2 className="text-3xl md:text-5xl font-black text-white mb-4">
               Dernières <span className="text-red-500">Vidéos</span>
@@ -123,138 +119,120 @@ const VideosSection: React.FC = () => {
             </p>
           </div>
           <a
-            href="https://www.youtube.com/@InsiderHackGaming"
+            href="https://www.youtube.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-4 md:mt-0 inline-flex items-center gap-2 px-5 py-3 bg-red-600 hover:bg-red-500 text-white font-bold text-sm uppercase rounded-lg transition-colors"
+            className="mt-4 md:mt-0 inline-flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors"
           >
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-            </svg>
-            S'abonner
+            Voir tout
+            <ChevronRight className="w-4 h-4" />
           </a>
         </div>
 
         {/* Featured Video */}
-        {featured && (
-          <div className="mb-12 group">
-            <div className="relative rounded-2xl overflow-hidden bg-gray-900 border border-gray-800">
-              <div className="grid grid-cols-1 lg:grid-cols-5 gap-0">
-                {/* Thumbnail / Player */}
-                <div className="lg:col-span-3 relative aspect-video cursor-pointer" onClick={() => setPlayingId(playingId === featured.id ? null : featured.id)}>
-                  {playingId === featured.id ? (
-                    <iframe
-                      className="w-full h-full"
-                      src={`https://www.youtube.com/embed/${(featured as any).youtubeId}?autoplay=1`}
-                      title={featured.title}
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
-                  ) : (
-                    <>
-                      <img src={featured.thumbnail} alt={featured.title} className="w-full h-full object-cover" />
-                      <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                        <div className="w-20 h-20 bg-red-600/90 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-2xl">
-                          <Play className="w-8 h-8 text-white ml-1" fill="white" />
-                        </div>
-                      </div>
-                      <div className="absolute bottom-3 right-3 bg-black/80 px-2 py-1 rounded text-xs text-white font-mono">
-                        {featured.duration}
-                      </div>
-                    </>
-                  )}
-                </div>
+        {videos.find(v => v.featured) && (
+          <div className="mb-12">
+            <div className="relative aspect-video rounded-2xl overflow-hidden bg-gray-900 group">
+              <img
+                src={videos[0].thumbnail}
+                alt={videos[0].title}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+              
+              {/* Play Button */}
+              <button
+                onClick={() => setActiveVideo(videos[0].id)}
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-red-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg shadow-red-600/30"
+              >
+                <Play className="w-8 h-8 text-white ml-1" fill="white" />
+              </button>
 
-                {/* Info */}
-                <div className="lg:col-span-2 p-6 lg:p-8 flex flex-col justify-center">
-                  <div className={`inline-flex self-start px-2.5 py-1 rounded text-xs font-bold mb-4 ${gameTagColors[featured.game]}`}>
-                    {featured.game}
-                  </div>
-                  <h3 className="text-xl lg:text-2xl font-bold text-white mb-3">{featured.title}</h3>
-                  <div className="flex items-center gap-4 text-sm text-gray-400 mb-6">
-                    <span className="flex items-center gap-1"><Eye className="w-4 h-4" />{featured.views} vues</span>
-                    <span className="flex items-center gap-1"><ThumbsUp className="w-4 h-4" />{featured.likes}</span>
-                    <span className="flex items-center gap-1"><Clock className="w-4 h-4" />{featured.date}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-red-400 font-semibold text-sm">
-                    <span className="inline-block w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                    Vidéo de la semaine
-                  </div>
+              {/* Video Info */}
+              <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
+                <div className="flex items-center gap-3 mb-3">
+                  <span className={`px-2 py-1 rounded text-xs font-bold ${gameTagColors[videos[0].game]}`}>
+                    {videos[0].game}
+                  </span>
+                  <span className="inline-block w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                  Video de la semaine
+                </div>
+                <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
+                  {videos[0].title}
+                </h3>
+                <div className="flex items-center gap-6 text-gray-300">
+                  <span className="flex items-center gap-2">
+                    <Eye className="w-4 h-4" />
+                    {videos[0].views} vues
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <ThumbsUp className="w-4 h-4" />
+                    {videos[0].likes}
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <Clock className="w-4 h-4" />
+                    {videos[0].date}
+                  </span>
                 </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* Filter Tabs */}
-        <div className="flex items-center gap-2 mb-8 overflow-x-auto pb-2">
-          {['all', 'CS2', 'BF', 'CoD'].map((g) => (
-            <button
-              key={g}
-              onClick={() => setSelectedGame(g)}
-              className={`px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-all ${
-                selectedGame === g
-                  ? 'bg-red-600/20 text-red-400 border border-red-500/30'
-                  : 'bg-gray-900/50 text-gray-400 border border-gray-800 hover:text-white hover:border-gray-700'
-              }`}
-            >
-              {g === 'all' ? 'Toutes' : g}
-            </button>
-          ))}
-        </div>
-
-        {/* Video Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {filtered.map((video) => (
-            <div
+        {/* Videos Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {videos.filter(v => !v.featured).slice(0, 4).map((video) => (
+            <a
               key={video.id}
-              className="group bg-gray-900/50 border border-gray-800 rounded-xl overflow-hidden hover:border-red-500/30 transition-all duration-300 hover:scale-[1.02]"
+              href="#"
+              className="group bg-gray-900/50 border border-gray-800 rounded-xl overflow-hidden hover:border-red-500/30 transition-all duration-300"
             >
-              <div className="relative aspect-video cursor-pointer" onClick={() => setPlayingId(playingId === video.id ? null : video.id)}>
-                <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                  <div className="w-12 h-12 bg-red-600/90 rounded-full flex items-center justify-center">
+              {/* Thumbnail */}
+              <div className="relative aspect-video overflow-hidden">
+                <img
+                  src={video.thumbnail}
+                  alt={video.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent" />
+                
+                {/* Duration Badge */}
+                <div className="absolute bottom-2 right-2 px-1.5 py-0.5 bg-black/80 rounded text-xs text-white font-medium">
+                  {video.duration}
+                </div>
+                
+                {/* Play Overlay */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30">
+                  <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center">
                     <Play className="w-5 h-5 text-white ml-0.5" fill="white" />
                   </div>
                 </div>
-                <div className="absolute bottom-2 right-2 bg-black/80 px-1.5 py-0.5 rounded text-xs text-white font-mono">
-                  {video.duration}
-                </div>
-                <div className={`absolute top-2 left-2 px-2 py-0.5 rounded text-xs font-bold ${gameTagColors[video.game]}`}>
-                  {video.game}
-                </div>
               </div>
+
+              {/* Content */}
               <div className="p-4">
-                <h4 className="text-white font-semibold text-sm mb-2 line-clamp-2 group-hover:text-red-400 transition-colors">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className={`px-2 py-0.5 rounded text-xs font-bold ${gameTagColors[video.game]}`}>
+                    {video.game}
+                  </span>
+                </div>
+                <h4 className="text-white font-semibold mb-2 line-clamp-2 group-hover:text-red-400 transition-colors">
                   {video.title}
                 </h4>
-                <div className="flex items-center gap-3 text-xs text-gray-500">
-                  <span className="flex items-center gap-1"><Eye className="w-3 h-3" />{video.views}</span>
+                <div className="flex items-center gap-4 text-xs text-gray-500">
+                  <span className="flex items-center gap-1">
+                    <Eye className="w-3 h-3" />
+                    {video.views}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <ThumbsUp className="w-3 h-3" />
+                    {video.likes}
+                  </span>
                   <span>{video.date}</span>
                 </div>
               </div>
-            </div>
+            </a>
           ))}
-        </div>
-
-        {filtered.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-500">Aucune vidéo pour ce filtre.</p>
-          </div>
-        )}
-
-        {/* CTA */}
-        <div className="text-center mt-12">
-          <a
-            href="https://www.youtube.com/@InsiderHackGaming"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-red-400 hover:text-red-300 font-semibold transition-colors"
-          >
-            Voir toutes les vidéos sur YouTube
-            <ExternalLink className="w-4 h-4" />
-          </a>
         </div>
       </div>
     </section>

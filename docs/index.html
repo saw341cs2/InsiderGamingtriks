@@ -1,33 +1,14 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./placeholder.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Insider Gaming Tricks</title>
-    <script type="module" crossorigin src="/InsiderGamingtriks/assets/index-C4VxEyIl.js"></script>
-    <link rel="stylesheet" crossorigin href="/InsiderGamingtriks/assets/index-BccFRljP.css">
+    <title>Insider Gaming Tricks - Astuces FPS, Guides & Communauté</title>
+    <script type="module" crossorigin src="./assets/index-HAALmbJk.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-BIKmNg1t.css">
   </head>
   <body>
-    <div id="root"></div>
-
- <!-- NEWS GAMING -->
-<div id="gaming-news" style="margin: 20px; padding: 15px; border: 1px solid #ccc; background: #f9f9f9;">
-  <h2>🔥 Dernières News Gaming</h2>
-  <div id="news-container"></div>
-</div>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-$(document).ready(function() {
-  $.getJSON('https://api.rss2json.com/v1/api.json?rss_url=https://www.ign.com/rss/news/games', function(data) {
-    var news = '';
-    for(var i = 0; i < 2; i++) {
-      news += '<h3>' + data.items[i].title + '</h3>';
-      news += '<p>' + data.items[i].description + '</p><hr>';
-    }
-    $('#news-container').html(news);
-  });
-});
-</script> </body>
+    <div id="root"></div>
+  </body>
 </html>
-
