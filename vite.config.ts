@@ -9,17 +9,16 @@ export default defineConfig({
   plugins: [
     react(),
     {
-      name: 'copy-news-json',
+      name: 'copy-nojekyll',
       closeBundle() {
-        const src = path.resolve(__dirname, 'public/news.json');
-        const dest = path.resolve(__dirname, 'docs/news.json');
-        fs.copyFileSync(src, dest);
-        console.log('Copied news.json to docs folder');
+        const nojekyll = path.resolve(__dirname, 'dist/.nojekyll');
+        fs.writeFileSync(nojekyll, '');
+        console.log('Created .nojekyll in dist folder');
       }
     }
   ],
   build: {
-    outDir: "docs"
+    outDir: "dist"
   },
   resolve: {
     alias: {
