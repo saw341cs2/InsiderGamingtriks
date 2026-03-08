@@ -15,6 +15,8 @@ jobs:
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           curl -X POST "https://$SUPABASE_URL/functions/v1/publish-daily-news" \
             -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
