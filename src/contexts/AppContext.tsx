@@ -42,6 +42,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       setLoading(false);
+    }).catch(() => {
+      // Supabase not available, continue without auth
+      setLoading(false);
     });
 
     // Listen for auth changes
