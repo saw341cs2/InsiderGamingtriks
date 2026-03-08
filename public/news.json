@@ -1,0 +1,28 @@
+{
+  "articles": [
+    {
+      "title": "Counter-Strike 2 : Nouvelle mise à jour majeure",
+      "body": "Valve déploie une mise à jour massive pour CS2 incluant de nouvelles cartes compétitives.",
+      "url": "https://example.com/cs2-update",
+      "image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=250&fit=crop",
+      "dateTimePub": "2026-03-08T00:00:00Z",
+      "source": "Gaming News"
+    },
+    {
+      "title": "Battlefield : La saison 4 arrive",
+      "body": "EA annonce la saison 4 de Battlefield avec de nouvelles armes et véhicules.",
+      "url": "https://example.com/battlefield-s4",
+      "image": "https://images.unsplash.com/photo-1552820728-8b83bb6b2b28?w=400&h=250&fit=crop",
+      "dateTimePub": "2026-03-07T00:00:00Z",
+      "source": "EA News"
+    },
+    {
+      "title": "Call of Duty Warzone : Nouveau mode Ranked",
+      "body": "Activision lance le mode Ranked tant attendu pour Warzone.",
+      "url": "https://example.com/warzone-ranked",
+      "image": "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=400&h=250&fit=crop",
+      "dateTimePub": "2026-03-06T00:00:00Z",
+      "source": "CoD Blog"
+    }
+  ]
+}
