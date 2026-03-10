@@ -17,7 +17,7 @@ playwright-cli fill e2 "test"
 playwright-cli tracing-stop
 ```
 
-## Trace Output Files
+## Trace Output Files   
 
 When you start tracing, Playwright creates a `traces/` directory with several files:
 
