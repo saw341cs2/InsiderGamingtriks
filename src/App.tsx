@@ -1,18 +1,18 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import AppLayout from './components/AppLayout';
-import Index from './pages/Index';
-import NotFound from './pages/NotFound';
+import HeroSection from './components/gaming/HeroSection';
+import React from 'react';
+import './App.css';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<AppLayout />}>
-          <Route index element={<Index />} />
-          <Route path="*" element={<NotFound />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    import React from 'react';
+import './App.css';
+import HeroSection from './components/gaming/HeroSection'; // LIGNE AJOUTÉE
+
+function App() {
+  return (
+    <div className="App">
+      <HeroSection /> {/* LIGNE AJOUTÉE */}
+    </div>
   );
 }
 

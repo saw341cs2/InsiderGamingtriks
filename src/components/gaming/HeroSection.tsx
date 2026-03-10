@@ -1,28 +1,11 @@
 import React from 'react';
 
-interface HeroSectionProps {
-  bannerUrl?: string;
-}
-
-const HeroSection: React.FC<HeroSectionProps> = ({ bannerUrl }) => {
+const HeroSection: React.FC = () => {
   return (
-    <div className="relative w-full h-[700px] overflow-hidden" style={{ backgroundColor: '#030712' }}>
-      {/* Background - only show if bannerUrl is provided */}
-      {bannerUrl && (
-        <div className="absolute inset-0">
-          <img
-            src={bannerUrl}
-            alt="Banniere"
-            className="w-full h-full object-cover"
-          />
-        </div>
-      )}
-      {/* Title overlay */}
-      <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-        <h1 className="text-6xl md:text-8xl font-black text-white tracking-wider">
-          <span className="text-red-500">#</span>FPS Gaming
-        </h1>
-      </div>
+    <div className="w-full h-[700px] bg-gray-950 flex items-center justify-center">
+      <h1 className="text-6xl md:text-8xl font-black text-white tracking-wider">
+        <span className="text-red-500">#</span>FPS Gaming
+      </h1>
     </div>
   );
 };
