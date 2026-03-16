@@ -5,7 +5,7 @@ import fs from "fs"
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/InsiderGamingtriks/docs/',
+  base: '/docs/',
   plugins: [
     react(),
     {
