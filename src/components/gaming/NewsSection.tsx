@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Newspaper, Clock, RefreshCw } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
 
 interface NewsArticle {
+  id?: number;
   title: string;
   body: string;
   url: string;
   image: string;
   dateTimePub: string;
   source: string;
+  topic?: string;
 }
 
 const NewsSection: React.FC = () => {
   const [articles, setArticles] = useState<NewsArticle[]>([]);
   const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
 
   const fetchNews = async () => {
     setLoading(true);
@@ -24,7 +24,10 @@ const NewsSection: React.FC = () => {
       const response = await fetch('/news.json');
       
       if (!response.ok) {
-        throw new Error('Failed to load news');
+        console.log('No news file found, showing placeholder');
+        setArticles([]);
+        setLoading(false);
+        return;
       }
       
       const data = await response.json();
@@ -33,12 +36,8 @@ const NewsSection: React.FC = () => {
         setArticles(data.articles);
       }
     } catch (error) {
-      console.error('Erreur:', error);
-      toast({
-        title: 'Erreur de chargement',
-        description: 'Impossible de charger les news',
-        variant: 'destructive',
-      });
+      console.log('News loading skipped:', error);
+      setArticles([]);
     } finally {
       setLoading(false);
     }
@@ -139,6 +138,11 @@ const NewsSection: React.FC = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent" />
                   {/* Badges */}
                   <div className="absolute top-3 left-3 flex gap-2">
+                    {article.topic && (
+                      <div className="px-2 py-1 bg-blue-600 rounded text-xs font-bold text-white">
+                        {article.topic.toUpperCase()}
+                      </div>
+                    )}
                     {index === 0 && (
                       <div className="px-2 py-1 bg-red-600 rounded text-xs font-bold text-white">
                         NOUVEAU

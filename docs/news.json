@@ -1,0 +1,24 @@
+{
+  "articles": [
+    {
+      "id": 1,
+      "title": "Call of Duty 2026: Toutes les infos sur le prochain opus",
+      "body": "Activision tease le prochain Call of Duty avec des.graphismes révolutionnaires et un nouveau mode Battle Royale.",
+      "url": "https://example.com/cod-2026",
+      "image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=250&fit=crop",
+      "dateTimePub": "2026-03-16T10:00:00Z",
+      "source": "InsiderGamingtriks",
+      "topic": "jeux"
+    },
+    {
+      "id": 2,
+      "title": "Championnat du Monde d'Esports 2026: Le prize pool record",
+      "body": "Le tournoi international de gaming offre 10 millions de dollars au gagnant, le plus gros prize pool de l'histoire.",
+      "url": "https://example.com/esports-2026",
+      "image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=250&fit=crop",
+      "dateTimePub": "2026-03-16T09:00:00Z",
+      "source": "InsiderGamingtriks",
+      "topic": "competition"
+    }
+  ]
+}
