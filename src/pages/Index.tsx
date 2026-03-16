@@ -34,6 +34,9 @@ const Index: React.FC = () => {
       <Navbar activeSection={activeSection} onNavigate={handleNavigate} />
       <main className="min-h-screen bg-black pt-16">
         <div className="space-y-12 md:space-y-16 pb-20">
+          <div id="news">
+            <NewsSection />
+          </div>
           <div id="astuces">
             <AstucesSection onNavigate={handleNavigate} />
           </div>
