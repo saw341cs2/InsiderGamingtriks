@@ -15,6 +15,7 @@ interface ForumPost {
 }
 
 const forumPosts: ForumPost[] = [
+  { id: 0, title: '🎮 FAQ – Insider Gaming Tricks', author: 'InsiderHack', avatar: 'IH', game: 'Général', replies: 0, views: 0, lastActivity: 'Il y a 1j', pinned: true, category: 'Événements' },
   { id: 1, title: 'Meilleure config PC pour CS2 en 2026 ?', author: 'FragMaster', avatar: 'FM', game: 'CS2', replies: 47, views: 1200, lastActivity: 'Il y a 2h', pinned: true, category: 'Hardware' },
   { id: 2, title: 'Tournoi communautaire #3 - Inscriptions', author: 'InsiderHack', avatar: 'IH', game: 'Général', replies: 89, views: 3400, lastActivity: 'Il y a 3h', pinned: true, category: 'Événements' },
   { id: 3, title: 'Warzone : Quelle est votre classe préférée ?', author: 'SniperElite', avatar: 'SE', game: 'CoD', replies: 34, views: 890, lastActivity: 'Il y a 5h', pinned: false, category: 'Discussion' },
@@ -212,6 +213,52 @@ const CommunitySection: React.FC = () => {
               {/* Posts */}
               <div className="divide-y divide-gray-800/50">
                 {filteredPosts.map((post) => (
+                  post.id === 0 ? (
+                  <div key={post.id} className="p-5 bg-gradient-to-r from-gray-900 to-gray-800/50 border border-red-500/20">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Pin className="w-4 h-4 text-red-500" />
+                      <span className="text-red-400 text-xs font-bold">POST IMPORTANT</span>
+                    </div>
+                    <h3 className="text-white font-bold text-xl mb-4">🎮 FAQ – Insider Gaming Tricks</h3>
+                    
+                    <div className="space-y-4 text-sm text-gray-300">
+                      <div>
+                        <h4 className="text-white font-semibold mb-1">❓ Qu'est-ce que Insider Gaming Tricks ?</h4>
+                        <p>Insider Gaming Tricks est un site dédié aux jeux vidéo, principalement les FPS comme Counter-Strike, Battlefield, Call of Duty. Tu y trouveras les dernières actualités, des astuces exclusives, et du contenu vidéo pour améliorer ton gameplay.</p>
+                      </div>
+                      
+                      <div>
+                        <h4 className="text-white font-semibold mb-1">🎯 Que propose le site ?</h4>
+                        <ul className="list-disc list-inside space-y-1 ml-2">
+                          <li><strong className="text-white">Astuces</strong> : guides et techniques pour progresser</li>
+                          <li><strong className="text-white">Vidéos</strong> : une nouvelle vidéo chaque semaine</li>
+                          <li><strong className="text-white">Communauté</strong> : Discord + forum pour échanger</li>
+                          <li><strong className="text-white">Premium</strong> : contenu exclusif (gratuit et payant)</li>
+                        </ul>
+                      </div>
+                      
+                      <div>
+                        <h4 className="text-white font-semibold mb-1">📺 Fréquence de publication</h4>
+                        <p>Une vidéo par semaine + des mises à jour régulières avec de nouvelles astuces.</p>
+                      </div>
+                      
+                      <div>
+                        <h4 className="text-white font-semibold mb-1">💡 Astuces gratuites ?</h4>
+                        <p>Oui ! Une partie est gratuite, certaines techniques avancées sont premium.</p>
+                      </div>
+                      
+                      <div>
+                        <h4 className="text-white font-semibold mb-1">💬 Rejoindre la communauté</h4>
+                        <p>Via le Discord (à droite) et bientôt sur le forum.</p>
+                      </div>
+                      
+                      <div>
+                        <h4 className="text-white font-semibold mb-1">📢 Nous suivre</h4>
+                        <a href="https://www.youtube.com/@InsiderHackGaming" target="_blank" rel="noopener noreferrer" className="text-red-400 hover:text-red-300">YouTube : @InsiderHackGaming</a>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
                   <div
                     key={post.id}
                     className="px-5 py-4 hover:bg-gray-800/20 transition-colors cursor-pointer group"
@@ -256,14 +303,14 @@ const CommunitySection: React.FC = () => {
                         className={`p-2 rounded-lg transition-all shrink-0 ${
                           likedPosts.has(post.id)
                             ? 'text-red-500 bg-red-500/10'
-                            : 'text-gray-600 hover:text-red-400 hover:bg-red-500/5'
+                            : 'text-gray-500 hover:text-red-400 hover:bg-red-500/10'
                         }`}
                       >
-                        <ThumbsUp className="w-4 h-4" />
+                      <ThumbsUp className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
-                ))}
+                )))}
               </div>
 
               {filteredPosts.length === 0 && (
