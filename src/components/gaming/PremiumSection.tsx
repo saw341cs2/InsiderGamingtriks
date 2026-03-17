@@ -28,7 +28,7 @@ const plans = [
   {
     id: 'pro',
     name: 'Pro',
-    price: '9.99',
+    price: '6.99',
     period: '/mois',
     description: 'Toutes les astuces + guides vidéo exclusifs.',
     icon: Zap,
@@ -51,8 +51,8 @@ const plans = [
   {
     id: 'elite',
     name: 'Élite',
-    price: '24.99',
-    period: '/mois',
+    price: '9.99',
+    period: '/mois sans engagement',
     description: 'L\'expérience ultime avec coaching personnalisé.',
     icon: Crown,
     color: 'from-yellow-500 to-amber-600',

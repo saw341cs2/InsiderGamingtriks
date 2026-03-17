@@ -160,9 +160,9 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
           </p>
         </div>
 
-        {/* Astuces Grid */}
+        {/* Astuces Grid - 3 rows max (9 items) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filtered.map((astuce) => {
+          {filtered.slice(0, 9).map((astuce) => {
             const GameIcon = gameIcons[astuce.game] || Crosshair;
             const isDownloaded = downloadedIds.has(astuce.id);
 
