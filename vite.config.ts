@@ -4,7 +4,7 @@ import path from "path"
 import fs from "fs"
 
 export default defineConfig({
-  base: '/Insider-Gaming-trick/',
+  base: '/InsiderGamingtriks/',
   plugins: [
     react(),
     {
