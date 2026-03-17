@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { AppProvider } from '@/contexts/AppContext';
 import Navbar from '@/components/gaming/Navbar';
-import FAQ from '@/components/gaming/FAQ';
 import AstucesSection from '@/components/gaming/AstucesSection';
 import GamesSection from '@/components/gaming/GamesSection';
 import NewsSection from '@/components/gaming/NewsSection';
@@ -35,9 +34,6 @@ const Index: React.FC = () => {
       <Navbar activeSection={activeSection} onNavigate={handleNavigate} />
       <main className="min-h-screen bg-black pt-16">
         <div className="space-y-12 md:space-y-16 pb-20">
-          <div id="faq">
-            <FAQ />
-          </div>
           <div id="news">
             <NewsSection />
           </div>
