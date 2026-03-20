@@ -14,29 +14,24 @@ jobs:
         with:
           ref: main
 
-      - name: Fetch gaming news
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Fetch and transform gaming news
         env:
           GNEWS_API_KEY: ${{ secrets.GNEWS_API_KEY }}
-        run: |
-          # Simple curl to test API first
-          curl -s "https://gnews.io/api/v4/search?q=gaming&lang=fr&max=10&apikey=$GNEWS_API_KEY" -o response.json
-          
-          # Check response
-          cat response.json
-          
-          # If valid, copy to news.json
-          if grep -q "articles" response.json; then
-            cp response.json public/news.json
-            echo "News saved!"
-          else
-            echo "API error"
-            cat response.json
-          fi
+          NEWSDATA_API_KEY: ${{ secrets.NEWSDATA_API_KEY }}
+        run: node scripts/fetch-news.cjs
 
       - name: Commit and push
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add public/news.json || true
-          git commit -m "Daily gaming news - $(date '+%Y-%m-%d')" || echo "No changes"
+          git add public/news.json
+          git commit -m "Daily gaming news - $(date '+%Y-%m-%d')" || echo "No changes to commit"
           git push || echo "Push failed"
