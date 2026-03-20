@@ -171,12 +171,9 @@ async function main() {
   
   let allArticles = [];
   
-  const [gnews, newsdata] = await Promise.all([
-    fetchFromGNews(),
-    fetchFromNewsDataIO()
-  ]);
+  const gnews = await fetchFromGNews();
   
-  allArticles = [...gnews, ...newsdata];
+  allArticles = [...gnews];
   
   if (allArticles.length === 0) {
     console.log('No articles from APIs, using fallback...');
