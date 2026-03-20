@@ -1,24 +1,23 @@
 {
   "articles": [
     {
-      "id": 1,
-      "title": "Call of Duty 2026: Toutes les infos sur le prochain opus",
-      "body": "Activision tease le prochain Call of Duty avec des graphismes révolutionnaires et un nouveau mode Battle Royale.",
-      "url": "https://www.jeuxvideo.com/news/1893900/call-of-duty-2026-tout-ce-que-vous-devez-savoir.htm",
-      "image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=250&fit=crop",
-      "dateTimePub": "2026-03-16T10:00:00Z",
-      "source": "JeuxVideo.com",
-      "topic": "jeux"
+      "title": "🎯 Nouveau jeu fps annoncé",
+      "body": "Un nuevo jeu fps arrive sur PC et console. Les joueurs attendent avec impatience ce titre prometteur. #FPS #Gaming #JeuxVideo",
+      "url": "https://example.com/news3",
+      "image": "https://images.unsplash.com/photo-1552820728-8b83bb6b2b0f?w=800&h=450&fit=crop",
+      "dateTimePub": "2026-03-20T18:34:13.037Z",
+      "source": "InsiderGamingtriks",
+      "topic": "FPS"
     },
     {
-      "id": 2,
-      "title": "Championnat du Monde d'Esports 2026: Le prize pool record",
-      "body": "Le tournoi international de gaming offre 10 millions de dollars au gagnant, le plus gros prize pool de l'histoire.",
-      "url": "https://www.lemonde.fr/pixels/article/2026/03/16/esports-2026-le-prize-pool-record_6275340_4408996.html",
-      "image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=250&fit=crop",
-      "dateTimePub": "2026-03-16T09:00:00Z",
-      "source": "Le Monde Pixels",
-      "topic": "competition"
+      "title": "🎮 Tournoi esport: les équipes favorites",
+      "body": "Analyse des équipes favorites pour les prochains tournois majeurs. Qui va gagner? #Esport #Competition #Esport",
+      "url": "https://example.com/news2",
+      "image": "https://images.unsplash.com/photo-1542751110-97427bbecf20?w=800&h=450&fit=crop",
+      "dateTimePub": "2026-03-20T18:34:13.037Z",
+      "source": "InsiderGamingtriks",
+      "topic": "COMPETITION"
     }
-  ]
+  ],
+  "generatedAt": "2026-03-20T18:34:13.037Z"
 }
