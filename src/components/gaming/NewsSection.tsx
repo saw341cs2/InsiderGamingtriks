@@ -69,9 +69,6 @@ const NewsSection: React.FC = () => {
             <h2 className="text-3xl md:text-5xl font-black text-white mb-4">
               News <span className="text-red-500">Gaming</span>
             </h2>
-            <p className="text-gray-400 max-w-xl">
-              Les actus gaming publiées automatiquement chaque matin.
-            </p>
           </div>
           <button
             onClick={fetchNews}
