@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Crosshair, Lock } from 'lucide-react';
 import { useAppContext } from '@/contexts/AppContext';
 import AuthModal from './gaming/AuthModal';
@@ -12,11 +12,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { user, loading } = useAppContext();
   const [authModalOpen, setAuthModalOpen] = useState(false);
 
-  useEffect(() => {
-    if (!loading && !user) {
-      setAuthModalOpen(true);
-    }
-  }, [user, loading]);
+  const openAuthModal = () => setAuthModalOpen(true);
 
   if (loading) {
     return (

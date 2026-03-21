@@ -166,8 +166,46 @@ function getFallbackArticles() {
   ];
 }
 
+function getTodayDateString() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function isArticleFromToday(article) {
+  if (!article.dateTimePub) return true;
+  const articleDate = article.dateTimePub.split('T')[0];
+  return articleDate === getTodayDateString();
+}
+
+function mergeArticles(existingArticles, newArticles, maxTotal = 6) {
+  const todayArticles = newArticles.filter(a => a.url);
+  
+  let merged = [...todayArticles];
+  
+  for (const old of existingArticles) {
+    if (merged.length >= maxTotal) break;
+    if (!old.url) continue;
+    if (!merged.some(m => m.url === old.url)) {
+      merged.push(old);
+    }
+  }
+  
+  return merged;
+}
+
 async function main() {
   console.log('=== Fetching Gaming News ===');
+  
+  const existingPath = path.join(__dirname, '..', 'public', 'news.json');
+  let existingArticles = [];
+  if (fs.existsSync(existingPath)) {
+    try {
+      const existingData = JSON.parse(fs.readFileSync(existingPath, 'utf8'));
+      existingArticles = existingData.articles || [];
+      console.log(`Loaded ${existingArticles.length} existing articles`);
+    } catch (e) {
+      console.log('No existing news found');
+    }
+  }
   
   let allArticles = [];
   
@@ -211,13 +249,13 @@ async function main() {
   if (categorized.competition.length > 0) {
     const article = categorized.competition[Math.floor(Math.random() * categorized.competition.length)];
     finalArticles.push(transformContent(article, 'competition'));
-  } else if (categorized.jeux.length > 0 && finalArticles.length < 2) {
+  } else if (categorized.jeux.length > 0) {
     const article = categorized.jeux[Math.floor(Math.random() * categorized.jeux.length)];
     finalArticles.push(transformContent(article, 'jeux'));
   }
   
-  while (finalArticles.length < 2 && categorized.jeux.length > 0) {
-    const available = categorized.jeux.filter(a => !finalArticles.includes(a));
+  while (finalArticles.length < 3) {
+    const available = categorized.jeux.filter(a => !finalArticles.some(f => f.title === a.title));
     if (available.length === 0) break;
     const article = available[Math.floor(Math.random() * available.length)];
     finalArticles.push(transformContent(article, 'jeux'));
@@ -229,10 +267,15 @@ async function main() {
     if (fallback[1]) {
       finalArticles.push(transformContent(fallback[1], 'competition'));
     }
+    if (fallback[2]) {
+      finalArticles.push(transformContent(fallback[2], 'fps'));
+    }
   }
-  
+
+  const mergedArticles = mergeArticles(existingArticles, finalArticles, 6);
+
   const output = {
-    articles: finalArticles.slice(0, 2),
+    articles: mergedArticles,
     generatedAt: new Date().toISOString()
   };
   

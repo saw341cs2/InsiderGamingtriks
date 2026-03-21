@@ -1,18 +1,25 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Mock client for demo (no real Supabase needed)
+type AuthChangeCallback = (event: string, session: unknown) => void;
+
+interface AuthOptions {
+  email?: string;
+  password?: string;
+  options?: Record<string, unknown>;
+}
+
 const supabase = {
   auth: {
     getSession: () => Promise.resolve({ data: { session: null }, error: null }),
-    onAuthStateChange: (callback: any) => ({ 
+    onAuthStateChange: (callback: AuthChangeCallback) => ({ 
       data: { 
         subscription: { 
           unsubscribe: () => {} 
         } 
       } 
     }),
-    signUp: (options: any) => Promise.resolve({ data: null, error: null }),
-    signInWithPassword: (options: any) => Promise.resolve({ data: null, error: null }),
+    signUp: (_options: AuthOptions) => Promise.resolve({ data: null, error: null }),
+    signInWithPassword: (_options: AuthOptions) => Promise.resolve({ data: null, error: null }),
     signOut: () => Promise.resolve({ error: null }),
   },
 };

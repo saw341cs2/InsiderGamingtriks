@@ -1,6 +1,24 @@
 {
   "articles": [
     {
+      "title": "💥 Nouveau jeu fps annoncé",
+      "body": "Un nuevo jeu fps arrive sur PC et console. Les joueurs attendent avec impatience ce titre prometteur. #FPS #Gaming",
+      "url": "https://example.com/news3",
+      "image": "https://images.unsplash.com/photo-1552820728-8b83bb6b2b0f?w=800&h=450&fit=crop",
+      "dateTimePub": "2026-03-21T08:38:18.687Z",
+      "source": "InsiderGamingtriks",
+      "topic": "FPS"
+    },
+    {
+      "title": "🏅 Tournoi esport: les équipes favorites",
+      "body": "Analyse des équipes favorites pour les prochains tournois majeurs. Qui va gagner? #Esport #Competition #Tournoi",
+      "url": "https://example.com/news2",
+      "image": "https://images.unsplash.com/photo-1542751110-97427bbecf20?w=800&h=450&fit=crop",
+      "dateTimePub": "2026-03-21T08:38:18.687Z",
+      "source": "InsiderGamingtriks",
+      "topic": "COMPETITION"
+    },
+    {
       "title": "⚔️ \" Valorant \" : Les Sud-Coréens de Nongshim RedForce remportent le Masters de Santiago",
       "body": "L’équipe sud-coréenne Nongshim RedForce a remporté le Masters de Santiago, le premier tournoi mondial de la saison esport sur Valorant . Gentle Mates, seul représentant français, finit top 8 #JeuxV...",
       "url": "https://www.20minutes.fr/gaming/jeux_video/4212075-20260316-valorant-sud-coreens-nongshim-redforce-remportent-masters-santiago",
@@ -19,5 +37,5 @@
       "topic": "COMPETITION"
     }
   ],
-  "generatedAt": "2026-03-20T18:51:55.401Z"
+  "generatedAt": "2026-03-21T08:38:18.687Z"
 }

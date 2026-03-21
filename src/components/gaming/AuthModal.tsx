@@ -52,10 +52,11 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       setEmail('');
       setPassword('');
       setConfirmPassword('');
-    } catch (error: any) {
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Une erreur est survenue";
       toast({
         title: "Erreur",
-        description: error.message || "Une erreur est survenue",
+        description: message,
         variant: "destructive",
       });
     } finally {
