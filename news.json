@@ -1,23 +1,41 @@
 {
   "articles": [
     {
-      "title": "💥 \" Valorant \" : Les Sud-Coréens de Nongshim RedForce remportent le Masters de Santiago",
-      "body": "L’équipe sud-coréenne Nongshim RedForce a remporté le Masters de Santiago, le premier tournoi mondial de la saison esport sur Valorant . Gentle Mates, seul représentant français, finit top 8 #Shooter",
-      "url": "https://www.20minutes.fr/gaming/jeux_video/4212075-20260316-valorant-sud-coreens-nongshim-redforce-remportent-masters-santiago",
-      "image": "https://img.20mn.fr/QNC4goxvRXeQVPafjxHxVyk/1444x920_nongshim-red-force-a-remporte-le-masters-de-santiago-de-valorant",
-      "dateTimePub": "2026-03-21T06:47:49.957Z",
+      "title": "💥 Nouveau jeu fps annoncé",
+      "body": "Un nuevo jeu fps arrive sur PC et console. Les joueurs attendent avec impatience ce titre prometteur. #FPS #Gaming",
+      "url": "https://example.com/news3",
+      "image": "https://images.unsplash.com/photo-1552820728-8b83bb6b2b0f?w=800&h=450&fit=crop",
+      "dateTimePub": "2026-03-21T08:38:18.687Z",
       "source": "InsiderGamingtriks",
       "topic": "FPS"
     },
     {
-      "title": "🏆 Cinéjade Gaming Show : e-Sport, VR et tournois de jeux vidéo ce samedi 21 mars dans cette commune de Loire-Atlantique",
-      "body": "Avis aux fans de jeux vidéo ! Le Cinéjade Gaming Show fait son grand retour ce samedi 21 mars 2026 à Saint-Brevin-les-Pins (Loire-Atlantique). Entre bornes d’arcade en libre accès, réalité virtuell...",
-      "url": "https://www.ouest-france.fr/gaming/cinejade-gaming-show-e-sport-vr-et-tournois-de-jeux-video-ce-samedi-21-mars-dans-cette-commune-de-loire-atlantique-d28110ec-22e9-11f1-a33f-22f8c63f53e9",
-      "image": "https://media.ouest-france.fr/v1/pictures/MjAyNjAzMGY2NDM5ZjA0Y2JhM2RjZGVkZTIyNjU0M2RkNmFjMGU?width=1260&height=708&focuspoint=50%2C25&cropresize=1&client_id=bpeditorial&sign=2638a03d9999ab36a6bfcd043ce383836076effb5b89f59de5a35db9a0c43922",
-      "dateTimePub": "2026-03-21T06:47:49.957Z",
+      "title": "🏅 Tournoi esport: les équipes favorites",
+      "body": "Analyse des équipes favorites pour les prochains tournois majeurs. Qui va gagner? #Esport #Competition #Tournoi",
+      "url": "https://example.com/news2",
+      "image": "https://images.unsplash.com/photo-1542751110-97427bbecf20?w=800&h=450&fit=crop",
+      "dateTimePub": "2026-03-21T08:38:18.687Z",
+      "source": "InsiderGamingtriks",
+      "topic": "COMPETITION"
+    },
+    {
+      "title": "⚔️ \" Valorant \" : Les Sud-Coréens de Nongshim RedForce remportent le Masters de Santiago",
+      "body": "L’équipe sud-coréenne Nongshim RedForce a remporté le Masters de Santiago, le premier tournoi mondial de la saison esport sur Valorant . Gentle Mates, seul représentant français, finit top 8 #JeuxV...",
+      "url": "https://www.20minutes.fr/gaming/jeux_video/4212075-20260316-valorant-sud-coreens-nongshim-redforce-remportent-masters-santiago",
+      "image": "https://img.20mn.fr/QNC4goxvRXeQVPafjxHxVyk/1444x920_nongshim-red-force-a-remporte-le-masters-de-santiago-de-valorant",
+      "dateTimePub": "2026-03-20T18:51:55.401Z",
+      "source": "InsiderGamingtriks",
+      "topic": "FPS"
+    },
+    {
+      "title": "⚡ Esport. Deux joueurs condamnés à 3 mois de prison après avoir triché",
+      "body": "Ils redoutaient six mois, ils ont écopé de trois. Deux joueurs thaïlandais de esport, âgés de 29 et 23 ans, ont été condamnés à 3 mois de prison après avoir triché pendant les Jeux d’Asie du Sud-es...",
+      "url": "https://www.ouest-france.fr/sport/esport/esport-deux-joueurs-condamnes-a-3-mois-de-prison-apres-avoir-triche-877e9106-21f8-11f1-bd90-e52e64f8157c",
+      "image": "https://media.ouest-france.fr/v1/pictures/MjAyNjAzZWVkYTNmYjVhN2MxMWVlNTI5MmNiM2M0MDM3NjZiNjE?width=1260&height=708&focuspoint=50%2C25&cropresize=1&client_id=bpeditorial&sign=5908c8e6052e48d4ef1dedd6f5756b2dd27c765af44ddbc6d6e3c82d72b70e07",
+      "dateTimePub": "2026-03-20T18:51:55.401Z",
       "source": "InsiderGamingtriks",
       "topic": "COMPETITION"
     }
   ],
-  "generatedAt": "2026-03-21T06:47:49.957Z"
+  "generatedAt": "2026-03-21T08:38:18.687Z"
 }
