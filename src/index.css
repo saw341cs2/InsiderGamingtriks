@@ -92,13 +92,10 @@
     @apply border-border;
   }
 
-  body {
-    @apply bg-background text-foreground font-sans dark:bg-background dark:text-foreground;
-    background-color: #030712;
-  }
-
-  pre, code {
-    @apply font-mono;
+  html, body, #root {
+    background-color: #0f172a !important;
+    min-height: 100vh;
+    color: #f1f5f9 !important;
   }
 }
 
