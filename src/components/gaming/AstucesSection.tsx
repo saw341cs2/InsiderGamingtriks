@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Download, Lock, Unlock, Search, Filter, Star, Eye, ChevronRight, Crosshair, Target, Bomb } from 'lucide-react';
+import { Lock, Search, Filter, Star, Eye, Crosshair, Target, Bomb } from 'lucide-react';
 
 interface AstucesSectionProps {
   onNavigate: (section: string) => void;
@@ -64,23 +64,14 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
   const [gameFilter, setGameFilter] = useState<GameFilter>('all');
   const [difficultyFilter, setDifficultyFilter] = useState<string>('all');
   const [showPremiumOnly, setShowPremiumOnly] = useState(false);
-  const [downloadedIds, setDownloadedIds] = useState<Set<number>>(new Set());
 
-  const filtered = astuces.filter((a) => {
+  const filtered = astrocytes.filter((a) => {
     if (searchQuery && !a.title.toLowerCase().includes(searchQuery.toLowerCase()) && !a.description.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     if (gameFilter !== 'all' && a.gameId !== gameFilter) return false;
     if (difficultyFilter !== 'all' && a.difficulty !== difficultyFilter) return false;
     if (showPremiumOnly && !a.isPremium) return false;
     return true;
   });
-
-  const handleDownload = (astuce: Astuce) => {
-    if (astuce.isPremium) {
-      onNavigate('premium');
-      return;
-    }
-    setDownloadedIds((prev) => new Set(prev).add(astuce.id));
-  };
 
   return (
     <section id="astuces-section" className="bg-gray-950 py-20 md:py-28">
@@ -164,7 +155,6 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {filtered.slice(0, 9).map((astuce) => {
             const GameIcon = gameIcons[astuce.game] || Crosshair;
-            const isDownloaded = downloadedIds.has(astuce.id);
 
             return (
               <div
@@ -173,13 +163,11 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
                   astuce.isPremium ? 'border-yellow-500/20 hover:border-yellow-500/40' : 'border-gray-800 hover:border-red-500/30'
                 }`}
               >
-                {/* Premium Badge */}
-                {astuce.isPremium && (
-                  <div className="absolute top-3 right-3 z-10 flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-yellow-600 to-orange-600 rounded-md text-xs font-bold text-white">
-                    <Lock className="w-3 h-3" />
-                    PREMIUM
-                  </div>
-                )}
+                {/* Lock Badge - All tips locked */}
+                <div className="absolute top-3 right-3 z-10 flex items-center gap-1 px-2 py-1 bg-gray-800/90 border border-gray-700 rounded-md text-xs font-bold text-gray-300">
+                  <Lock className="w-3 h-3" />
+                  VERROUILLÉ
+                </div>
 
                 <div className="p-5">
                   {/* Game & Category */}
@@ -223,33 +211,13 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
                     </span>
                   </div>
 
-                  {/* Download Button */}
+                  {/* Download Button - All locked */}
                   <button
-                    onClick={() => handleDownload(astuce)}
-                    className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-lg font-semibold text-sm transition-all ${
-                      astuce.isPremium
-                        ? 'bg-gradient-to-r from-yellow-600/20 to-orange-600/20 border border-yellow-500/30 text-yellow-400 hover:from-yellow-600/30 hover:to-orange-600/30'
-                        : isDownloaded
-                        ? 'bg-green-600/20 border border-green-500/30 text-green-400'
-                        : 'bg-red-600/20 border border-red-500/30 text-red-400 hover:bg-red-600/30'
-                    }`}
+                    onClick={() => onNavigate('premium')}
+                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg font-semibold text-sm transition-all bg-gray-800/50 border border-gray-700 text-gray-400 hover:bg-red-600/20 hover:border-red-500/30 hover:text-red-400"
                   >
-                    {astuce.isPremium ? (
-                      <>
-                        <Lock className="w-4 h-4" />
-                        Débloquer avec Premium
-                      </>
-                    ) : isDownloaded ? (
-                      <>
-                        <Unlock className="w-4 h-4" />
-                        Téléchargé
-                      </>
-                    ) : (
-                      <>
-                        <Download className="w-4 h-4" />
-                        Télécharger Gratuit
-                      </>
-                    )}
+                    <Lock className="w-4 h-4" />
+                    Débloquer avec Premium
                   </button>
                 </div>
               </div>
