@@ -1,6 +1,33 @@
 {
   "articles": [
     {
+      "title": "💥 \" Valorant \" : Les Sud-Coréens de Nongshim RedForce remportent le Masters de Santiago",
+      "body": "L’équipe sud-coréenne Nongshim RedForce a remporté le Masters de Santiago, le premier tournoi mondial de la saison esport sur Valorant . Gentle Mates, seul représentant français, finit top 8 #JeuxV...",
+      "url": "https://www.20minutes.fr/gaming/jeux_video/4212075-20260316-valorant-sud-coreens-nongshim-redforce-remportent-masters-santiago",
+      "image": "https://img.20mn.fr/QNC4goxvRXeQVPafjxHxVyk/1444x920_nongshim-red-force-a-remporte-le-masters-de-santiago-de-valorant",
+      "dateTimePub": "2026-03-22T06:54:56.547Z",
+      "source": "InsiderGamingtriks",
+      "topic": "FPS"
+    },
+    {
+      "title": "⚡ Communiqué d'Emmanuel Macron, désaccords institutionnels et vieilles rancoeurs : la création de l'équipe de France d'esport génère des tensions",
+      "body": "Ersatz de Jeux Olympiques de lesport, lEsports Nations Cup, prévue pour la fin de lannée, a lancé un appel à candidature pour la gestion de la délégation française... Qui a publiquement révélé les ...",
+      "url": "https://www.lequipe.fr/Esport/Actualites/Communique-de-macron-desaccords-institutionnels-et-vieilles-rancoeurs-la-creation-de-l-equipe-de-france-d-esport-genere-des-tensions/1656981",
+      "image": "https://www.lequipe.fr/_medias/img-photo-jpg/la-premiere-edition-de-l-esports-nations-cup-debutera-le-2-novembre-timo-verdeil/1500000002409810/0:0,1198:799-640-427-75/4c4d3.jpg",
+      "dateTimePub": "2026-03-22T06:54:56.548Z",
+      "source": "InsiderGamingtriks",
+      "topic": "COMPETITION"
+    },
+    {
+      "title": "🎮 game : comment la classification PEGI change en juin 2026",
+      "body": "Le système européen de classification des jeux (PEGI) va prochainement revoir son système de classement. Au centre du changement : les mécaniques économiques comme les lootboxes et les achats in-ga...",
+      "url": "https://www.numerama.com/pop-culture/2209529-la-classification-des-jeux-video-pegi-va-bientot-changer-et-sendurcir.html",
+      "image": "https://c0.lestechnophiles.com/www.numerama.com/wp-content/uploads/2026/03/pegi.jpg?resize=1600,900&key=3fa83532&watermark",
+      "dateTimePub": "2026-03-22T06:54:56.548Z",
+      "source": "InsiderGamingtriks",
+      "topic": "JEUX"
+    },
+    {
       "title": "🎮 GTA 6 : Une date de sortie enfin officielle ?",
       "body": "Les fans de GTA attendent avec impatience les dernières nouvelles sur GTA 6. Take-Two tease une annonce imminente qui pourrait changer tout ce qu'on sait sur le jeu. #GTA #Gaming #JeuxVideo",
       "url": "https://www.jeuxvideo.com/news/1958760/gta-6-date-de-sortie-officielle-rumeur.htm",
@@ -8,15 +35,6 @@
       "dateTimePub": "2026-03-21T09:00:00.000Z",
       "source": "InsiderGamingtriks",
       "topic": "JEUX"
-    },
-    {
-      "title": "🏆 Valorant : Nongshim RedForce gagne le Masters",
-      "body": "L'équipe sud-coréenne Nongshim RedForce a remporté le Masters de Santiago. Gentle Mates, seul représentant français, finit top 8 du tournoi. #Valorant #Esport #Masters",
-      "url": "https://www.20minutes.fr/gaming/jeux_video/4212075-20260316-valorant-sud-coreens-nongshim-redforce-remportent-masters-santiago",
-      "image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop",
-      "dateTimePub": "2026-03-20T18:51:55.401Z",
-      "source": "InsiderGamingtriks",
-      "topic": "FPS"
     },
     {
       "title": "⚔️ Counter-Strike 2 : Le Major attendu en France",
@@ -35,25 +53,7 @@
       "dateTimePub": "2026-03-20T12:00:00.000Z",
       "source": "InsiderGamingtriks",
       "topic": "FPS"
-    },
-    {
-      "title": "🕹️ Nintendo Switch 2 : L'annonce officielle",
-      "body": "Nintendo présente enfin sa nouvelle console ! Performances boostées, écran OLED et rétrocompatibilité. Les précommandes ouvrent bientôt. #Nintendo #Switch #Gaming",
-      "url": "https://www.nintendo.com/fr-fr/Switch/",
-      "image": "https://images.unsplash.com/photo-1578303512597-81e6cc155b3e?w=800&h=450&fit=crop",
-      "dateTimePub": "2026-03-19T15:00:00.000Z",
-      "source": "InsiderGamingtriks",
-      "topic": "JEUX"
-    },
-    {
-      "title": "🏅 League of Legends : Fnatic enchaîne",
-      "body": "Fnatic enchaîne une victoire impressionnante en LEC face à G2. L'équipe montre un jeu collectif solide pour la suite de la saison. #LoL #LEC #Esport",
-      "url": "https://lolesports.com/fr_FR/",
-      "image": "https://images.unsplash.com/photo-1542751110-97427bbecf20?w=800&h=450&fit=crop",
-      "dateTimePub": "2026-03-18T20:00:00.000Z",
-      "source": "InsiderGamingtriks",
-      "topic": "COMPETITION"
     }
   ],
-  "generatedAt": "2026-03-21T10:10:00.000Z"
+  "generatedAt": "2026-03-22T06:54:56.548Z"
 }
