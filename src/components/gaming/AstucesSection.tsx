@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Lock, Search, Filter, Star, Eye, Crosshair, Target, Bomb } from 'lucide-react';
+import { Lock, Search, Filter, Star, Eye, Crosshair, Target, Bomb, Download } from 'lucide-react';
 
 interface AstucesSectionProps {
   onNavigate: (section: string) => void;
@@ -65,7 +65,7 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
   const [difficultyFilter, setDifficultyFilter] = useState<string>('all');
   const [showPremiumOnly, setShowPremiumOnly] = useState(false);
 
-  const filtered = astrocytes.filter((a) => {
+  const filtered = astuces.filter((a) => {
     if (searchQuery && !a.title.toLowerCase().includes(searchQuery.toLowerCase()) && !a.description.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     if (gameFilter !== 'all' && a.gameId !== gameFilter) return false;
     if (difficultyFilter !== 'all' && a.difficulty !== difficultyFilter) return false;
@@ -164,10 +164,12 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
                 }`}
               >
                 {/* Lock Badge - All tips locked */}
-                <div className="absolute top-3 right-3 z-10 flex items-center gap-1 px-2 py-1 bg-gray-800/90 border border-gray-700 rounded-md text-xs font-bold text-gray-300">
-                  <Lock className="w-3 h-3" />
-                  VERROUILLÉ
-                </div>
+                {astuce.isPremium && (
+                  <div className="absolute top-3 right-3 z-10 flex items-center gap-1 px-2 py-1 bg-gray-800/90 border border-gray-700 rounded-md text-xs font-bold text-yellow-500">
+                    <Lock className="w-3 h-3" />
+                    PREMIUM
+                  </div>
+                )}
 
                 <div className="p-5">
                   {/* Game & Category */}
@@ -212,13 +214,22 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
                   </div>
 
                   {/* Download Button - All locked */}
-                  <button
-                    onClick={() => onNavigate('premium')}
-                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg font-semibold text-sm transition-all bg-gray-800/50 border border-gray-700 text-gray-400 hover:bg-red-600/20 hover:border-red-500/30 hover:text-red-400"
-                  >
-                    <Lock className="w-4 h-4" />
-                    Débloquer avec Premium
-                  </button>
+                  {astuce.isPremium ? (
+                    <button
+                      onClick={() => onNavigate('premium')}
+                      className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg font-semibold text-sm transition-all bg-yellow-600/10 border border-yellow-500/30 text-yellow-500 hover:bg-yellow-500/20"
+                    >
+                      <Lock className="w-4 h-4" />
+                      Débloquer avec Premium
+                    </button>
+                  ) : (
+                    <button
+                      className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg font-semibold text-sm transition-all bg-red-600 hover:bg-red-500 text-white"
+                    >
+                      <Download className="w-4 h-4" />
+                      Télécharger Gratuitement
+                    </button>
+                  )}
                 </div>
               </div>
             );
