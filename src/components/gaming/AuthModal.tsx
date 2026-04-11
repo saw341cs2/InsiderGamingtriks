@@ -44,7 +44,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           setLoading(false);
           return;
         }
-        await signUp(email, password);
+        await signUp(email, password, username);
       } else {
         await signIn(email, password);
       }
@@ -62,6 +62,13 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const toggleMode = () => {
+    setMode(mode === 'signin' ? 'signup' : 'signin');
+    // Réinitialiser les champs spécifiques à l'inscription
+    setUsername('');
+    setConfirmPassword('');
   };
 
   return (
@@ -158,7 +165,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
                 <input
-                  type={showPassword ? "text" : "password"}
+                type={showPassword ? "text" : "password"}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
@@ -181,7 +188,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           <div className="text-center pt-2">
             <button
               type="button"
-              onClick={() => setMode(mode === 'signin' ? 'signup' : 'signin')}
+              onClick={toggleMode}
               className="text-gray-400 hover:text-red-500 transition-colors text-sm"
             >
               {mode === 'signin' 
