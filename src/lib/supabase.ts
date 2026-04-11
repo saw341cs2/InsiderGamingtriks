@@ -1,27 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 
-type AuthChangeCallback = (event: string, session: unknown) => void;
+const supabaseUrl = 'https://tpyvpfjertxklktxlmux.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRweXZwZmplcnR4a2xrdHhsbXV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU4OTYzOTAsImV4cCI6MjA5MTQ3MjM5MH0.J6IWSYrmH2IJ8Hrjd5hgICqGiM39lwgOz8uZE8sKyGw';
 
-interface AuthOptions {
-  email?: string;
-  password?: string;
-  options?: Record<string, unknown>;
-}
-
-const supabase = {
-  auth: {
-    getSession: () => Promise.resolve({ data: { session: null }, error: null }),
-    onAuthStateChange: (callback: AuthChangeCallback) => ({ 
-      data: { 
-        subscription: { 
-          unsubscribe: () => {} 
-        } 
-      } 
-    }),
-    signUp: (_options: AuthOptions) => Promise.resolve({ data: null, error: null }),
-    signInWithPassword: (_options: AuthOptions) => Promise.resolve({ data: null, error: null }),
-    signOut: () => Promise.resolve({ error: null }),
-  },
-};
-
-export { supabase };
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
