@@ -174,8 +174,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     
     await sendWelcomeEmail(email, username);
     
-    const { data: userData } = await supabase.auth.getUser();
-    setUser(userData?.user || null);
+    const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    
+    if (signInError) {
+      const { data: userData } = await supabase.auth.getUser();
+      setUser(userData?.user || null);
+    } else {
+      setUser(signInData.user);
+    }
     
     toast({
       title: "Bienvenue " + username + " ! 🎮",
