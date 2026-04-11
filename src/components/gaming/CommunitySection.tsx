@@ -16,6 +16,7 @@ interface ForumPost {
 
 const forumPosts: ForumPost[] = [
   { id: 0, title: '🎮 FAQ – Insider Gaming Tricks', author: 'InsiderHack', avatar: 'IH', game: 'Général', replies: 0, views: 0, lastActivity: 'Il y a 1j', pinned: true, category: 'Événements' },
+  { id: 1, title: '📢 Bienvenue sur le forum communautaire !', author: 'InsiderHack', avatar: 'IH', game: 'Général', replies: 12, views: 456, lastActivity: 'Il y a 2h', pinned: false, category: 'Discussion' },
 ];
 
 const categoryColors: Record<string, string> = {
