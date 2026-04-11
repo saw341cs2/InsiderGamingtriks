@@ -16,14 +16,6 @@ interface ForumPost {
 
 const forumPosts: ForumPost[] = [
   { id: 0, title: '🎮 FAQ – Insider Gaming Tricks', author: 'InsiderHack', avatar: 'IH', game: 'Général', replies: 0, views: 0, lastActivity: 'Il y a 1j', pinned: true, category: 'Événements' },
-  { id: 1, title: 'Meilleure config PC pour CS2 en 2026 ?', author: 'FragMaster', avatar: 'FM', game: 'CS2', replies: 47, views: 1200, lastActivity: 'Il y a 2h', pinned: true, category: 'Hardware' },
-  { id: 2, title: 'Tournoi communautaire #3 - Inscriptions', author: 'InsiderHack', avatar: 'IH', game: 'Général', replies: 89, views: 3400, lastActivity: 'Il y a 3h', pinned: true, category: 'Événements' },
-  { id: 3, title: 'Warzone : Quelle est votre classe préférée ?', author: 'SniperElite', avatar: 'SE', game: 'CoD', replies: 34, views: 890, lastActivity: 'Il y a 5h', pinned: false, category: 'Discussion' },
-  { id: 4, title: 'Bug smoke sur Inferno - quelqu\'un a trouvé ?', author: 'TacticalPro', avatar: 'TP', game: 'CS2', replies: 12, views: 340, lastActivity: 'Il y a 8h', pinned: false, category: 'Bugs' },
-  { id: 5, title: 'Battlefield : Les tanks sont-ils trop OP ?', author: 'BFVeteran', avatar: 'BV', game: 'BF', replies: 56, views: 1500, lastActivity: 'Il y a 12h', pinned: false, category: 'Discussion' },
-  { id: 6, title: 'Cherche team pour ranked CS2 (Faceit lvl 7+)', author: 'AimBot99', avatar: 'AB', game: 'CS2', replies: 23, views: 670, lastActivity: 'Il y a 1j', pinned: false, category: 'Recrutement' },
-  { id: 7, title: 'Guide : Optimiser ses FPS sur Warzone', author: 'TechGuru', avatar: 'TG', game: 'CoD', replies: 41, views: 2100, lastActivity: 'Il y a 1j', pinned: false, category: 'Guides' },
-  { id: 8, title: 'Retour sur le Major CS2 - Analyse des finales', author: 'EsportFan', avatar: 'EF', game: 'CS2', replies: 67, views: 2800, lastActivity: 'Il y a 2j', pinned: false, category: 'Esport' },
 ];
 
 const categoryColors: Record<string, string> = {
