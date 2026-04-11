@@ -28,10 +28,17 @@ jobs:
           NEWSDATA_API_KEY: ${{ secrets.NEWSDATA_API_KEY }}
         run: node scripts/fetch-news.cjs
 
+      - name: Copy news to docs
+        run: cp public/news.json docs/news.json
+
       - name: Commit and push
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add public/news.json
+          git add public/news.json docs/news.json
           git commit -m "Daily gaming news - $(date '+%Y-%m-%d')" || echo "No changes to commit"
           git push || echo "Push failed"
+          git checkout docs
+          git pull origin main
+          git checkout main -- docs && git commit -m "Update docs folder with new news" --allow-empty || echo "No docs changes"
+          git push || echo "Docs push failed"
