@@ -31,9 +31,10 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate, onOpenProfil
           {/* Logo */}
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => onNavigate('accueil')}>
             <Crosshair className="w-7 h-7 text-red-500" />
-            <span className="text-white font-bold text-lg tracking-wider">
-              #Insider<span className="text-red-500">Gaming Tricks</span>
-            </span>
+            <div className="flex items-center">
+              <span className="text-white font-bold text-xl tracking-wide">#InsiderGaming</span>
+              <span className="text-red-500 font-bold text-xl tracking-wide ml-1">Tricks</span>
+            </div>
           </div>
 
           {/* Desktop Nav */}

@@ -9,6 +9,8 @@ interface ProfileData {
   preferredMaps: string;
   favoriteWeapon: string;
   role: string;
+  forumRole: string;
+  discordRole: string;
   bio: string;
 }
 
@@ -46,6 +48,9 @@ const roleOptions: Record<string, string[]> = {
   'other': ['Principal', 'Support', 'Leader', 'Flex'],
 };
 
+const forumRoleOptions = ['Membre', 'Vétéran', 'Modérateur', 'Administrateur', 'Fondateur'];
+const discordRoleOptions = ['Membre', 'Partner', 'Modérateur', 'Admin', 'Owner'];
+
 const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
   const { user } = useAppContext();
   const [isEditing, setIsEditing] = useState(false);
@@ -56,6 +61,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
     preferredMaps: '',
     favoriteWeapon: '',
     role: '',
+    forumRole: '',
+    discordRole: '',
     bio: '',
   });
 
@@ -67,6 +74,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
         preferredMaps: user.user_metadata.preferredMaps || '',
         favoriteWeapon: user.user_metadata.favoriteWeapon || '',
         role: user.user_metadata.role || '',
+        forumRole: user.user_metadata.forumRole || '',
+        discordRole: user.user_metadata.discordRole || '',
         bio: user.user_metadata.bio || '',
       });
     }
@@ -82,6 +91,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
           preferredMaps: profile.preferredMaps,
           favoriteWeapon: profile.favoriteWeapon,
           role: profile.role,
+          forumRole: profile.forumRole,
+          discordRole: profile.discordRole,
           bio: profile.bio,
         }
       });
@@ -166,10 +177,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8">
           <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center">
             <Gamepad2 className="w-6 h-6 text-red-500 mx-auto mb-2" />
-            <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Jeu Principal</p>
+            <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Jeu</p>
             <p className="text-white font-bold text-sm">{gameOptions.find(g => g.value === profile.game)?.label || 'Non défini'}</p>
           </div>
           <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center">
@@ -179,12 +190,22 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
           </div>
           <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center">
             <Shield className="w-6 h-6 text-blue-500 mx-auto mb-2" />
-            <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Rôle</p>
+            <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Rôle Jeu</p>
             <p className="text-white font-bold text-sm">{profile.role || 'Non défini'}</p>
           </div>
           <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center">
+            <Shield className="w-6 h-6 text-green-500 mx-auto mb-2" />
+            <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Forum</p>
+            <p className="text-white font-bold text-sm">{profile.forumRole || 'Non défini'}</p>
+          </div>
+          <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center">
+            <Shield className="w-6 h-6 text-indigo-500 mx-auto mb-2" />
+            <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Discord</p>
+            <p className="text-white font-bold text-sm">{profile.discordRole || 'Non défini'}</p>
+          </div>
+          <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center">
             <Crosshair className="w-6 h-6 text-purple-500 mx-auto mb-2" />
-            <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Arme Favorite</p>
+            <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Arme</p>
             <p className="text-white font-bold text-sm">{profile.favoriteWeapon || 'Non défini'}</p>
           </div>
         </div>
@@ -257,6 +278,50 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
                 </select>
               ) : (
                 <p className="text-white py-3">{profile.role || 'Non défini'}</p>
+              )}
+            </div>
+
+            {/* Forum Role */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                <Shield className="w-4 h-4 inline mr-2" />
+                Rôle Forum
+              </label>
+              {isEditing ? (
+                <select
+                  value={profile.forumRole}
+                  onChange={(e) => setProfile({ ...profile, forumRole: e.target.value })}
+                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-red-500"
+                >
+                  <option value="">Sélectionne un rôle</option>
+                  {forumRoleOptions.map((role) => (
+                    <option key={role} value={role}>{role}</option>
+                  ))}
+                </select>
+              ) : (
+                <p className="text-white py-3">{profile.forumRole || 'Non défini'}</p>
+              )}
+            </div>
+
+            {/* Discord Role */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">
+                <Shield className="w-4 h-4 inline mr-2" />
+                Rôle Discord
+              </label>
+              {isEditing ? (
+                <select
+                  value={profile.discordRole}
+                  onChange={(e) => setProfile({ ...profile, discordRole: e.target.value })}
+                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-red-500"
+                >
+                  <option value="">Sélectionne un rôle</option>
+                  {discordRoleOptions.map((role) => (
+                    <option key={role} value={role}>{role}</option>
+                  ))}
+                </select>
+              ) : (
+                <p className="text-white py-3">{profile.discordRole || 'Non défini'}</p>
               )}
             </div>
 

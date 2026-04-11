@@ -31,8 +31,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
               <Crosshair className="w-16 h-16 text-red-500" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-white mb-4">
-            #Insider<span className="text-red-500">Gaming Tricks</span>
+          <h1 className="text-3xl font-bold text-white mb-4 whitespace-nowrap">
+            #InsiderGamingTricks
           </h1>
           <p className="text-gray-400 mb-8">
             Ce contenu est réservé aux membres inscrits.
