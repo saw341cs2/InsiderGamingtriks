@@ -16,7 +16,7 @@ const App = () => {
   };
 
   return (
-    <ThemeProvider defaultTheme="light">
+    <ThemeProvider defaultTheme="dark" attribute="class" enableSystem={false}>
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <Toaster />

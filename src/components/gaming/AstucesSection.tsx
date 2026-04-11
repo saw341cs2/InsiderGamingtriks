@@ -65,7 +65,7 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
   const [difficultyFilter, setDifficultyFilter] = useState<string>('all');
   const [showPremiumOnly, setShowPremiumOnly] = useState(false);
 
-  const filtered = astrocytes.filter((a) => {
+  const filtered =astuces.filter((a) => {
     if (searchQuery && !a.title.toLowerCase().includes(searchQuery.toLowerCase()) && !a.description.toLowerCase().includes(searchQuery.toLowerCase())) return false;
     if (gameFilter !== 'all' && a.gameId !== gameFilter) return false;
     if (difficultyFilter !== 'all' && a.difficulty !== difficultyFilter) return false;
