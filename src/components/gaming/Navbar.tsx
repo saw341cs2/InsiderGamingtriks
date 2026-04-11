@@ -6,6 +6,7 @@ import AuthModal from './AuthModal';
 interface NavbarProps {
   activeSection: string;
   onNavigate: (section: string) => void;
+  onOpenProfile?: () => void;
 }
 
 const navItems = [
@@ -16,7 +17,7 @@ const navItems = [
   { id: 'premium', label: 'Premium' },
 ];
 
-const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate }) => {
+const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate, onOpenProfile }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const { user, signOut, loading } = useAppContext();
@@ -76,12 +77,15 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate }) => {
             {!loading && (
               user ? (
                 <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-2 px-3 py-2 bg-gray-800 rounded-lg">
+                  <button 
+                    onClick={onOpenProfile}
+                    className="flex items-center gap-2 px-3 py-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors"
+                  >
                     <User className="w-4 h-4 text-red-500" />
                     <span className="text-sm text-gray-300 max-w-[120px] truncate">
-                      {user.email}
+                      {user.user_metadata?.username || user.email}
                     </span>
-                  </div>
+                  </button>
                   <button
                     onClick={signOut}
                     className="p-2 text-gray-400 hover:text-red-500 transition-colors"

@@ -11,12 +11,19 @@ import PremiumSection from '@/components/gaming/PremiumSection';
 import TestimonialsSection from '@/components/gaming/TestimonialsSection';
 import WeaponGuidesSection from '@/components/gaming/WeaponGuidesSection';
 import Footer from '@/components/gaming/Footer';
+import ProfilePage from '@/pages/Profile';
 
 const Index: React.FC = () => {
   const [activeSection, setActiveSection] = useState('accueil');
+  const [showProfile, setShowProfile] = useState(false);
   
   const handleNavigate = (section: string) => {
+    if (section === 'profile') {
+      setShowProfile(true);
+      return;
+    }
     setActiveSection(section);
+    setShowProfile(false);
     const element = document.getElementById(section);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -31,29 +38,33 @@ const Index: React.FC = () => {
 
   return (
     <AppProvider>
-      <Navbar activeSection={activeSection} onNavigate={handleNavigate} />
+      <Navbar activeSection={activeSection} onNavigate={handleNavigate} onOpenProfile={() => setShowProfile(true)} />
       <main className="min-h-screen bg-black pt-16">
-        <div className="space-y-12 md:space-y-16 pb-20">
-          <div id="news">
+        {showProfile ? (
+          <ProfilePage />
+        ) : (
+          <div className="space-y-12 md:space-y-16 pb-20">
+            <div id="news">
+              <NewsSection />
+            </div>
+            <div id="astuces">
+              <AstucesSection onNavigate={handleNavigate} />
+            </div>
+            <div id="videos">
+              <VideosSection />
+            </div>
+            <div id="communaute">
+              <CommunitySection />
+            </div>
+            <div id="premium">
+              <PremiumSection />
+            </div>
+            <TestimonialsSection />
+            <WeaponGuidesSection />
+            <GamesSection onSelectGame={handleSelectGame} />
             <NewsSection />
           </div>
-          <div id="astuces">
-            <AstucesSection onNavigate={handleNavigate} />
-          </div>
-          <div id="videos">
-            <VideosSection />
-          </div>
-          <div id="communaute">
-            <CommunitySection />
-          </div>
-          <div id="premium">
-            <PremiumSection />
-          </div>
-          <TestimonialsSection />
-          <WeaponGuidesSection />
-          <GamesSection onSelectGame={handleSelectGame} />
-          <NewsSection />
-        </div>
+        )}
       </main>
       <Footer onNavigate={handleNavigate} />
     </AppProvider>

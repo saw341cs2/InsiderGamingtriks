@@ -65,7 +65,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           'Authorization': 'Bearer re_b4CbPPMu_JA269CNTX1pHSbE1PtV1T9mX',
         },
         body: JSON.stringify({
-          from: 'Insider Gaming Tricks <contact@insidergamingtricks.com>',
+          from: 'Insider Gaming Tricks <onboarding@resend.dev>',
           to: email,
           subject: '🎮 Bienvenue sur Insider Gaming Tricks !',
           html: `

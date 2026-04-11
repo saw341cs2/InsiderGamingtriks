@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
+import { X, Mail, Lock, User, Eye, EyeOff, Calendar, Gamepad2 } from 'lucide-react';
 import { useAppContext } from '@/contexts/AppContext';
 import { toast } from '@/components/ui/use-toast';
 
@@ -14,9 +14,21 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [age, setAge] = useState('');
+  const [game, setGame] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const { signUp, signIn } = useAppContext();
+
+  const gameOptions = [
+    { value: 'counter-strike', label: 'Counter-Strike 2' },
+    { value: 'call-of-duty', label: 'Call of Duty' },
+    { value: 'battlefield', label: 'Battlefield' },
+    { value: 'valorant', label: 'Valorant' },
+    { value: 'apex-legends', label: 'Apex Legends' },
+    { value: 'fortnite', label: 'Fortnite' },
+    { value: 'other', label: 'Autre' },
+  ];
 
   if (!isOpen) return null;
 
@@ -44,7 +56,16 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           setLoading(false);
           return;
         }
-        await signUp(email, password, username);
+        if (!username || username.length < 3) {
+          toast({
+            title: "Erreur",
+            description: "Le pseudo doit contenir au moins 3 caractères",
+            variant: "destructive",
+          });
+          setLoading(false);
+          return;
+        }
+        await signUp(email, password, username, age ? parseInt(age) : undefined, game);
       } else {
         await signIn(email, password);
       }
@@ -66,9 +87,10 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
 
   const toggleMode = () => {
     setMode(mode === 'signin' ? 'signup' : 'signin');
-    // Réinitialiser les champs spécifiques à l'inscription
     setUsername('');
     setConfirmPassword('');
+    setAge('');
+    setGame('');
   };
 
   return (
@@ -111,6 +133,47 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 className="w-full pl-11 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-colors"
                 placeholder="Ton pseudo"
               />
+            </div>
+          </div>
+          )}
+
+          {mode === 'signup' && (
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              Age
+            </label>
+            <div className="relative">
+              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+              <input
+                type="number"
+                value={age}
+                onChange={(e) => setAge(e.target.value)}
+                min="13"
+                max="99"
+                className="w-full pl-11 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-colors"
+                placeholder="Ton age"
+              />
+            </div>
+          </div>
+          )}
+
+          {mode === 'signup' && (
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">
+              À quel jeu joues-tu ?
+            </label>
+            <div className="relative">
+              <Gamepad2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
+              <select
+                value={game}
+                onChange={(e) => setGame(e.target.value)}
+                className="w-full pl-11 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-colors appearance-none cursor-pointer"
+              >
+                <option value="" className="bg-gray-800">Sélectionne un jeu</option>
+                {gameOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value} className="bg-gray-800">{opt.label}</option>
+                ))}
+              </select>
             </div>
           </div>
           )}
