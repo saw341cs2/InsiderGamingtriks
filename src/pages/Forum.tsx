@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { Hash, MessageCircle, Users, Shield, HelpCircle, Tv, Trophy, Settings, Plus, Search, ChevronDown } from 'lucide-react';
+import { Hash, MessageCircle, Users, Shield, HelpCircle, Tv, Trophy, Settings, Plus, Search, ChevronDown, Gamepad2, Star, Send } from 'lucide-react';
+import { useAppContext } from '@/contexts/AppContext';
+
+interface ForumSection {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+}
 
 interface ForumCategory {
   id: string;
@@ -11,14 +19,19 @@ interface ForumCategory {
   sections: ForumSection[];
 }
 
-interface ForumSection {
-  id: string;
-  name: string;
-  description: string;
-  icon: string;
-}
-
 const forumCategories: ForumCategory[] = [
+  {
+    id: 'bienvenue',
+    name: '🎮 Bienvenue & Présentations',
+    icon: <Users className="w-5 h-5" />,
+    color: 'bg-green-500',
+    topics: 234,
+    posts: 1847,
+    sections: [
+      { id: 'bienvenue', name: 'Charte du serveur', description: 'Les règles à respecter', icon: '📜' },
+      { id: 'presentations', name: 'Présentations', description: 'Présente-toi pour obtenir le rôle Novice!', icon: '👋' },
+    ]
+  },
   {
     id: 'annonces',
     name: '📢 Annonces',
@@ -27,72 +40,25 @@ const forumCategories: ForumCategory[] = [
     topics: 5,
     posts: 128,
     sections: [
-      { id: 'bienvenue', name: 'Bienvenue sur le forum', description: 'Presentation et regles', icon: '👋' },
-      { id: 'actus', name: 'Annonces importantes', description: 'Regles, mises a jour', icon: '📌' },
+      { id: 'actus', name: 'Annonces importantes', description: 'Règles, mises à jour', icon: '📌' },
       { id: 'sondages', name: 'Sondages en cours', description: 'Votez et donnez votre avis', icon: '📊' },
     ]
   },
   {
-    id: 'presentations',
-    name: '👋 Présentations',
-    icon: <Users className="w-5 h-5" />,
-    color: 'bg-green-500',
-    topics: 234,
-    posts: 1847,
-    sections: [
-      { id: 'presentations', name: 'Presente-toi ici !', description: 'Fais connaissance avec la communaute', icon: '🎮' },
-      { id: 'rejoindre', name: 'Comment rejoindre la communaute', description: 'Guide pour integrer le serveur', icon: '🚪' },
-    ]
-  },
-  {
-    id: 'cs2',
-    name: '🔫 Counter-Strike 2',
-    icon: <Shield className="w-5 h-5" />,
-    color: 'bg-yellow-500',
+    id: 'jeux',
+    name: '🎯 Coins Jeux',
+    icon: <Gamepad2 className="w-5 h-5" />,
+    color: 'bg-purple-500',
     topics: 567,
     posts: 8934,
     sections: [
-      { id: 'cs2-general', name: 'Discussions generales', description: 'Tout sur CS2', icon: '💬' },
-      { id: 'cs2-strategies', name: 'Strategies et tactiques', description: 'Smokes, flashes, executes', icon: '🧠' },
-      { id: 'cs2-config', name: 'Configurations et optimisations', description: 'Settings, binds, FPS', icon: '⚙️' },
-      { id: 'cs2-team', name: 'Recherche de coequipiers', description: 'Trouve ton duo ou ta team', icon: '👥' },
-    ]
-  },
-  {
-    id: 'cod',
-    name: '🎯 Call of Duty',
-    icon: <Trophy className="w-5 h-5" />,
-    color: 'bg-blue-500',
-    topics: 342,
-    posts: 4521,
-    sections: [
-      { id: 'cod-news', name: 'Actualites et mises a jour', description: 'Nouveautes du jeu', icon: '📰' },
-      { id: 'cod-classes', name: 'Equipements et classes', description: 'Loadouts preferes', icon: '🎒' },
-      { id: 'cod-mp', name: 'Multijoueur / Zone de guerre', description: 'Modes de jeu', icon: '🗺️' },
-    ]
-  },
-  {
-    id: 'bf',
-    name: '⚔️ Champ de bataille',
-    icon: <Shield className="w-5 h-5" />,
-    color: 'bg-orange-500',
-    topics: 189,
-    posts: 2341,
-    sections: [
-      { id: 'bf-maps', name: 'Cartes et modes', description: 'Strategies par map', icon: '🗺️' },
-      { id: 'bf-classes', name: 'Classes et vehicules', description: 'Builds et compositions', icon: '🚛' },
-      { id: 'bf-events', name: 'Evenements en direct', description: 'Tournois et competitions', icon: '🏆' },
-    ]
-  },
-  {
-    id: 'autres',
-    name: '🎮 Autres jeux',
-    icon: <Tv className="w-5 h-5" />,
-    color: 'bg-purple-500',
-    topics: 156,
-    posts: 987,
-    sections: [
-      { id: 'autres-libre', name: 'Section libre', description: 'Pour tous les autres jeux', icon: '🎲' },
+      { id: 'cs2', name: 'Counter-Strike 2', description: 'Stratégies, configs, tips', icon: '🔫' },
+      { id: 'cod', name: 'Call of Duty', description: 'Loadouts, classes, tactiques', icon: '🎯' },
+      { id: 'bf', name: 'Battlefield', description: 'Maps, véhicules, classes', icon: '⚔️' },
+      { id: 'valorant', name: 'Valorant', description: 'Agents, stratégies', icon: '🎰' },
+      { id: 'apex', name: 'Apex Legends', description: 'Legends, loadouts', icon: '🦊' },
+      { id: 'fortnite', name: 'Fortnite', description: 'Builds, strategies', icon: '🏗️' },
+      { id: 'autres', name: 'Autres Jeux', description: 'Tous les autres jeux', icon: '🎲' },
     ]
   },
   {
@@ -103,9 +69,9 @@ const forumCategories: ForumCategory[] = [
     topics: 423,
     posts: 5678,
     sections: [
-      { id: 'hors-sujet', name: 'Hors-sujet', description: 'Discussions generales', icon: '☕' },
-      { id: 'videos', name: 'Videos et diffusions', description: 'Partage tes clips et streams', icon: '🎬' },
-      { id: 'tournois', name: 'Tournois et evenements', description: 'Competitions communautaires', icon: '🎪' },
+      { id: 'hors-sujet', name: 'Hors-sujet', description: 'Discussions générales', icon: '☕' },
+      { id: 'videos', name: 'Vidéos et diffusions', description: 'Partage tes clips et streams', icon: '🎬' },
+      { id: 'tournois', name: 'Tournois et événements', description: 'Compétitions communautaires', icon: '🎪' },
     ]
   },
   {
@@ -116,18 +82,33 @@ const forumCategories: ForumCategory[] = [
     topics: 89,
     posts: 432,
     sections: [
-      { id: 'aide', name: 'Techniques de resolution', description: 'Problemes techniques', icon: '🔧' },
-      { id: 'suggestions', name: 'Suggestions pour le forum', description: 'Ameliorations', icon: '💡' },
+      { id: 'aide', name: 'Technique', description: 'Problèmes techniques', icon: '🔧' },
+      { id: 'suggestions', name: 'Suggestions', description: 'Améliorations du forum', icon: '💡' },
     ]
   },
 ];
 
 const ForumPage: React.FC = () => {
-  const [expandedCategory, setExpandedCategory] = useState<string | null>('annonces');
+  const { user } = useAppContext();
+  const [expandedCategory, setExpandedCategory] = useState<string | null>('bienvenue');
   const [searchQuery, setSearchQuery] = useState('');
+  const [showPresentation, setShowPresentation] = useState(false);
+  const [presentation, setPresentation] = useState({
+    pseudo: '',
+    jeu: '',
+    niveau: '',
+    pourquoi: ''
+  });
 
   const toggleCategory = (id: string) => {
     setExpandedCategory(expandedCategory === id ? null : id);
+  };
+
+  const handleSubmitPresentation = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!presentation.pseudo || !presentation.pourquoi) return;
+    setShowPresentation(false);
+    alert('Ta présentation a été envoyée! Tu as maintenant le rôle Novice!');
   };
 
   return (
@@ -142,6 +123,107 @@ const ForumPage: React.FC = () => {
             Rejoins les discussions, partage tes tips et connecte avec d'autres joueurs !
           </p>
         </div>
+
+        {/* Nouveau membre - Présentation obligatoire */}
+        {user && (
+          <div className="bg-gradient-to-r from-green-900/30 to-blue-900/30 border border-green-500/30 rounded-xl p-6 mb-8">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+                  <Star className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-white text-lg">Bienvenue {user.user_metadata?.username || 'novice'}!</h3>
+                  <p className="text-gray-400">Présente-toi pour obtenir le rôle <span className="text-green-400 font-bold">Novice</span></p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowPresentation(true)}
+                className="px-6 py-3 bg-green-600 hover:bg-green-500 text-white font-bold rounded-lg transition-colors"
+              >
+                Se présenter
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Modal de présentation */}
+        {showPresentation && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-black/70" onClick={() => setShowPresentation(false)} />
+            <div className="relative bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-md w-full">
+              <h2 className="text-2xl font-bold text-white mb-4">🎮 Présentation</h2>
+              <p className="text-gray-400 mb-6">Présente-toi pour obtenir le rôle Novice!</p>
+              
+              <form onSubmit={handleSubmitPresentation} className="space-y-4">
+                <div>
+                  <label className="block text-sm text-gray-400 mb-1">Ton pseudo en jeu *</label>
+                  <input
+                    type="text"
+                    value={presentation.pseudo}
+                    onChange={(e) => setPresentation({...presentation, pseudo: e.target.value})}
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white"
+                    placeholder="Ex: FaB34"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-400 mb-1">Jeu principal</label>
+                  <select
+                    value={presentation.jeu}
+                    onChange={(e) => setPresentation({...presentation, jeu: e.target.value})}
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white"
+                  >
+                    <option value="">Sélectionne un jeu</option>
+                    <option value="cs2">Counter-Strike 2</option>
+                    <option value="cod">Call of Duty</option>
+                    <option value="valorant">Valorant</option>
+                    <option value="apex">Apex Legends</option>
+                    <option value="fortnite">Fortnite</option>
+                    <option value="autres">Autre</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-400 mb-1">Ton niveau/rang</label>
+                  <input
+                    type="text"
+                    value={presentation.niveau}
+                    onChange={(e) => setPresentation({...presentation, niveau: e.target.value})}
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white"
+                    placeholder="Ex: Global Elite, Diamond..."
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm text-gray-400 mb-1">Pourquoi tu joins la communauté? *</label>
+                  <textarea
+                    value={presentation.pourquoi}
+                    onChange={(e) => setPresentation({...presentation, pourquoi: e.target.value})}
+                    className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white"
+                    rows={3}
+                    placeholder="Ex: Apprendre des tricks, trouver des coequipiers..."
+                    required
+                  />
+                </div>
+                <div className="flex gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setShowPresentation(false)}
+                    className="flex-1 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg"
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 py-2 bg-green-600 hover:bg-green-500 text-white font-bold rounded-lg flex items-center justify-center gap-2"
+                  >
+                    <Send className="w-4 h-4" />
+                    Envoyer
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
 
         {/* Search */}
         <div className="max-w-2xl mx-auto mb-8">
@@ -175,7 +257,6 @@ const ForumPage: React.FC = () => {
               key={category.id}
               className="bg-gray-900/50 border border-gray-800 rounded-xl overflow-hidden"
             >
-              {/* Category Header */}
               <button
                 onClick={() => toggleCategory(category.id)}
                 className="w-full flex items-center justify-between p-4 hover:bg-gray-800/50 transition-colors"
@@ -197,7 +278,6 @@ const ForumPage: React.FC = () => {
                 </div>
               </button>
 
-              {/* Sections */}
               {expandedCategory === category.id && (
                 <div className="border-t border-gray-800 bg-gray-900/30">
                   {category.sections.map((section, index) => (
