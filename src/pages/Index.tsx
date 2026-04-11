@@ -1,5 +1,6 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { AppProvider } from '@/contexts/AppContext';
 import Navbar from '@/components/gaming/Navbar';
 import AstucesSection from '@/components/gaming/AstucesSection';
@@ -15,9 +16,16 @@ import ProfilePage from '@/pages/Profile';
 import ForumPage from '@/pages/Forum';
 
 const Index: React.FC = () => {
+  const [searchParams] = useSearchParams();
   const [activeSection, setActiveSection] = useState('accueil');
   const [showProfile, setShowProfile] = useState(false);
   const [showForum, setShowForum] = useState(false);
+  
+  useEffect(() => {
+    if (searchParams.get('view') === 'profile') {
+      setShowProfile(true);
+    }
+  }, [searchParams]);
   
   const handleNavigate = (section: string) => {
     if (section === 'profile') {
