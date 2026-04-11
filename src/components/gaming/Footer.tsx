@@ -152,7 +152,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               {[
                 { label: 'Guides Gratuits', action: () => onNavigate('astuces') },
                 { label: 'Contenu Premium', action: () => onNavigate('premium') },
-                { label: 'Forum', action: () => onNavigate('communaute') },
+                { label: 'Forum', action: () => onNavigate('forum') },
                 { label: 'Discord', action: () => {} },
                 { label: 'YouTube', action: () => window.open('https://www.youtube.com/@InsiderHackGaming', '_blank') },
               ].map((item) => (
