@@ -163,15 +163,27 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
                   astuce.isPremium ? 'border-yellow-500/20 hover:border-yellow-500/40' : 'border-gray-800 hover:border-red-500/30'
                 }`}
               >
-                {/* Lock Badge - All tips locked */}
-                {astuce.isPremium && (
-                  <div className="absolute top-3 right-3 z-10 flex items-center gap-1 px-2 py-1 bg-gray-800/90 border border-gray-700 rounded-md text-xs font-bold text-yellow-500">
-                    <Lock className="w-3 h-3" />
-                    PREMIUM
+                {/* Cadenas - Toutes les astuces sont verrouillées */}
+                <div className="absolute inset-0 z-20 bg-gray-900/70 backdrop-blur-[1px] flex items-center justify-center rounded-xl">
+                  <div className="flex flex-col items-center gap-2">
+                    <Lock className="w-10 h-10 text-gray-400" />
+                    <span className="text-gray-300 text-sm font-semibold">Contenu verrouillé</span>
+                    <button
+                      onClick={() => onNavigate('premium')}
+                      className="mt-2 px-4 py-2 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-lg transition-colors"
+                    >
+                      Débloquer avec Premium
+                    </button>
                   </div>
-                )}
+                </div>
 
-                <div className="p-5">
+                {/* Lock Badge */}
+                <div className="absolute top-3 right-3 z-30 flex items-center gap-1 px-2 py-1 bg-gray-800/90 border border-gray-700 rounded-md text-xs font-bold text-yellow-500">
+                  <Lock className="w-3 h-3" />
+                  PREMIUM
+                </div>
+
+                <div className="p-5 opacity-50">
                   {/* Game & Category */}
                   <div className="flex items-center gap-2 mb-3">
                     <GameIcon className={`w-4 h-4 ${gameColors[astuce.game]}`} />
@@ -181,7 +193,7 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-white font-bold text-lg mb-2 group-hover:text-red-400 transition-colors">
+                  <h3 className="text-white font-bold text-lg mb-2">
                     {astuce.title}
                   </h3>
 
@@ -212,24 +224,6 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
                       {astuce.rating}
                     </span>
                   </div>
-
-                  {/* Download Button - All locked */}
-                  {astuce.isPremium ? (
-                    <button
-                      onClick={() => onNavigate('premium')}
-                      className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg font-semibold text-sm transition-all bg-yellow-600/10 border border-yellow-500/30 text-yellow-500 hover:bg-yellow-500/20"
-                    >
-                      <Lock className="w-4 h-4" />
-                      Débloquer avec Premium
-                    </button>
-                  ) : (
-                    <button
-                      className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg font-semibold text-sm transition-all bg-red-600 hover:bg-red-500 text-white"
-                    >
-                      <Download className="w-4 h-4" />
-                      Télécharger Gratuitement
-                    </button>
-                  )}
                 </div>
               </div>
             );
