@@ -1,6 +1,33 @@
 {
   "articles": [
     {
+      "title": "🎮 Amazon Luna : le service supprime les boutiques tierces, réduisant drastiquement les jeux disponibles",
+      "body": "En septembre 2020, Amazon a lancé Luna, qui se voulait être la réponse de l’entreprise de Jeff Bezos à des services comme Xbox Cloud Gaming ou encore GeForce Now. Moins connu que ces deux derniers,...",
+      "url": "https://www.igen.fr/services/2026/04/amazon-luna-le-service-supprime-les-boutiques-tierces-reduisant-drastiquement-les-jeux-disponibles-155587",
+      "image": "https://cdn.mgig.fr/2026/04/mga-8157f6b1-w375-w1500-w750_accroche.jpg",
+      "dateTimePub": "2026-04-12T07:17:01.051Z",
+      "source": "InsiderGamingtriks",
+      "topic": "JEUX"
+    },
+    {
+      "title": "✨ Rodez. Fin de partie, le bar à jeux Level",
+      "body": "L’aventure aura duré un peu moins d’un an et demi. Au bas de la rue Béteille, le bar à jeux Level-up, bar rétro gaming où l’on peut retrouver des jeux de société, des jeux vidéo... #Actualites",
+      "url": "https://www.ladepeche.fr/2026/04/11/fin-de-partie-le-bar-a-jeux-level-up-ferme-ses-portes-13320715.php",
+      "image": "https://images.ladepeche.fr/api/v1/images/view/69d9c23eaa5d4803c508bc5a/hd/image.jpg?v=1",
+      "dateTimePub": "2026-04-12T07:17:01.052Z",
+      "source": "InsiderGamingtriks",
+      "topic": "JEUX"
+    },
+    {
+      "title": "🕹️ le jeu vidéo à l’honneur à l’Espace Europa",
+      "body": "Montigny-lès-Metz s’est transformée en véritable capitale du gaming. Compétitions e-sport, innovations technologiques et une bonne dose de ... #Actualites",
+      "url": "https://www.republicain-lorrain.fr/culture-loisirs/2026/04/11/montigny-gaming-show-le-jeu-video-a-l-honneur-a-l-espace-europa",
+      "image": "https://cdn-s-www.republicain-lorrain.fr/images/370190C6-456C-453E-8CFA-EAAF42F15DD2/FB1200/photo-1775923050.jpg",
+      "dateTimePub": "2026-04-12T07:17:01.052Z",
+      "source": "InsiderGamingtriks",
+      "topic": "JEUX"
+    },
+    {
       "title": "📢 Promo PC portable gamer : les MSI avec RTX 5060 et 5080 en baisse à la Fnac",
       "body": "En pleine tempête liée au prix des composants, MSI brade plusieurs de ses PC portables gaming. Cyborg, Crosshair et Vector profitent chacun d’une baisse #Actualites",
       "url": "https://www.frandroid.com/produits-android/ordinateurs/pc-portables/3056089_intel-core-ultra-9-et-rtx-5080-a-600-e-msi-brade-ses-pc-portables-gaming-haut-de-gamme",
@@ -26,34 +53,7 @@
       "dateTimePub": "2026-04-11T07:03:24.679Z",
       "source": "InsiderGamingtriks",
       "topic": "JEUX"
-    },
-    {
-      "title": "💥 Les équipes esport \" Call of Duty \" de Gentle Mates n’ont pas brillé à Birmingham",
-      "body": "Ce dimanche 29 mars, à Birmingham, les équipes esport de Call of Duty et Call of Duty: Warzone ont livré des performances loin de leur standard #JeuxVideo",
-      "url": "https://www.20minutes.fr/gaming/jeux_video/4215825-20260330-equipes-esport-call-of-duty-gentle-mates-brille-birmingham",
-      "image": "https://img.20mn.fr/fMkaiQ26T8ia0uafBIHVhSk/1444x920_l-equipe-call-of-duty-de-gentle-mates-a-termine-dans-le-top-6-du-major-de-birmingham",
-      "dateTimePub": "2026-04-10T07:44:39.056Z",
-      "source": "InsiderGamingtriks",
-      "topic": "FPS"
-    },
-    {
-      "title": "⚡ WoW Midnight : Liquid remporte le World First sur L'ura face à Echo",
-      "body": "La course pour vaincre en premier le boss final du nouveau raid de World of Warcraft sest achevée ce week-end au terme dun suspense irrespirable. Entre une phase secrète indétectable, des choix tac...",
-      "url": "https://www.numerama.com/pop-culture/2227475-quelque-chose-dexceptionnel-sest-passe-sur-world-of-warcraft-ce-week-end-on-vous-raconte-le-denouement-fou-de-la-course-au-world-first.html",
-      "image": "https://c0.lestechnophiles.com/www.numerama.com/wp-content/uploads/2026/04/world-first-liquid.jpg?resize=1600,900&key=2de01444&watermark",
-      "dateTimePub": "2026-04-10T07:44:39.057Z",
-      "source": "InsiderGamingtriks",
-      "topic": "COMPETITION"
-    },
-    {
-      "title": "🎮 99 euros seulement pour 16 Go de RAM DDR5 Kingston : le prix fou qui va changer votre PC de dimension",
-      "body": "La Kingston FURY Beast DDR5 en 16 Go à 5600 MT/s est disponible à 99,12 euros sur Amazon. De la DDR5 blanche, rapide, compatible XMP 3.0, avec correction d’erreurs intégrée. Pour un upgrade gaming,...",
-      "url": "https://www.lefigaro.fr/bons-plans/high-tech/99-euros-seulement-pour-16-go-de-ram-ddr5-kingston-le-prix-fou-qui-va-changer-votre-pc-de-dimension-20260407",
-      "image": "https://i.f1g.fr/media/cms/1200x630_crop/2026/04/07/dce484fea2222542f923becb6df01ea74eb3235506e6d6c9eccc87a73e54a097.jpg",
-      "dateTimePub": "2026-04-10T07:44:39.057Z",
-      "source": "InsiderGamingtriks",
-      "topic": "JEUX"
     }
   ],
-  "generatedAt": "2026-04-11T07:03:24.680Z"
+  "generatedAt": "2026-04-12T07:17:01.052Z"
 }
