@@ -1,29 +1,38 @@
 {
   "articles": [
     {
+      "title": "🕹️ Bon plan carte graphique : l'AMD Radeon RX 9070 XT baisse à 679 €",
+      "body": "Vous aviez prévu de vous faire une configuration gaming aux petits oignons pour les prochaines grosses sorties ? On a trouvé la carte graphique quil vous faut avec cette promo. Cette Radeon RX 9070...",
+      "url": "https://www.numerama.com/tech/2230485-la-carte-graphique-9070-xt-damd-est-a-un-prix-imbattable-sur-ce-site.html",
+      "image": "https://c0.lestechnophiles.com/www.numerama.com/wp-content/uploads/2026/02/9070-xt.jpg?resize=1600,900&key=f1093d89&watermark",
+      "dateTimePub": "2026-04-14T07:49:00.343Z",
+      "source": "InsiderGamingtriks",
+      "topic": "JEUX"
+    },
+    {
+      "title": "🕹️ Dédié à la culture pop et au gaming, le Geek Life Festival devient un jeu vidéo rétro",
+      "body": "Aux manettes du Geek Life Festival depuis 2019, Jean-Claude Camus et sa société JCK Production viennent de créer un jeu vidéo avec comme personnage principal Geeky, la mascotte du festival. Pour le...",
+      "url": "https://www.ouest-france.fr/gaming/jeux-video/dedie-a-la-culture-pop-et-au-gaming-le-geek-life-festival-devient-un-jeu-video-retro-e8da6972-2f66-11f1-a60d-252d5d935a46",
+      "image": "https://media.ouest-france.fr/v1/pictures/MjAyNjA0ZTNiOGJmMWUwYTllZTEzN2IyZmVhYzkwYmY4OTNkMzk?width=1260&height=708&focuspoint=50%2C49&cropresize=1&client_id=bpeditorial&sign=a36b33ae46230ab42b5370678822549d0914de82df54a8ed866794ef93fd4a84",
+      "dateTimePub": "2026-04-14T07:49:00.344Z",
+      "source": "InsiderGamingtriks",
+      "topic": "JEUX"
+    },
+    {
+      "title": "🕹️ Montigny-lès-Metz Nostalgie, découvertes et plaisir pour le Montigny Gaming Show",
+      "body": "La deuxième édition du Montigny Gaming Show s’est tenue ce week-end du 12 avril. Durant ces deux journées, plusieurs centaines de personnes se ... #Actualites",
+      "url": "https://www.republicain-lorrain.fr/culture-loisirs/2026/04/13/nostalgie-decouvertes-et-plaisir-pour-le-montigny-gaming-show",
+      "image": "https://cdn-s-www.republicain-lorrain.fr/images/85798BE1-02EF-40CD-997D-61405599C5B8/FB1200/photo-1776016262.jpg",
+      "dateTimePub": "2026-04-14T07:49:00.344Z",
+      "source": "InsiderGamingtriks",
+      "topic": "JEUX"
+    },
+    {
       "title": "🎮 Rodez. Fin de partie, le bar à jeux Level",
       "body": "L’aventure aura duré un peu moins d’un an et demi. Au bas de la rue Béteille, le bar à jeux Level-up, bar rétro gaming où l’on peut retrouver des jeux de société, des jeux vidéo... #JeuxVideo",
       "url": "https://www.ladepeche.fr/2026/04/11/fin-de-partie-le-bar-a-jeux-level-up-ferme-ses-portes-13320715.php",
       "image": "https://images.ladepeche.fr/api/v1/images/view/69d9c23eaa5d4803c508bc5a/hd/image.jpg?v=1",
       "dateTimePub": "2026-04-13T08:06:43.774Z",
-      "source": "InsiderGamingtriks",
-      "topic": "JEUX"
-    },
-    {
-      "title": "🎮 Rodez. Fin de partie, le bar à jeux Level",
-      "body": "L’aventure aura duré un peu moins d’un an et demi. Au bas de la rue Béteille, le bar à jeux Level-up, bar rétro gaming où l’on peut retrouver des jeux de société, des jeux vidéo... #Actualites",
-      "url": "https://www.ladepeche.fr/2026/04/11/fin-de-partie-le-bar-a-jeux-level-up-ferme-ses-portes-13320715.php",
-      "image": "https://images.ladepeche.fr/api/v1/images/view/69d9c23eaa5d4803c508bc5a/hd/image.jpg?v=1",
-      "dateTimePub": "2026-04-13T08:06:43.774Z",
-      "source": "InsiderGamingtriks",
-      "topic": "JEUX"
-    },
-    {
-      "title": "🕹️ Bon plan carte graphique : l'AMD Radeon RX 9070 XT baisse à 679 €",
-      "body": "Vous aviez prévu de vous faire une configuration gaming aux petits oignons pour les prochaines grosses sorties ? On a trouvé la carte graphique quil vous faut avec cette promo. Cette Radeon RX 9070...",
-      "url": "https://www.numerama.com/tech/2230485-la-carte-graphique-9070-xt-damd-est-a-un-prix-imbattable-sur-ce-site.html",
-      "image": "https://c0.lestechnophiles.com/www.numerama.com/wp-content/uploads/2026/02/9070-xt.jpg?resize=1600,900&key=f1093d89&watermark",
-      "dateTimePub": "2026-04-13T08:06:43.775Z",
       "source": "InsiderGamingtriks",
       "topic": "JEUX"
     },
@@ -44,16 +53,7 @@
       "dateTimePub": "2026-04-12T07:17:01.052Z",
       "source": "InsiderGamingtriks",
       "topic": "JEUX"
-    },
-    {
-      "title": "📢 Promo PC portable gamer : les MSI avec RTX 5060 et 5080 en baisse à la Fnac",
-      "body": "En pleine tempête liée au prix des composants, MSI brade plusieurs de ses PC portables gaming. Cyborg, Crosshair et Vector profitent chacun d’une baisse #Actualites",
-      "url": "https://www.frandroid.com/produits-android/ordinateurs/pc-portables/3056089_intel-core-ultra-9-et-rtx-5080-a-600-e-msi-brade-ses-pc-portables-gaming-haut-de-gamme",
-      "image": "https://c0.lestechnophiles.com/images.frandroid.com/wp-content/uploads/2026/04/cyborg-17-a17-scenario-photo-2-export.jpg?resize=1600,900&key=1866a611&watermark",
-      "dateTimePub": "2026-04-11T07:03:24.679Z",
-      "source": "InsiderGamingtriks",
-      "topic": "JEUX"
     }
   ],
-  "generatedAt": "2026-04-13T08:06:43.775Z"
+  "generatedAt": "2026-04-14T07:49:00.344Z"
 }
