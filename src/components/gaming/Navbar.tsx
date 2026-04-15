@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
-import { Crosshair, Menu, X, LogIn, LogOut, User } from 'lucide-react';
+import { Crosshair, Menu, X, LogIn, LogOut, User, ChevronDown } from 'lucide-react';
 import { useAppContext } from '@/contexts/AppContext';
 import AuthModal from './AuthModal';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface NavbarProps {
   activeSection: string;
@@ -21,7 +28,7 @@ const navItems = [
 const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate, onOpenProfile }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const { user, signOut, loading } = useAppContext();
+  const { user, signOut, loading, username } = useAppContext();
 
   return (
     <>
@@ -74,19 +81,32 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate, onOpenProfil
                 </svg>
               </a>
               {user && (
-                <button 
-                  onClick={onOpenProfile}
-                  className="flex items-center gap-2 px-3 py-2 bg-gray-800/50 border border-gray-700 rounded-lg hover:bg-gray-700 transition-colors"
-                >
-                  <div className="w-6 h-6 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center">
-                    <span className="text-xs text-white font-bold">
-                      {(user.user_metadata?.username || user.email)?.[0]?.toUpperCase()}
-                    </span>
-                  </div>
-                  <span className="text-sm text-white font-medium">
-                    {user.user_metadata?.username || user.email?.split('@')[0]}
-                  </span>
-                </button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="flex items-center gap-2 px-3 py-2 bg-gray-800/50 border border-gray-700 rounded-lg hover:bg-gray-700 transition-colors">
+                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center">
+                        <span className="text-xs text-white font-bold">
+                          {(username || user?.email)?.[0]?.toUpperCase()}
+                        </span>
+                      </div>
+                      <span className="text-sm text-white font-medium">
+                        {username || user?.email?.split('@')[0]}
+                      </span>
+                      <ChevronDown className="w-4 h-4 text-gray-400" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48 bg-gray-900 border-gray-700">
+                    <DropdownMenuItem onClick={onOpenProfile} className="text-white hover:bg-gray-800">
+                      <User className="w-4 h-4 mr-2" />
+                      Profil
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator className="bg-gray-700" />
+                    <DropdownMenuItem onClick={signOut} className="text-red-400 hover:bg-gray-800">
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Déconnexion
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               )}
               {!loading && !user && (
                 <button
@@ -95,15 +115,6 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate, onOpenProfil
                 >
                   <LogIn className="w-4 h-4" />
                   Connexion
-                </button>
-              )}
-              {user && (
-                <button
-                  onClick={signOut}
-                  className="p-2 text-gray-400 hover:text-red-500 transition-colors"
-                  title="Déconnexion"
-                >
-                  <LogOut className="w-5 h-5" />
                 </button>
               )}
               <button

@@ -9,6 +9,7 @@ interface AppContextType {
   toggleSidebar: () => void;
   user: User | null;
   loading: boolean;
+  username: string | null;
   signUp: (email: string, password: string, username: string, age?: number, game?: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
@@ -19,6 +20,7 @@ const defaultAppContext: AppContextType = {
   toggleSidebar: () => {},
   user: null,
   loading: true,
+  username: null,
   signUp: async () => {},
   signIn: async () => {},
   signOut: async () => {},
@@ -32,6 +34,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [username, setUsername] = useState<string | null>(null);
 
   const toggleSidebar = () => {
     setSidebarOpen(prev => !prev);
@@ -41,6 +44,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     // Check current session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
+      
+      // Get username from metadata or localStorage
+      const metadataUsername = session?.user?.user_metadata?.username;
+      const pendingUsername = localStorage.getItem('pendingUsername');
+      
+      if (metadataUsername) {
+        setUsername(metadataUsername);
+        localStorage.removeItem('pendingUsername'); // Clean up
+      } else if (pendingUsername) {
+        setUsername(pendingUsername);
+      } else {
+        setUsername(null);
+      }
+      
       setLoading(false);
     }).catch(() => {
       // Supabase not available, continue without auth
@@ -50,6 +67,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
+      
+      // Get username from metadata or localStorage
+      const metadataUsername = session?.user?.user_metadata?.username;
+      const pendingUsername = localStorage.getItem('pendingUsername');
+      
+      if (metadataUsername) {
+        setUsername(metadataUsername);
+        localStorage.removeItem('pendingUsername'); // Clean up
+      } else if (pendingUsername) {
+        setUsername(pendingUsername);
+      } else {
+        setUsername(null);
+      }
+      
       setLoading(false);
     });
 
@@ -57,112 +88,53 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }, []);
 
   const sendWelcomeEmail = async (email: string, username: string) => {
+    // Enable email sending for validation emails
+    const ENABLE_EMAILS = true;
+
+    if (!ENABLE_EMAILS) {
+      console.log('Email sending disabled for testing');
+      return;
+    }
+
     try {
-      await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer re_b4CbPPMu_JA269CNTX1pHSbE1PtV1T9mX',
-        },
-        body: JSON.stringify({
-          from: 'Insider Gaming Tricks <onboarding@resend.dev>',
-          to: email,
-          subject: '🎮 Bienvenue sur Insider Gaming Tricks !',
-          html: `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body style="margin: 0; padding: 0; background-color: #000000; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #000000; padding: 40px 20px;">
-    <tr>
-      <td align="center">
-        <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #111111; border-radius: 16px; overflow: hidden;">
-          <!-- Header -->
-          <tr>
-            <td style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); padding: 30px; text-align: center;">
-              <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: bold;">
-                🎮 Insider Gaming Tricks
-              </h1>
-            </td>
-          </tr>
-          <!-- Content -->
-          <tr>
-            <td style="padding: 40px 30px;">
-              <h2 style="margin: 0 0 20px 0; color: #dc2626; font-size: 24px;">
-                Bienvenue ${username} !
-              </h2>
-              <p style="margin: 0 0 20px 0; color: #d1d5db; font-size: 16px; line-height: 1.6;">
-                Merci de rejoindre la communauté <strong style="color: #ffffff;">Insider Gaming Tricks</strong> ! 
-                Tu fais maintenant partie des joueurs qui ont accès aux meilleures astuces et guides.
-              </p>
-              <p style="margin: 0 0 30px 0; color: #d1d5db; font-size: 16px; line-height: 1.6;">
-                Rejoins-nous sur Discord pour échanger avec d'autres joueurs, participer aux tournois et recevoir des tips exclusifs !
-              </p>
-              <!-- Discord Button -->
-              <table width="100%" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td align="center" style="padding-bottom: 20px;">
-                    <a href="https://discord.gg/XsHYc4tQpx" style="display: inline-block; background-color: #5865F2; color: #ffffff; padding: 16px 32px; border-radius: 8px; text-decoration: none; font-size: 16px; font-weight: bold;">
-                      📱 Rejoindre le Discord
-                    </a>
-                  </td>
-                </tr>
-              </table>
-              <!-- YouTube -->
-              <table width="100%" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td align="center" style="padding-bottom: 30px;">
-                    <a href="https://www.youtube.com/@InsiderHackGaming" style="display: inline-block; background-color: #FF0000; color: #ffffff; padding: 16px 32px; border-radius: 8px; text-decoration: none; font-size: 16px; font-weight: bold;">
-                      📺 S'abonner sur YouTube
-                    </a>
-                  </td>
-                </tr>
-              </table>
-              <!-- CTA -->
-              <table width="100%" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td align="center">
-                    <a href="https://fab34.github.io/InsiderGamingtriks/" style="display: inline-block; background-color: #dc2626; color: #ffffff; padding: 18px 40px; border-radius: 8px; text-decoration: none; font-size: 18px; font-weight: bold;">
-                      Commencer maintenant →
-                    </a>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-          <!-- Footer -->
-          <tr>
-            <td style="background-color: #0a0a0a; padding: 20px 30px; text-align: center;">
-              <p style="margin: 0; color: #6b7280; font-size: 14px;">
-                © 2026 Insider Gaming Tricks. Tous droits réservés.
-              </p>
-              <p style="margin: 10px 0 0 0; color: #6b7280; font-size: 12px;">
-                Cet email a été envoyé à ${email}
-              </p>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-</body>
-</html>`,
-        }),
+      const { data, error } = await supabase.functions.invoke('send-welcome-email', {
+        body: { email, username }
       });
+
+      if (error) {
+        console.error('Supabase function error:', error);
+        return;
+      }
+
+      console.log('Welcome email sent successfully');
     } catch (err) {
       console.error('Email error:', err);
     }
   };
 
+  const sendVerificationEmail = async (email: string, username: string) => {
+    try {
+      const { data, error } = await supabase.functions.invoke('send-verification-email', {
+        body: { email, username }
+      });
+
+      if (error) {
+        console.error('Verification email error:', error);
+        return;
+      }
+
+      console.log('Verification email sent successfully');
+    } catch (err) {
+      console.error('Verification email error:', err);
+    }
+  };
+
   const signUp = async (email: string, password: string, username: string, age?: number, game?: string) => {
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: 'https://fab34.github.io/InsiderGamingtriks/',
+        emailRedirectTo: 'https://saw341cs2.github.io/InsiderGamingtriks/',
         data: {
           username,
           age: age || 18,
@@ -170,25 +142,27 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         }
       }
     });
+    
     if (error) throw error;
     
-    await sendWelcomeEmail(email, username);
-    
-    const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    
-    if (signInError) {
-      const { data: userData } = await supabase.auth.getUser();
-      setUser(userData?.user || null);
+    // If user is confirmed immediately (depends on Supabase settings)
+    if (data.user && data.session) {
+      setUser(data.user);
+      setUsername(data.user.user_metadata?.username || username);
     } else {
-      setUser(signInData.user);
+      // User needs email confirmation
+      // Store username temporarily for when they confirm
+      localStorage.setItem('pendingUsername', username);
     }
+    
+    await sendWelcomeEmail(email, username);
+    await sendVerificationEmail(email, username);
     
     toast({
       title: "Bienvenue " + username + " ! 🎮",
-      description: "Ton compte a été créé. Profite des astuces exclusives!",
+      description: data.user?.email_confirmed_at 
+        ? "Ton compte a été créé. Profite des astuces exclusives!"
+        : "Un email de confirmation a été envoyé. Vérifie ta boîte mail et confirme ton compte.",
     });
   };
 
@@ -198,17 +172,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       password,
     });
     if (error) throw error;
-    
-    // Fetch user data to get updated metadata
-    const { data: userData } = await supabase.auth.getUser();
-    const user = userData?.user;
-    setUser(user);
-    
-    const username = user?.user_metadata?.username || 'Joueur';
-    toast({
-      title: "Bon retour " + username + " ! 👋",
-      description: "Content de te revoir sur Insider Gaming Tricks!",
-    });
+    setUser(data.user);
+    setUsername(data.user?.user_metadata?.username || null);
+    localStorage.removeItem('pendingUsername'); // Clean up
   };
 
   const signOut = async () => {
