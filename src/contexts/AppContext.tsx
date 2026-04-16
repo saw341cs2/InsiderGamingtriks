@@ -93,14 +93,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         email,
         password,
         options: {
+          emailRedirectTo: 'https://saw341cs2.github.io/InsiderGamingtriks/index.html',
           data: { username, age: age || 18, game: game || '' }
         }
       });
       
       if (error) throw error;
-      
-      // Send verification email
-      await sendVerificationEmail(email, username);
       
       setUser(data.user);
       setUsername(username);
