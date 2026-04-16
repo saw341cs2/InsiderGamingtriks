@@ -22,14 +22,7 @@ export default defineConfig({
   ],
   
   build: {
-    outDir: "docs",
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          react: ['react', 'react-dom']
-        }
-      }
-    }
+    outDir: "docs"
   },
   resolve: {
     alias: {
