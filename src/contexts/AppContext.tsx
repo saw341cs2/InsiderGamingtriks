@@ -93,7 +93,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         email,
         password,
         options: {
-          emailRedirectTo: 'https://saw341cs2.github.io/InsiderGamingtriks/index.html',
+          emailRedirectTo: 'https://saw341cs2.github.io/InsiderGamingtriks/',
           data: { username, age: age || 18, game: game || '' }
         }
       });

@@ -53,6 +53,30 @@ const discordRoleOptions = ['Membre', 'Partner', 'Modérateur', 'Admin', 'Owner'
 
 const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
   const { user, username } = useAppContext();
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4">Accès refusé</h2>
+          <p>Vous devez être connecté pour accéder à votre profil.</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user.email_confirmed_at) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4">Confirmez votre email</h2>
+          <p className="mb-4">Vous devez confirmer votre adresse email pour accéder à votre profil.</p>
+          <p>Vérifiez votre boîte mail et cliquez sur le lien de confirmation.</p>
+        </div>
+      </div>
+    );
+  }
+
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [profile, setProfile] = useState<ProfileData>({
