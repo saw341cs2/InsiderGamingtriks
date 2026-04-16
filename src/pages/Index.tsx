@@ -76,15 +76,15 @@ const Index: React.FC = () => {
             <div id="communaute">
               <CommunitySection />
             </div>
-            <div id="membres">
-              <MembersSection />
-            </div>
             <div id="premium">
               <PremiumSection />
             </div>
             <TestimonialsSection />
             <WeaponGuidesSection />
             <GamesSection onSelectGame={handleSelectGame} />
+            <div id="membres">
+              <MembersSection />
+            </div>
             <NewsSection />
           </div>
         )}
