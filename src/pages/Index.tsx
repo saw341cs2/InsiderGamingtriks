@@ -11,6 +11,7 @@ import CommunitySection from '@/components/gaming/CommunitySection';
 import PremiumSection from '@/components/gaming/PremiumSection';
 import TestimonialsSection from '@/components/gaming/TestimonialsSection';
 import WeaponGuidesSection from '@/components/gaming/WeaponGuidesSection';
+import MembersSection from '@/components/gaming/MembersSection';
 import Footer from '@/components/gaming/Footer';
 import ProfilePage from '@/pages/Profile';
 import ForumPage from '@/pages/Forum';
@@ -74,6 +75,9 @@ const Index: React.FC = () => {
             </div>
             <div id="communaute">
               <CommunitySection />
+            </div>
+            <div id="membres">
+              <MembersSection />
             </div>
             <div id="premium">
               <PremiumSection />

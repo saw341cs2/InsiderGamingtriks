@@ -21,6 +21,7 @@ const navItems = [
   { id: 'astuces', label: 'Astuces' },
   { id: 'videos', label: 'Vidéos' },
   { id: 'communaute', label: 'Communauté' },
+  { id: 'membres', label: 'Membres' },
   { id: 'forum', label: 'Forum' },
   { id: 'premium', label: 'Premium' },
 ];

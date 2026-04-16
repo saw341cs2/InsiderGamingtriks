@@ -107,6 +107,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                 { label: 'Astuces', id: 'astuces' },
                 { label: 'Vidéos', id: 'videos' },
                 { label: 'Communauté', id: 'communaute' },
+                { label: 'Membres', id: 'membres' },
                 { label: 'Premium', id: 'premium' },
               ].map((item) => (
                 <li key={item.id}>
@@ -152,6 +153,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               {[
                 { label: 'Guides Gratuits', action: () => onNavigate('astuces') },
                 { label: 'Contenu Premium', action: () => onNavigate('premium') },
+                { label: 'Équipe', action: () => onNavigate('membres') },
                 { label: 'Forum', action: () => onNavigate('forum') },
                 { label: 'Discord', action: () => {} },
                 { label: 'YouTube', action: () => window.open('https://www.youtube.com/@InsiderHackGaming', '_blank') },
