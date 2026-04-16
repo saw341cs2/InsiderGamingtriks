@@ -73,7 +73,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate, onOpenProfil
               </a>
               <a
                 href="https://discord.gg/XsHYc4tQpx"
-                className="p-2 text-red-500 hover:text-red-400 transition-colors"
+                className="p-2 text-indigo-500 hover:text-indigo-400 transition-colors"
                 title="Discord"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
