@@ -52,7 +52,7 @@ const forumRoleOptions = ['Membre', 'Vétéran', 'Modérateur', 'Administrateur'
 const discordRoleOptions = ['Membre', 'Partner', 'Modérateur', 'Admin', 'Owner'];
 
 const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
-  const { user } = useAppContext();
+  const { user, username } = useAppContext();
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [profile, setProfile] = useState<ProfileData>({
@@ -153,7 +153,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
               <User className="w-10 h-10 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-black text-white">{user.user_metadata?.username || 'Joueur'}</h1>
+              <h1 className="text-3xl font-black text-white">{username || user.user_metadata?.username || 'Joueur'}</h1>
               <p className="text-gray-400">{user.email}</p>
             </div>
           </div>

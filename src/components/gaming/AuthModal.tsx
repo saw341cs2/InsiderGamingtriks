@@ -66,13 +66,19 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           return;
         }
         await signUp(email, password, username, age ? parseInt(age) : undefined, game);
+        onClose();
+        setEmail('');
+        setPassword('');
+        setConfirmPassword('');
+        setUsername('');
+        setAge('');
+        setGame('');
       } else {
         await signIn(email, password);
+        onClose();
+        setEmail('');
+        setPassword('');
       }
-      onClose();
-      setEmail('');
-      setPassword('');
-      setConfirmPassword('');
     } catch (error) {
       const message = error instanceof Error ? error.message : "Une erreur est survenue";
       toast({

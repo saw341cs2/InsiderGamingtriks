@@ -87,83 +87,40 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return () => subscription.unsubscribe();
   }, []);
 
-  const sendWelcomeEmail = async (email: string, username: string) => {
-    // Enable email sending for validation emails
-    const ENABLE_EMAILS = true;
-
-    if (!ENABLE_EMAILS) {
-      console.log('Email sending disabled for testing');
-      return;
-    }
-
-    try {
-      const { data, error } = await supabase.functions.invoke('send-welcome-email', {
-        body: { email, username }
-      });
-
-      if (error) {
-        console.error('Supabase function error:', error);
-        return;
-      }
-
-      console.log('Welcome email sent successfully');
-    } catch (err) {
-      console.error('Email error:', err);
-    }
-  };
-
-  const sendVerificationEmail = async (email: string, username: string) => {
-    try {
-      const { data, error } = await supabase.functions.invoke('send-verification-email', {
-        body: { email, username }
-      });
-
-      if (error) {
-        console.error('Verification email error:', error);
-        return;
-      }
-
-      console.log('Verification email sent successfully');
-    } catch (err) {
-      console.error('Verification email error:', err);
-    }
-  };
-
   const signUp = async (email: string, password: string, username: string, age?: number, game?: string) => {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: 'https://saw341cs2.github.io/InsiderGamingtriks/',
-        data: {
-          username,
-          age: age || 18,
-          game: game || '',
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { username, age: age || 18, game: game || '' }
         }
-      }
-    });
-    
-    if (error) throw error;
-    
-    // If user is confirmed immediately (depends on Supabase settings)
-    if (data.user && data.session) {
+      });
+      
+      if (error) throw error;
+      
+      // Send verification email
+      await sendVerificationEmail(email, username);
+      
       setUser(data.user);
-      setUsername(data.user.user_metadata?.username || username);
-    } else {
-      // User needs email confirmation
-      // Store username temporarily for when they confirm
-      localStorage.setItem('pendingUsername', username);
+      setUsername(username);
+      
+      localStorage.setItem('userEmail', email);
+      localStorage.setItem('userPassword', password);
+      
+      toast({
+        title: "Bienvenue " + username + " ! 🎮",
+        description: data.user?.email_confirmed_at 
+          ? "Ton compte a été créé. Profite des astuces exclusives!"
+          : "Un email de confirmation a été envoyé. Vérifie ta boîte mail et confirme ton compte.",
+      });
+    } catch (err: any) {
+      console.error('Signup error:', err);
+      if (err.message?.includes('rate limit') || err.message?.includes('Rate limit')) {
+        throw new Error("Trop de demandes. Patiente quelques minutes avant de réessayer.");
+      }
+      throw err;
     }
-    
-    await sendWelcomeEmail(email, username);
-    await sendVerificationEmail(email, username);
-    
-    toast({
-      title: "Bienvenue " + username + " ! 🎮",
-      description: data.user?.email_confirmed_at 
-        ? "Ton compte a été créé. Profite des astuces exclusives!"
-        : "Un email de confirmation a été envoyé. Vérifie ta boîte mail et confirme ton compte.",
-    });
   };
 
   const signIn = async (email: string, password: string) => {
@@ -193,6 +150,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         toggleSidebar,
         user,
         loading,
+        username,
         signUp,
         signIn,
         signOut,

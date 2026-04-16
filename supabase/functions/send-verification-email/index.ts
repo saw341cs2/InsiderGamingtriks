@@ -32,7 +32,7 @@ serve(async (req) => {
       type: "signup",
       email: email,
       options: {
-        redirectTo: "https://saw341cs2.github.io/InsiderGamingtriks/",
+        redirectTo: "https://saw341cs2.github.io/InsiderGamingtriks/index.html",
       },
     });
 
@@ -56,7 +56,7 @@ serve(async (req) => {
         "Authorization": `Bearer ${resendApiKey}`,
       },
       body: JSON.stringify({
-        from: "InsiderGamingTricks <noreply@ton-domaine.com>",
+        from: "InsiderGamingTricks <onboarding@resend.dev>",
         to: email,
         subject: "Confirme ton email - InsiderGamingTricks 🔐",
         html: `
