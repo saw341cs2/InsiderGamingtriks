@@ -86,6 +86,7 @@ const members: Member[] = [
 ];
 
 const MembersSection: React.FC = () => {
+  const [selectedPost, setSelectedPost] = useState<number | null>(null);
   return (
     <section id="membres" className="bg-gray-950 py-20 md:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

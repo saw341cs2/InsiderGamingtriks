@@ -17,6 +17,7 @@ interface ForumPost {
 const forumPosts: ForumPost[] = [
   { id: 0, title: '🎮 FAQ – Insider Gaming Tricks', author: 'InsiderHack', avatar: 'IH', game: 'Général', replies: 0, views: 0, lastActivity: 'Il y a 1j', pinned: true, category: 'Événements' },
   { id: 1, title: '📢 Bienvenue sur le forum communautaire !', author: 'InsiderHack', avatar: 'IH', game: 'Général', replies: 12, views: 456, lastActivity: 'Il y a 2h', pinned: false, category: 'Discussion' },
+  { id: 2, title: '🚀 RECRUTEMENT ACTIF - Rejoins l\'Équipe ! 🎯', author: 'Saw341', avatar: 'SA', game: 'Général', replies: 8, views: 234, lastActivity: 'Il y a 30min', pinned: true, category: 'Recrutement' },
 ];
 
 const categoryColors: Record<string, string> = {
@@ -35,6 +36,7 @@ const CommunitySection: React.FC = () => {
   const [showNewPostForm, setShowNewPostForm] = useState(false);
   const [localPosts, setLocalPosts] = useState<ForumPost[]>(forumPosts);
   const [likedPosts, setLikedPosts] = useState<Set<number>>(new Set());
+  const [selectedPost, setSelectedPost] = useState<number | null>(null);
 
   const filteredPosts = localPosts.filter((p) => {
     if (forumFilter === 'all') return true;
@@ -69,6 +71,100 @@ const CommunitySection: React.FC = () => {
       else next.add(id);
       return next;
     });
+  };
+
+  const getPostContent = (postId: number) => {
+    if (postId === 2) { // Post de recrutement
+      return {
+        author: 'Saw341',
+        avatar: 'SA',
+        title: '🚀 RECRUTEMENT ACTIF - Rejoins l\'Équipe ! 🎯',
+        content: `
+<div class="space-y-4">
+  <div class="bg-gradient-to-r from-green-900/30 to-emerald-900/30 border border-green-500/20 rounded-xl p-6">
+    <h3 class="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+      🎉 Recrutement Actif ! 🎉
+    </h3>
+    <p class="text-gray-300 text-lg mb-4">
+      Salut la communauté ! 👋 C'est <strong class="text-green-400">Saw341</strong>, le fondateur d'Insider Gaming Tricks ! 
+      Nous sommes en pleine expansion et nous cherchons des talents pour rejoindre notre équipe ! 🚀
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="bg-red-900/20 border border-red-500/30 rounded-xl p-4 text-center">
+      <div class="text-4xl mb-2">🎥</div>
+      <h4 class="text-white font-bold text-lg mb-2">Créateur Vidéo</h4>
+      <p class="text-gray-400 text-sm">Montage, réalisation, voice-over pour nos vidéos YouTube !</p>
+    </div>
+    <div class="bg-blue-900/20 border border-blue-500/30 rounded-xl p-4 text-center">
+      <div class="text-4xl mb-2">📰</div>
+      <h4 class="text-white font-bold text-lg mb-2">Rédacteur News</h4>
+      <p class="text-gray-400 text-sm">Rédaction d'articles, news gaming, analyses et découvertes !</p>
+    </div>
+    <div class="bg-purple-900/20 border border-purple-500/30 rounded-xl p-4 text-center">
+      <div class="text-4xl mb-2">💻</div>
+      <h4 class="text-white font-bold text-lg mb-2">Développeur</h4>
+      <p class="text-gray-400 text-sm">Développement web, mobile, outils gaming pour la communauté !</p>
+    </div>
+  </div>
+
+  <div class="bg-yellow-900/20 border border-yellow-500/30 rounded-xl p-6">
+    <h4 class="text-yellow-400 font-bold text-xl mb-4 flex items-center gap-2">
+      ⚠️ Règles importantes ⚠️
+    </h4>
+    <ul class="text-gray-300 space-y-2">
+      <li>✅ <strong>Âge minimum :</strong> 16 ans (pour les mineurs, accord parental requis)</li>
+      <li>✅ <strong>Expérience :</strong> Pas obligatoire, motivation et passion du gaming suffisent !</li>
+      <li>✅ <strong>Disponibilité :</strong> Au moins 5-10h/semaine selon le poste</li>
+      <li>✅ <strong>Équipe :</strong> Travail en équipe, respect mutuel, bonne ambiance ! 😊</li>
+      <li>✅ <strong>Confidentialité :</strong> Respect de la vie privée de chacun</li>
+    </ul>
+  </div>
+
+  <div class="bg-indigo-900/20 border border-indigo-500/30 rounded-xl p-6">
+    <h4 class="text-indigo-400 font-bold text-xl mb-4 flex items-center gap-2">
+      📧 Comment postuler ? 📧
+    </h4>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="text-center">
+        <div class="text-3xl mb-2">💬</div>
+        <p class="text-white font-semibold">Sur le Forum</p>
+        <p class="text-gray-400 text-sm">Réponds à ce post avec ta candidature !</p>
+      </div>
+      <div class="text-center">
+        <div class="text-3xl mb-2">📧</div>
+        <p class="text-white font-semibold">Par Email</p>
+        <p class="text-indigo-300 font-medium">insiderhackgaming@gmail.com</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-pink-900/20 border border-pink-500/30 rounded-xl p-6">
+    <h4 class="text-pink-400 font-bold text-xl mb-4 flex items-center gap-2">
+      📝 Ce qu'on attend de toi 📝
+    </h4>
+    <div class="text-gray-300 space-y-2">
+      <p><strong>Ton pseudo :</strong> [Ton pseudo gaming]</p>
+      <p><strong>Ton âge :</strong> [Ton âge]</p>
+      <p><strong>Tes jeux préférés :</strong> [CS2, Valorant, etc.]</p>
+      <p><strong>Ton expérience :</strong> [Ce que tu sais faire]</p>
+      <p><strong>Tes motivations :</strong> [Pourquoi tu veux nous rejoindre ?]</p>
+      <p><strong>Tes disponibilités :</strong> [Quand tu es dispo]</p>
+      <p><strong>Portfolio (optionnel) :</strong> [Liens vers tes travaux]</p>
+    </div>
+  </div>
+
+  <div class="text-center bg-gradient-to-r from-purple-900/30 to-pink-900/30 border border-purple-500/20 rounded-xl p-6">
+    <p class="text-white text-xl font-bold mb-2">On a hâte de te rencontrer ! 🎮✨</p>
+    <p class="text-gray-400">L'équipe Insider Gaming Tricks 💜</p>
+  </div>
+</div>
+        `,
+        date: 'Aujourd\'hui à 14:30'
+      };
+    }
+    return null;
   };
 
   return (
@@ -248,6 +344,104 @@ const CommunitySection: React.FC = () => {
                       <div>
                         <h4 className="text-white font-semibold mb-1">📢 Nous suivre</h4>
                         <a href="https://www.youtube.com/@InsiderHackGaming" target="_blank" rel="noopener noreferrer" className="text-red-400 hover:text-red-300">YouTube : @InsiderHackGaming</a>
+                      </div>
+                    </div>
+                  </div>
+                ) : post.id === 2 ? (
+                  <div key={post.id} className="p-5 bg-gradient-to-r from-green-900/20 to-emerald-900/20 border border-green-500/20">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Pin className="w-4 h-4 text-green-500" />
+                      <span className="text-green-400 text-xs font-bold">RECRUTEMENT ACTIF</span>
+                    </div>
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-12 h-12 bg-gradient-to-br from-green-600 to-emerald-600 rounded-lg flex items-center justify-center text-white text-sm font-bold">
+                        SA
+                      </div>
+                      <div>
+                        <p className="text-white font-semibold">Saw341</p>
+                        <p className="text-gray-400 text-sm">Fondateur • Aujourd'hui à 14:30</p>
+                      </div>
+                    </div>
+                    <h3 className="text-white font-bold text-xl mb-6">🚀 RECRUTEMENT ACTIF - Rejoins l'Équipe ! 🎯</h3>
+                    
+                    <div className="space-y-4">
+                      <div className="bg-gradient-to-r from-green-900/30 to-emerald-900/30 border border-green-500/20 rounded-xl p-6">
+                        <h3 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+                          🎉 Recrutement Actif ! 🎉
+                        </h3>
+                        <p className="text-gray-300 text-lg mb-4">
+                          Salut la communauté ! 👋 C'est <strong className="text-green-400">Saw341</strong>, le fondateur d'Insider Gaming Tricks ! 
+                          Nous sommes en pleine expansion et nous cherchons des talents pour rejoindre notre équipe ! 🚀
+                        </p>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="bg-red-900/20 border border-red-500/30 rounded-xl p-4 text-center">
+                          <div className="text-4xl mb-2">🎥</div>
+                          <h4 className="text-white font-bold text-lg mb-2">Créateur Vidéo</h4>
+                          <p className="text-gray-400 text-sm">Montage, réalisation, voice-over pour nos vidéos YouTube !</p>
+                        </div>
+                        <div className="bg-blue-900/20 border border-blue-500/30 rounded-xl p-4 text-center">
+                          <div className="text-4xl mb-2">📰</div>
+                          <h4 className="text-white font-bold text-lg mb-2">Rédacteur News</h4>
+                          <p className="text-gray-400 text-sm">Rédaction d'articles, news gaming, analyses et découvertes !</p>
+                        </div>
+                        <div className="bg-purple-900/20 border border-purple-500/30 rounded-xl p-4 text-center">
+                          <div className="text-4xl mb-2">💻</div>
+                          <h4 className="text-white font-bold text-lg mb-2">Développeur</h4>
+                          <p className="text-gray-400 text-sm">Développement web, mobile, outils gaming pour la communauté !</p>
+                        </div>
+                      </div>
+
+                      <div className="bg-yellow-900/20 border border-yellow-500/30 rounded-xl p-6">
+                        <h4 className="text-yellow-400 font-bold text-xl mb-4 flex items-center gap-2">
+                          ⚠️ Règles importantes ⚠️
+                        </h4>
+                        <ul className="text-gray-300 space-y-2">
+                          <li>✅ <strong>Âge minimum :</strong> 16 ans (pour les mineurs, accord parental requis)</li>
+                          <li>✅ <strong>Expérience :</strong> Pas obligatoire, motivation et passion du gaming suffisent !</li>
+                          <li>✅ <strong>Disponibilité :</strong> Au moins 5-10h/semaine selon le poste</li>
+                          <li>✅ <strong>Équipe :</strong> Travail en équipe, respect mutuel, bonne ambiance ! 😊</li>
+                          <li>✅ <strong>Confidentialité :</strong> Respect de la vie privée de chacun</li>
+                        </ul>
+                      </div>
+
+                      <div className="bg-indigo-900/20 border border-indigo-500/30 rounded-xl p-6">
+                        <h4 className="text-indigo-400 font-bold text-xl mb-4 flex items-center gap-2">
+                          📧 Comment postuler ? 📧
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="text-center">
+                            <div className="text-3xl mb-2">💬</div>
+                            <p className="text-white font-semibold">Sur le Forum</p>
+                            <p className="text-gray-400 text-sm">Réponds à ce post avec ta candidature !</p>
+                          </div>
+                          <div className="text-center">
+                            <div className="text-3xl mb-2">📧</div>
+                            <p className="text-white font-semibold">Par Email</p>
+                            <p className="text-indigo-300 font-medium">insiderhackgaming@gmail.com</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="bg-pink-900/20 border border-pink-500/30 rounded-xl p-6">
+                        <h4 className="text-pink-400 font-bold text-xl mb-4 flex items-center gap-2">
+                          📝 Ce qu'on attend de toi 📝
+                        </h4>
+                        <div className="text-gray-300 space-y-2">
+                          <p><strong>Ton pseudo :</strong> [Ton pseudo gaming]</p>
+                          <p><strong>Ton âge :</strong> [Ton âge]</p>
+                          <p><strong>Tes jeux préférés :</strong> [CS2, Valorant, etc.]</p>
+                          <p><strong>Ton expérience :</strong> [Ce que tu sais faire]</p>
+                          <p><strong>Tes motivations :</strong> [Pourquoi tu veux nous rejoindre ?]</p>
+                          <p><strong>Tes disponibilités :</strong> [Quand tu es dispo]</p>
+                          <p><strong>Portfolio (optionnel) :</strong> [Liens vers tes travaux]</p>
+                        </div>
+                      </div>
+
+                      <div className="text-center bg-gradient-to-r from-purple-900/30 to-pink-900/30 border border-purple-500/20 rounded-xl p-6">
+                        <p className="text-white text-xl font-bold mb-2">On a hâte de te rencontrer ! 🎮✨</p>
+                        <p className="text-gray-400">L'équipe Insider Gaming Tricks 💜</p>
                       </div>
                     </div>
                   </div>
