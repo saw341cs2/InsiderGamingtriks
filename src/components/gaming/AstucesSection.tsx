@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Lock, Search, Filter, Star, Eye, Crosshair, Target, Bomb, Download } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Lock, Search, Filter, Star, Eye, Crosshair, Target, Bomb, Download, Unlock } from 'lucide-react';
 
 interface AstucesSectionProps {
   onNavigate: (section: string) => void;
@@ -23,21 +23,22 @@ interface Astuce {
 }
 
 const astuces: Astuce[] = [
-  { id: 1, title: 'Smoke Lineup Mirage - Site A', game: 'CS2', gameId: 'counter-strike', difficulty: 'Débutant', isPremium: false, downloads: 2340, views: 8900, rating: 4.8, description: 'Les 5 smokes essentielles pour prendre le site A sur Mirage.', category: 'Grenades' },
-  { id: 2, title: 'Spray Control AK-47 Masterclass', game: 'CS2', gameId: 'counter-strike', difficulty: 'Avancé', isPremium: true, downloads: 1560, views: 6200, rating: 4.9, description: 'Maîtrise le pattern de spray de l\'AK-47 en 7 étapes.', category: 'Aim' },
-  { id: 3, title: 'Positions Sniper Dust2', game: 'CS2', gameId: 'counter-strike', difficulty: 'Intermédiaire', isPremium: false, downloads: 3100, views: 12000, rating: 4.7, description: 'Les meilleures positions AWP pour contrôler la carte.', category: 'Positions' },
-  { id: 4, title: 'Pilotage Hélicoptère Avancé', game: 'BF', gameId: 'battlefield', difficulty: 'Expert', isPremium: true, downloads: 890, views: 4500, rating: 4.6, description: 'Techniques de vol avancées pour dominer le ciel.', category: 'Véhicules' },
-  { id: 5, title: 'Loadout Médecin Optimal', game: 'BF', gameId: 'battlefield', difficulty: 'Débutant', isPremium: false, downloads: 2100, views: 7800, rating: 4.5, description: 'Le meilleur setup médecin pour maximiser les soins et XP.', category: 'Classes' },
-  { id: 6, title: 'Rush B Stratégie Complète', game: 'CS2', gameId: 'counter-strike', difficulty: 'Intermédiaire', isPremium: false, downloads: 4200, views: 15000, rating: 4.8, description: 'Exécution parfaite du rush B avec timings et utility.', category: 'Stratégies' },
-  { id: 7, title: 'Warzone Meta Loadout S3', game: 'CoD', gameId: 'call-of-duty', difficulty: 'Intermédiaire', isPremium: false, downloads: 5600, views: 22000, rating: 4.9, description: 'Les meilleurs loadouts de la saison 3 de Warzone.', category: 'Loadouts' },
-  { id: 8, title: 'Slide Cancel & Movement Tech', game: 'CoD', gameId: 'call-of-duty', difficulty: 'Avancé', isPremium: true, downloads: 3200, views: 14000, rating: 4.7, description: 'Techniques de mouvement avancées pour gagner chaque gunfight.', category: 'Mouvement' },
-  { id: 9, title: 'Rotation Map Control Guide', game: 'CoD', gameId: 'call-of-duty', difficulty: 'Expert', isPremium: true, downloads: 1200, views: 5600, rating: 4.8, description: 'Maîtrise les rotations et le contrôle de carte en Warzone.', category: 'Stratégies' },
-  { id: 10, title: 'Tank Warfare Tactics', game: 'BF', gameId: 'battlefield', difficulty: 'Avancé', isPremium: false, downloads: 1800, views: 6700, rating: 4.4, description: 'Dominer avec les chars : positionnement et angles.', category: 'Véhicules' },
-  { id: 11, title: 'Flash Pop Techniques', game: 'CS2', gameId: 'counter-strike', difficulty: 'Expert', isPremium: true, downloads: 980, views: 4100, rating: 4.9, description: 'Flashs popées parfaites pour entry frag à chaque round.', category: 'Grenades' },
-  { id: 12, title: 'Sniper Quickscope Mastery', game: 'CoD', gameId: 'call-of-duty', difficulty: 'Expert', isPremium: true, downloads: 2400, views: 11000, rating: 4.6, description: 'Deviens un quickscoper redoutable en multijoueur.', category: 'Aim' },
-  { id: 13, title: 'Conquest Point Capture Order', game: 'BF', gameId: 'battlefield', difficulty: 'Intermédiaire', isPremium: false, downloads: 1500, views: 5400, rating: 4.3, description: 'L\'ordre optimal de capture des points en Conquest.', category: 'Stratégies' },
-  { id: 14, title: 'Crosshair Placement Guide', game: 'CS2', gameId: 'counter-strike', difficulty: 'Débutant', isPremium: false, downloads: 6800, views: 28000, rating: 4.9, description: 'La base du headshot : placement de viseur parfait.', category: 'Aim' },
-  { id: 15, title: 'Audio Settings Pro Config', game: 'CoD', gameId: 'call-of-duty', difficulty: 'Débutant', isPremium: false, downloads: 3900, views: 16000, rating: 4.5, description: 'Configuration audio optimale pour entendre les pas ennemis.', category: 'Settings' },
+  { id: 1, title: 'Crosshair Placement + Pré-Aim', game: 'CS2', gameId: 'counter-strike', difficulty: 'Débutant', isPremium: false, downloads: 1850, views: 7200, rating: 4.8, description: "Travaille ton crosshair placement pour gagner tes duels plus facilement sur CS2.\n\nLe principe est simple : garde toujours ton viseur à hauteur de tête et place-le à l'endroit où un ennemi peut apparaître avant même de le voir. Le pré-aim permet d'anticiper les angles les plus joués et de réduire le temps nécessaire pour ajuster ton tir.\n\nComment s'entraîner\n1. Lance une map d'entraînement ou une partie hors ligne.\n\n2. Déplace-toi lentement sur la carte en gardant le viseur au niveau de la tête.\n\n3. À chaque angle, vise l'endroit exact où un adversaire pourrait sortir.\n\n4. Répète l'exercice sans tirer, puis ajoute des bots pour travailler tes réflexes.\n\nConseil pratique\nCommence sur Mirage ou Dust2 avec un seul trajet précis, puis augmente progressivement la vitesse d'exécution. Quelques minutes par jour suffisent pour voir une vraie amélioration.", category: 'Aim' },
+  { id: 2, title: 'Smoke Lineup Mirage - Site A', game: 'CS2', gameId: 'counter-strike', difficulty: 'Débutant', isPremium: false, downloads: 2340, views: 8900, rating: 4.8, description: 'Les 5 smokes essentielles pour prendre le site A sur Mirage.', category: 'Grenades' },
+  { id: 3, title: 'Spray Control AK-47 Masterclass', game: 'CS2', gameId: 'counter-strike', difficulty: 'Avancé', isPremium: true, downloads: 1560, views: 6200, rating: 4.9, description: 'Maîtrise le pattern de spray de l\'AK-47 en 7 étapes.', category: 'Aim' },
+  { id: 4, title: 'Positions Sniper Dust2', game: 'CS2', gameId: 'counter-strike', difficulty: 'Intermédiaire', isPremium: false, downloads: 3100, views: 12000, rating: 4.7, description: 'Les meilleures positions AWP pour contrôler la carte.', category: 'Positions' },
+  { id: 5, title: 'Pilotage Hélicoptère Avancé', game: 'BF', gameId: 'battlefield', difficulty: 'Expert', isPremium: true, downloads: 890, views: 4500, rating: 4.6, description: 'Techniques de vol avancées pour dominer le ciel.', category: 'Véhicules' },
+  { id: 6, title: 'Loadout Médecin Optimal', game: 'BF', gameId: 'battlefield', difficulty: 'Débutant', isPremium: false, downloads: 2100, views: 7800, rating: 4.5, description: 'Le meilleur setup médecin pour maximiser les soins et XP.', category: 'Classes' },
+  { id: 7, title: 'Rush B Stratégie Complète', game: 'CS2', gameId: 'counter-strike', difficulty: 'Intermédiaire', isPremium: false, downloads: 4200, views: 15000, rating: 4.8, description: 'Exécution parfaite du rush B avec timings et utility.', category: 'Stratégies' },
+  { id: 8, title: 'Warzone Meta Loadout S3', game: 'CoD', gameId: 'call-of-duty', difficulty: 'Intermédiaire', isPremium: false, downloads: 5600, views: 22000, rating: 4.9, description: 'Les meilleurs loadouts de la saison 3 de Warzone.', category: 'Loadouts' },
+  { id: 9, title: 'Slide Cancel & Movement Tech', game: 'CoD', gameId: 'call-of-duty', difficulty: 'Avancé', isPremium: true, downloads: 3200, views: 14000, rating: 4.7, description: 'Techniques de mouvement avancées pour gagner chaque gunfight.', category: 'Mouvement' },
+  { id: 10, title: 'Rotation Map Control Guide', game: 'CoD', gameId: 'call-of-duty', difficulty: 'Expert', isPremium: true, downloads: 1200, views: 5600, rating: 4.8, description: 'Maîtrise les rotations et le contrôle de carte en Warzone.', category: 'Stratégies' },
+  { id: 11, title: 'Tank Warfare Tactics', game: 'BF', gameId: 'battlefield', difficulty: 'Avancé', isPremium: false, downloads: 1800, views: 6700, rating: 4.4, description: 'Dominer avec les chars : positionnement et angles.', category: 'Véhicules' },
+  { id: 12, title: 'Flash Pop Techniques', game: 'CS2', gameId: 'counter-strike', difficulty: 'Expert', isPremium: true, downloads: 980, views: 4100, rating: 4.9, description: 'Flashs popées parfaites pour entry frag à chaque round.', category: 'Grenades' },
+  { id: 13, title: 'Sniper Quickscope Mastery', game: 'CoD', gameId: 'call-of-duty', difficulty: 'Expert', isPremium: true, downloads: 2400, views: 11000, rating: 4.6, description: 'Deviens un quickscoper redoutable en multijoueur.', category: 'Aim' },
+  { id: 14, title: 'Conquest Point Capture Order', game: 'BF', gameId: 'battlefield', difficulty: 'Intermédiaire', isPremium: false, downloads: 1500, views: 5400, rating: 4.3, description: 'L\'ordre optimal de capture des points en Conquest.', category: 'Stratégies' },
+  { id: 15, title: 'Crosshair Placement Guide', game: 'CS2', gameId: 'counter-strike', difficulty: 'Débutant', isPremium: false, downloads: 6800, views: 28000, rating: 4.9, description: 'La base du headshot : placement de viseur parfait.', category: 'Aim' },
+  { id: 16, title: 'Audio Settings Pro Config', game: 'CoD', gameId: 'call-of-duty', difficulty: 'Débutant', isPremium: false, downloads: 3900, views: 16000, rating: 4.5, description: 'Configuration audio optimale pour entendre les pas ennemis.', category: 'Settings' },
 ];
 
 const difficultyColors: Record<Difficulty, string> = {
@@ -64,6 +65,7 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
   const [gameFilter, setGameFilter] = useState<GameFilter>('all');
   const [difficultyFilter, setDifficultyFilter] = useState<string>('all');
   const [showPremiumOnly, setShowPremiumOnly] = useState(false);
+  const [unlockedIds, setUnlockedIds] = useState<number[]>([1]);
 
   const filtered =astuces.filter((a) => {
     if (searchQuery && !a.title.toLowerCase().includes(searchQuery.toLowerCase()) && !a.description.toLowerCase().includes(searchQuery.toLowerCase())) return false;
@@ -72,6 +74,14 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
     if (showPremiumOnly && !a.isPremium) return false;
     return true;
   });
+
+  const handleUnlock = (id: number) => {
+    if (unlockedIds.includes(id)) {
+      setUnlockedIds(unlockedIds.filter(i => i !== id));
+    } else {
+      setUnlockedIds([...unlockedIds, id]);
+    }
+  };
 
   return (
     <section id="astuces-section" className="bg-gray-950 py-20 md:py-28">
@@ -155,6 +165,7 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {filtered.slice(0, 9).map((astuce) => {
             const GameIcon = gameIcons[astuce.game] || Crosshair;
+            const isUnlocked = unlockedIds.includes(astuce.id);
 
             return (
               <div
@@ -163,27 +174,39 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
                   astuce.isPremium ? 'border-yellow-500/20 hover:border-yellow-500/40' : 'border-gray-800 hover:border-red-500/30'
                 }`}
               >
-                {/* Cadenas - Toutes les astuces sont verrouillées */}
-                <div className="absolute inset-0 z-20 bg-gray-900/70 backdrop-blur-[1px] flex items-center justify-center rounded-xl">
-                  <div className="flex flex-col items-center gap-2">
-                    <Lock className="w-10 h-10 text-gray-400" />
-                    <span className="text-gray-300 text-sm font-semibold">Contenu verrouillé</span>
-                    <button
-                      onClick={() => onNavigate('premium')}
-                      className="mt-2 px-4 py-2 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-lg transition-colors"
-                    >
-                      Débloquer avec Premium
-                    </button>
+                {/* Cadenas - Verrouillé par défaut, débloqué si unlockedId correspond */}
+                {!isUnlocked && astuce.id !== 1 && (
+                  <div className="absolute inset-0 z-20 bg-gray-900/70 backdrop-blur-[1px] flex items-center justify-center rounded-xl">
+                    <div className="flex flex-col items-center gap-2">
+                      <Lock className="w-10 h-10 text-gray-400" />
+                      <span className="text-gray-300 text-sm font-semibold">Contenu verrouillé</span>
+                      <button
+                        onClick={() => handleUnlock(astuce.id)}
+                        className="mt-2 px-4 py-2 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-lg transition-colors"
+                      >
+                        Débloquer
+                      </button>
+                    </div>
                   </div>
-                </div>
+                )}
 
-                {/* Lock Badge */}
-                <div className="absolute top-3 right-3 z-30 flex items-center gap-1 px-2 py-1 bg-gray-800/90 border border-gray-700 rounded-md text-xs font-bold text-yellow-500">
-                  <Lock className="w-3 h-3" />
-                  PREMIUM
-                </div>
+                {/* Lock Badge - only for premium content that is locked */}
+                {astuce.isPremium && !isUnlocked && (
+                  <div className="absolute top-3 right-3 z-30 flex items-center gap-1 px-2 py-1 bg-gray-800/90 border border-gray-700 rounded-md text-xs font-bold text-yellow-500">
+                    <Lock className="w-3 h-3" />
+                    PREMIUM
+                  </div>
+                )}
 
-                <div className="p-5 opacity-50">
+                {/* Unlocked indicator */}
+                {isUnlocked && (
+                  <div className="absolute top-3 right-3 z-30 flex items-center gap-1 px-2 py-1 bg-green-600/20 border border-green-500/30 rounded-md text-xs font-bold text-green-400">
+                    <Unlock className="w-3 h-3" />
+                    DÉBLOQUÉ
+                  </div>
+                )}
+
+                <div className={`p-5 ${isUnlocked ? '' : 'opacity-40'}`}>
                   {/* Game & Category */}
                   <div className="flex items-center gap-2 mb-3">
                     <GameIcon className={`w-4 h-4 ${gameColors[astuce.game]}`} />
@@ -198,8 +221,8 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
                   </h3>
 
                   {/* Description */}
-                  <p className="text-gray-400 text-sm leading-relaxed mb-4">
-                    {astuce.description}
+                  <p className={`text-gray-400 text-sm leading-relaxed mb-4 ${isUnlocked ? 'whitespace-pre-line' : ''}`}>
+                    {isUnlocked ? astuce.description : ''}
                   </p>
 
                   {/* Difficulty */}
@@ -209,21 +232,29 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
                     </span>
                   </div>
 
-                  {/* Stats */}
-                  <div className="flex items-center gap-4 text-xs text-gray-500 mb-4">
-                    <span className="flex items-center gap-1">
-                      <Eye className="w-3.5 h-3.5" />
-                      {astuce.views.toLocaleString()}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Download className="w-3.5 h-3.5" />
-                      {astuce.downloads.toLocaleString()}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Star className="w-3.5 h-3.5 text-yellow-500" />
-                      {astuce.rating}
-                    </span>
-                  </div>
+                  {/* Stats - only show if not zero */}
+                  {(astuce.downloads > 0 || astuce.views > 0 || astuce.rating > 0) && (
+                    <div className="flex items-center gap-4 text-xs text-gray-500 mb-4">
+                      {astuce.views > 0 && (
+                        <span className="flex items-center gap-1">
+                          <Eye className="w-3.5 h-3.5" />
+                          {astuce.views.toLocaleString()}
+                        </span>
+                      )}
+                      {astuce.downloads > 0 && (
+                        <span className="flex items-center gap-1">
+                          <Download className="w-3.5 h-3.5" />
+                          {astuce.downloads.toLocaleString()}
+                        </span>
+                      )}
+                      {astuce.rating > 0 && (
+                        <span className="flex items-center gap-1">
+                          <Star className="w-3.5 h-3.5 text-yellow-500" />
+                          {astuce.rating}
+                        </span>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             );
