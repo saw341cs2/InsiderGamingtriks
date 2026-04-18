@@ -203,7 +203,7 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
                 <div className="flex items-center gap-2 mb-1">
                   {React.createElement(gameIcons[selectedAstuce.game] || Crosshair, { className: `w-4 h-4 ${gameColors[selectedAstuce.game]}` })}
                   <span className={`text-xs font-semibold ${gameColors[selectedAstuce.game]}`}>{selectedAstuce.game}</span>
-                  <span className="text-gray-500">·</span>
+                  <span <p className="text-gray-500 text-xs leading-relaxed mb-3 line-clamp-2 h-8 overflow-hidden">>·</span>
                   <span className="text-xs text-gray-400">{selectedAstuce.category}</span>
                 </div>
                 <h2 className="text-white font-black text-xl leading-tight">{selectedAstuce.title}</h2>
