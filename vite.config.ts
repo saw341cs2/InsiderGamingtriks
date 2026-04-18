@@ -8,7 +8,7 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 5175,
   },
-  base: '/InsiderGamingtriks/',
+  base: './',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
