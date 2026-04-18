@@ -139,7 +139,7 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
             const GameIcon = gameIcons[astuce.game] || Crosshair;
             const imgSrc = astuce.image || defaultImages[astuce.game];
             return (
-              <div key={astuce.id} onClick={() => openModal(astuce)} className={`group relative bg-gray-900/60 border rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-black/40 ${astuce.isPremium ? 'border-yellow-500/20 hover:border-yellow-500/50' : 'border-gray-800 hover:border-red-500/40'}`}>
+              <div key={astuce.id} onClick={() => openModal(astuce)} className={`group relative bg-gray-900/60 border rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-black/40 h-[380px] ${
 
                 <div className="absolute top-3 right-3 z-20">
                   {astuce.isPremium ? (
