@@ -24,8 +24,8 @@ interface Astuce {
 }
 
 const astuces: Astuce[] = [
-  { id: 1, title: 'Crosshair Placement + Pré-Aim', game: 'CS2', gameId: 'counter-strike', difficulty: 'Débutant', isPremium: false, downloads: 1850, views: 7200, rating: 4.8, category: 'Aim', image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&q=80', description: "Travaille ton crosshair placement pour gagner tes duels plus facilement sur CS2.\n\nLe principe est simple : garde toujours ton viseur à hauteur de tête et place-le à l'endroit où un ennemi peut apparaître avant même de le voir.\n\nComment s'entraîner\n1. Lance une map d'entraînement ou une partie hors ligne.\n2. Déplace-toi lentement sur la carte en gardant le viseur au niveau de la tête.\n3. À chaque angle, vise l'endroit exact où un adversaire pourrait sortir.\n4. Répète l'exercice sans tirer, puis ajoute des bots pour travailler tes réflexes.\n\nConseil pratique\nCommence sur Mirage ou Dust2 avec un seul trajet précis, puis augmente progressivement la vitesse d'exécution." },
-  { id: 2, title: 'Smoke Lineup Mirage - Site A', game: 'CS2', gameId: 'counter-strike', difficulty: 'Débutant', isPremium: false, downloads: 2340, views: 8900, rating: 4.8, category: 'Grenades', image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&q=80', description: 'Les 5 smokes essentielles pour prendre le site A sur Mirage.\n\nMaîtriser ces smokes te permettra de couper les lignes de vue critiques et d\'exécuter proprement sur le site A.' },
+  { id: 1, title: 'Crosshair Placement + Pré-Aim', game: 'CS2', gameId: 'counter-strike', difficulty: 'Débutant', isPremium: false, downloads: 1850, views: 7200, rating: 4.8, category: 'Aim', image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&q=80', description: "Travaille ton crosshair placement pour gagner tes duels plus facilement sur CS2.\n\nComment s'entraîner\n1. Lance une map d'entraînement.\n2. Garde le viseur à hauteur de tête.\n3. Vise où l'ennemi peut sortir.\n4. Ajoute des bots pour les réflexes." },
+  { id: 2, title: 'Smoke Lineup Mirage - Site A', game: 'CS2', gameId: 'counter-strike', difficulty: 'Débutant', isPremium: false, downloads: 2340, views: 8900, rating: 4.8, category: 'Grenades', image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&q=80', description: 'Les 5 smokes essentielles pour prendre le site A sur Mirage.' },
   { id: 3, title: 'Spray Control AK-47 Masterclass', game: 'CS2', gameId: 'counter-strike', difficulty: 'Avancé', isPremium: true, downloads: 1560, views: 6200, rating: 4.9, category: 'Aim', image: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=400&q=80', description: 'Maîtrise le pattern de spray de l\'AK-47 en 7 étapes.' },
   { id: 4, title: 'Positions Sniper Dust2', game: 'CS2', gameId: 'counter-strike', difficulty: 'Intermédiaire', isPremium: false, downloads: 3100, views: 12000, rating: 4.7, category: 'Positions', image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&q=80', description: 'Les meilleures positions AWP pour contrôler la carte Dust2.' },
   { id: 5, title: 'Pilotage Hélicoptère Avancé', game: 'BF', gameId: 'battlefield', difficulty: 'Expert', isPremium: true, downloads: 890, views: 4500, rating: 4.6, category: 'Véhicules', image: 'https://images.unsplash.com/photo-1609220136736-443140cffec6?w=400&q=80', description: 'Techniques de vol avancées pour dominer le ciel dans Battlefield.' },
@@ -139,8 +139,12 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
             const GameIcon = gameIcons[astuce.game] || Crosshair;
             const imgSrc = astuce.image || defaultImages[astuce.game];
             return (
-              <div key={astuce.id} onClick={() => openModal(astuce)} className={`group relative bg-gray-900/60 border rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-black/40 h-[380px] ${
-
+              <div
+                key={astuce.id}
+                onClick={() => openModal(astuce)}
+                style={{ height: '340px' }}
+                className={`group relative bg-gray-900/60 border rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-black/40 flex flex-col ${astuce.isPremium ? 'border-yellow-500/20 hover:border-yellow-500/50' : 'border-gray-800 hover:border-red-500/40'}`}
+              >
                 <div className="absolute top-3 right-3 z-20">
                   {astuce.isPremium ? (
                     <span className="flex items-center gap-1 px-2 py-1 bg-gray-900/90 border border-yellow-500/40 rounded-md text-xs font-bold text-yellow-400"><Lock className="w-3 h-3" />PREMIUM</span>
@@ -149,29 +153,29 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
                   )}
                 </div>
 
-                <div className="relative h-40 overflow-hidden">
+                <div className="relative h-40 flex-shrink-0 overflow-hidden">
                   <img src={imgSrc} alt={astuce.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                   {astuce.isPremium && <div className="absolute inset-0 bg-gray-900/50 flex items-center justify-center"><Lock className="w-8 h-8 text-yellow-400/70" /></div>}
                   <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-gray-900 to-transparent" />
                 </div>
 
-                <div <div className="p-4 flex flex-col">
+                <div className="p-4 flex flex-col flex-1 overflow-hidden">
                   <div className="flex items-center gap-2 mb-2">
                     <GameIcon className={`w-3.5 h-3.5 ${gameColors[astuce.game]}`} />
                     <span className={`text-xs font-semibold ${gameColors[astuce.game]}`}>{astuce.game}</span>
                     <span className="text-gray-600">·</span>
                     <span className="text-xs text-gray-500">{astuce.category}</span>
                   </div>
-                  <h3 className="text-white font-bold text-base mb-2 leading-tight group-hover:text-red-400 transition-colors">{astuce.title}</h3>
-                  <p className="text-gray-500 text-xs leading-relaxed mb-3 line-clamp-2">{astuce.description.split('\n')[0]}</p>
-                  <div className="flex items-center justify-between">
+                  <h3 className="text-white font-bold text-base mb-1 leading-tight group-hover:text-red-400 transition-colors line-clamp-1">{astuce.title}</h3>
+                  <p className="text-gray-500 text-xs leading-relaxed mb-2 line-clamp-1 overflow-hidden">{astuce.description.split('\n')[0]}</p>
+                  <div className="flex items-center justify-between mt-auto">
                     <span className={`inline-flex px-2 py-0.5 text-xs font-semibold rounded border ${difficultyColors[astuce.difficulty]}`}>{astuce.difficulty}</span>
                     <div className="flex items-center gap-3 text-xs text-gray-500">
                       <span className="flex items-center gap-1"><Eye className="w-3 h-3" />{astuce.views.toLocaleString()}</span>
                       <span className="flex items-center gap-1"><Star className="w-3 h-3 text-yellow-500" />{astuce.rating}</span>
                     </div>
                   </div>
-                  <button className={`mt-3 w-full flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-bold transition-all ${astuce.isPremium ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 hover:bg-yellow-500/20' : 'bg-red-600/10 text-red-400 border border-red-500/20 hover:bg-red-600/20'}`}>
+                  <button className={`mt-2 w-full flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-bold transition-all ${astuce.isPremium ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 hover:bg-yellow-500/20' : 'bg-red-600/10 text-red-400 border border-red-500/20 hover:bg-red-600/20'}`}>
                     {astuce.isPremium ? <>Débloquer Premium <Lock className="w-3 h-3" /></> : <>Lire l'astuce <ChevronRight className="w-3.5 h-3.5" /></>}
                   </button>
                 </div>
@@ -192,7 +196,6 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
       {selectedAstuce && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={closeModal}>
           <div className="relative bg-gray-900 border border-gray-700 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
-
             <div className="relative h-52 overflow-hidden rounded-t-2xl">
               <img src={selectedAstuce.image || defaultImages[selectedAstuce.game]} alt={selectedAstuce.title} className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent" />
@@ -203,13 +206,12 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
                 <div className="flex items-center gap-2 mb-1">
                   {React.createElement(gameIcons[selectedAstuce.game] || Crosshair, { className: `w-4 h-4 ${gameColors[selectedAstuce.game]}` })}
                   <span className={`text-xs font-semibold ${gameColors[selectedAstuce.game]}`}>{selectedAstuce.game}</span>
-                  <span <p className="text-gray-500 text-xs leading-relaxed mb-3 line-clamp-2 h-8 overflow-hidden">>·</span>
+                  <span className="text-gray-500">·</span>
                   <span className="text-xs text-gray-400">{selectedAstuce.category}</span>
                 </div>
                 <h2 className="text-white font-black text-xl leading-tight">{selectedAstuce.title}</h2>
               </div>
             </div>
-
             <div className="p-6">
               <div className="flex items-center gap-3 mb-5">
                 <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-md border ${difficultyColors[selectedAstuce.difficulty]}`}>{selectedAstuce.difficulty}</span>
