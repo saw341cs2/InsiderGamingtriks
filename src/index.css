@@ -92,10 +92,25 @@
     @apply border-border;
   }
 
-  html, body, #root {
-    background-color: #0f172a !important;
+  html {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+
+  html.dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
     min-height: 100vh;
-    color: #f1f5f9 !important;
+  }
+
+  #root {
+    min-height: 100vh;
+    background-color: hsl(var(--background));
   }
 }
 

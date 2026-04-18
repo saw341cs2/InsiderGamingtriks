@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import React from 'react';
 import { Crown, Star, Trophy, Users } from 'lucide-react';
 

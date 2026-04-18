@@ -1,32 +1,17 @@
-import { defineConfig } from "vite"
-import react from "@vitejs/plugin-react"
-import path from "path"
-import fs from "fs"
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import path from 'path'
 
 export default defineConfig({
-  base: '/InsiderGamingtriks/',
-  plugins: [
-    react(),
-    {
-      name: 'copy-nojekyll',
-      closeBundle() {
-        const docsDir = path.resolve(__dirname, 'docs');
-        if (!fs.existsSync(docsDir)) {
-          fs.mkdirSync(docsDir, { recursive: true });
-        }
-        const nojekyll = path.resolve(__dirname, 'docs/.nojekyll');
-        fs.writeFileSync(nojekyll, '');
-        console.log('Created .nojekyll in docs folder');
-      }
-    }
-  ],
-  
-  build: {
-    outDir: "docs"
+  plugins: [react()],
+  server: {
+    host: '0.0.0.0',
+    port: 5175,
   },
+  base: '/InsiderGamingtriks/',
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src")
-    }
-  }
-}) 
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+})
