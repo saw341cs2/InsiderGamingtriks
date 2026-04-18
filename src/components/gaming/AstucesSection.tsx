@@ -155,7 +155,7 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
                   <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-gray-900 to-transparent" />
                 </div>
 
-                <div className="p-4">
+                <div <div className="p-4 flex flex-col">
                   <div className="flex items-center gap-2 mb-2">
                     <GameIcon className={`w-3.5 h-3.5 ${gameColors[astuce.game]}`} />
                     <span className={`text-xs font-semibold ${gameColors[astuce.game]}`}>{astuce.game}</span>
