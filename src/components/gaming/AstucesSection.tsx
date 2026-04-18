@@ -92,7 +92,7 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
           <h2 className="text-3xl md:text-5xl font-black text-white mb-4">
             Astuces & <span className="text-red-500">Guides</span>
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto">
+          <p className="text-gray-400 text-sm leading-relaxed mb-4 astuce-desc"
             Plus de 150 astuces classées par jeu, difficulté et catégorie. Télécharge gratuitement ou passe Premium pour tout débloquer.
           </p>
         </div>
