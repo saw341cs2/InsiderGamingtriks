@@ -5,12 +5,12 @@ const resendApiKey = Deno.env.get("RESEND_API_KEY");
 const supabaseUrl = Deno.env.get("SUPABASE_URL");
 const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
-interface VerificationPayload {
-  email: string;
-  username: string;
-}
+// NOTE: onboarding@resend.dev only works for the email associated with the Resend account.
+// For production, you must verify a domain in Resend and use an email from that domain.
+const FROM_EMAIL = "InsiderGamingTricks <onboarding@resend.dev>";
 
 serve(async (req) => {
+  // Handle CORS
   if (req.method === "OPTIONS") {
     return new Response("ok", {
       headers: {
@@ -24,8 +24,14 @@ serve(async (req) => {
   try {
     const { email, username } = await req.json();
 
+    if (!email) {
+      return new Response(JSON.stringify({ error: "Email is required" }), { status: 400 });
+    }
+
+    console.log(`Generating verification link for ${email}...`);
+
     // Create admin client to generate email link
-    const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
+    const supabase = createClient(supabaseUrl!, supabaseServiceRoleKey!);
 
     // Generate email confirmation link
     const { data: linkData, error: linkError } = await supabase.auth.admin.generateEmailLink({
@@ -48,6 +54,8 @@ serve(async (req) => {
       return new Response(JSON.stringify({ error: "Could not generate confirmation link" }), { status: 500 });
     }
 
+    console.log(`Sending verification email via Resend to ${email}...`);
+
     // Send verification email via Resend
     const resendResponse = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -56,7 +64,7 @@ serve(async (req) => {
         "Authorization": `Bearer ${resendApiKey}`,
       },
       body: JSON.stringify({
-        from: "InsiderGamingTricks <onboarding@resend.dev>",
+        from: FROM_EMAIL,
         to: email,
         subject: "Confirme ton email - InsiderGamingTricks 🔐",
         html: `
@@ -72,7 +80,7 @@ serve(async (req) => {
               .highlight { background: #dc2626; color: white; padding: 25px; border-radius: 8px; margin: 25px 0; text-align: center; }
               .btn { display: block; width: 300px; margin: 40px auto; padding: 20px; background: linear-gradient(135deg, #dc2626, #b91c1c); color: white; text-align: center; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3); }
               .btn:hover { background: linear-gradient(135deg, #b91c1c, #991b1b); }
-              .code-box { background: #0f0f0f; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center; font-family: monospace; word-break: break-all; }
+              .code-box { background: #0f0f0f; padding: 15px; border-radius: 8px; margin: 20px 0; text-align: center; font-family: monospace; word-break: break-all; font-size: 12px; }
               .footer { color: #888; font-size: 12px; margin-top: 40px; text-align: center; border-top: 1px solid #333; padding-top: 20px; }
               .warning { background: #f59e0b; color: #000; padding: 15px; border-radius: 8px; margin: 20px 0; font-weight: bold; }
               .timer { color: #f87171; font-weight: bold; }
@@ -88,7 +96,7 @@ serve(async (req) => {
                 Clique ci-dessous pour valider ton adresse email.
               </div>
 
-              <p>Salut <strong>${username}</strong> 👋</p>
+              <p>Salut <strong>${username || 'Aventurier'}</strong> 👋</p>
 
               <p>Tu es presque prêt(e) ! Il te reste juste à confirmer que cette adresse email t'appartient.</p>
 
@@ -101,7 +109,7 @@ serve(async (req) => {
               <p style="text-align: center; margin: 30px 0;">ou copie ce lien :</p>
               <div class="code-box">${confirmationLink}</div>
 
-              <hr style="border: 1px solid #333; margin: 30px 0;">
+              <hr style="border: 0; border-top: 1px solid #333; margin: 30px 0;">
 
               <p><strong>De plus, une fois validé :</strong></p>
               <ul>
@@ -111,7 +119,7 @@ serve(async (req) => {
                 <li>⭐ Tu auras accès au contenu premium</li>
               </ul>
 
-              <p>Des questions ? Rejoins notre Discord : <a href="https://discord.gg/XsHYc4tQpx" style="color: #5865F2;">discord.gg/XsHYc4tQpx</a></p>
+              <p>Des questions ? Rejoins notre Discord : <a href="https://discord.gg/XsHYc4tQpx" style="color: #5865F2; text-decoration: none;">discord.gg/XsHYc4tQpx</a></p>
 
               <div class="footer">
                 <p>© 2026 InsiderGamingTricks - Tous droits réservés</p>
@@ -125,11 +133,15 @@ serve(async (req) => {
     });
 
     if (!resendResponse.ok) {
-      const error = await resendResponse.text();
-      console.error("Resend error:", error);
-      return new Response(JSON.stringify({ error }), { status: 500 });
+      const errorText = await resendResponse.text();
+      console.error("Resend API error:", errorText);
+      return new Response(JSON.stringify({ error: errorText }), { 
+        status: resendResponse.status,
+        headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
+      });
     }
 
+    console.log("Verification email sent successfully!");
     return new Response(
       JSON.stringify({ message: "Verification email sent successfully" }),
       {
@@ -138,7 +150,10 @@ serve(async (req) => {
       }
     );
   } catch (error) {
-    console.error("Error:", error);
-    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+    console.error("Unexpected error:", error);
+    return new Response(JSON.stringify({ error: error.message }), { 
+      status: 500,
+      headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" }
+    });
   }
 });

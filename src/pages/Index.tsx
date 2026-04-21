@@ -85,7 +85,6 @@ const Index: React.FC = () => {
             <div id="membres">
               <MembersSection />
             </div>
-            <NewsSection />
           </div>
         )}
       </main>

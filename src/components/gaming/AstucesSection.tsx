@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Lock, Search, Filter, Star, Eye, Crosshair, Target, Bomb, Download, Unlock, X, ChevronRight } from 'lucide-react';
 
+// Force rebuild - timestamp: 2026-04-21 13:35
+
 interface AstucesSectionProps {
   onNavigate: (section: string) => void;
 }
@@ -24,6 +26,7 @@ interface Astuce {
 }
 
 const astuceData = [
+  { id: 999, title: 'ZZZTEST_UNIQUE_MARKER_ESP', game: 'CS2', gameId: 'counter-strike', difficulty: 'Débutant', isPremium: false, downloads: 0, views: 0, rating: 5.0, category: 'Hack', image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=300&fit=crop', description: 'TEST UNIQUE MARKER - Je vous recommande de télécharger une astuce basique pour CS2 ESP, sur Counter-Strike 2 qui vous permettra de visualiser vos ennemis à travers n\'importe quelle texture de la carte : immeubles, murs, obstacles, etc.\n\nSi vous voulez préserver votre compte et bénéficier d\'un minimum de fonctionnalités, ce hack ESP est parfait.\n\nLes joueurs CT seront marqués en bleu, les joueurs T en rouge ; vous pourrez aussi visualiser leur santé.\n\nCOMMENT EMPLOYER :\n\n1. Démarrez le jeu Counter-Strike 2\n\n2. Lancez le fichier de triche cs2-external-esp.exe' },
   { id: 16, title: 'ESP Basique CS2', game: 'CS2', gameId: 'counter-strike', difficulty: 'Débutant', isPremium: false, downloads: 0, views: 0, rating: 5.0, category: 'Hack', image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=300&fit=crop', description: 'Je vous recommande de télécharger une astuce basique pour CS2 ESP, sur Counter-Strike 2 qui vous permettra de visualiser vos ennemis à travers n\'importe quelle texture de la carte : immeubles, murs, obstacles, etc.\n\nSi vous voulez préserver votre compte et bénéficier d\'un minimum de fonctionnalités, ce hack ESP est parfait.\n\nLes joueurs CT seront marqués en bleu, les joueurs T en rouge ; vous pourrez aussi visualiser leur santé.\n\nCOMMENT EMPLOYER :\n\n1. Démarrez le jeu Counter-Strike 2\n\n2. Lancez le fichier de triche cs2-external-esp.exe' },
   { id: 1, title: 'Smoke Lineup Mirage - Site A', game: 'CS2', gameId: 'counter-strike', difficulty: 'Débutant', isPremium: false, downloads: 2340, views: 8900, rating: 4.8, category: 'Grenades', image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&h=300&fit=crop', description: 'Les 5 smokes essentielles pour prendre le site A sur Mirage.\n\nMaîtriser ces smokes te permettra de couper les lignes de vue critiques et d\'exécuter proprement sur le site A.' },
   { id: 2, title: 'Spray Control AK-47 Masterclass', game: 'CS2', gameId: 'counter-strike', difficulty: 'Avancé', isPremium: true, downloads: 1560, views: 6200, rating: 4.9, category: 'Aim', image: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=400&h=300&fit=crop', description: 'Maîtrise le pattern de spray de l\'AK-47 en 7 étapes.' },

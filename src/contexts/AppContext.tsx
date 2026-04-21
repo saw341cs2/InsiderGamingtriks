@@ -105,12 +105,26 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       
       localStorage.setItem('userEmail', email);
       localStorage.setItem('userPassword', password);
+
+      // Trigger Edge Functions to send emails via Resend
+      try {
+        console.log('Attempting to send verification email...');
+        await supabase.functions.invoke('send-verification-email', {
+          body: { email, username }
+        });
+        
+        console.log('Attempting to send welcome email...');
+        await supabase.functions.invoke('send-welcome-email', {
+          body: { email, username }
+        });
+      } catch (emailErr) {
+        console.error('Error triggering email functions:', emailErr);
+        // We don't throw here as the account is already created
+      }
       
       toast({
-        title: "Bienvenue " + username + " ! 🎮",
-        description: data.user?.email_confirmed_at 
-          ? "Ton compte a été créé. Profite des astuces exclusives!"
-          : "Un email de confirmation a été envoyé. Vérifie ta boîte mail et confirme ton compte.",
+        title: "Bienvenue chez Insider Gaming Tricks ! 👾",
+        description: "Inscription réussie ! Vérifie tes emails pour confirmer ton compte et commencer l'aventure.",
       });
     } catch (err: any) {
       console.error('Signup error:', err);
