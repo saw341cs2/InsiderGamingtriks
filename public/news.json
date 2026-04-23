@@ -1,6 +1,24 @@
 {
   "articles": [
     {
+      "title": "⚔️ Nouveau jeu fps annoncé",
+      "body": "Un nuevo jeu fps arrive sur PC et console. Les joueurs attendent avec impatience ce titre prometteur. #FPS #Gaming #JeuxVideo",
+      "url": "https://example.com/news3",
+      "image": "https://images.unsplash.com/photo-1552820728-8b83bb6b2b0f?w=800&h=450&fit=crop",
+      "dateTimePub": "2026-04-23T16:18:46.927Z",
+      "source": "InsiderGamingtriks",
+      "topic": "FPS"
+    },
+    {
+      "title": "🏆 Tournoi esport: les équipes favorites",
+      "body": "Analyse des équipes favorites pour les prochains tournois majeurs. Qui va gagner? #Esport #Competition #Esport",
+      "url": "https://example.com/news2",
+      "image": "https://images.unsplash.com/photo-1542751110-97427bbecf20?w=800&h=450&fit=crop",
+      "dateTimePub": "2026-04-23T16:18:46.927Z",
+      "source": "InsiderGamingtriks",
+      "topic": "COMPETITION"
+    },
+    {
       "title": "📢 Asus ROG Strix OLED XG27AQDNG à 599 euros : un moniteur QD-OLED 360 Hz avec 0,03 ms de temps de réponse et 100 euros de remise",
       "body": "L’Asus ROG Strix OLED XG27AQDNG est un moniteur gaming QD-OLED de 26,5 pouces en 2K QHD, avec un taux de rafraîchissement de 360 Hz, un temps de réponse de 0,03 ms, 99 % du DCI-P3, 1 000 nits en HD...",
       "url": "https://www.lefigaro.fr/bons-plans/high-tech/asus-rog-strix-oled-xg27aqdng-a-599-euros-un-moniteur-qd-oled-360-hz-avec-0-03-ms-de-temps-de-reponse-et-100-euros-de-remise-20260422",
@@ -35,25 +53,7 @@
       "dateTimePub": "2026-04-22T07:50:34.238Z",
       "source": "InsiderGamingtriks",
       "topic": "JEUX"
-    },
-    {
-      "title": "✨ Gaming. Hello Kitty va avoir le droit (très) bientôt à ses propres jeux vidéo",
-      "body": "L’entreprise japonaise Sanrio, à l’origine de Hello Kitty, a lancé mardi 21 avril 2026 une division jeu vidéo pour tenter d’attirer de nouveaux fans vers son emblématique personnage. #JeuxVideo",
-      "url": "https://www.paris-normandie.fr/id712549/article/2026-04-21/gaming-hello-kitty-va-avoir-le-droit-tres-bientot-ses-propres-jeux-video",
-      "image": "https://prmeng.rosselcdn.net/sites/default/files/dpistyles_v2/prm_16_9_606w/2026/04/12/node_710509/58465212/public/2026/04/12/62694085.jpeg?itok=EOi0h71h1775983967",
-      "dateTimePub": "2026-04-22T07:50:34.239Z",
-      "source": "InsiderGamingtriks",
-      "topic": "JEUX"
-    },
-    {
-      "title": "📢 Chambéry Numéri’Play, un mini-festival dédié aux jeux vidéo et au numérique",
-      "body": "Les amateurs de jeux vidéo en tout genre, de rétro gaming ou encore d’ateliers numériques vont être servis. Entre mercredi 22 et samedi 25 avril, ... #Actualites",
-      "url": "https://www.ledauphine.com/culture-loisirs/2026/04/21/numeri-play-un-mini-festival-dedie-aux-jeux-video-et-au-numerique",
-      "image": "https://cdn-s-www.ledauphine.com/images/32B7E9E6-22AD-4A95-8915-DF5ABEA98A8E/FB1200/photo-1776762625.jpg",
-      "dateTimePub": "2026-04-22T07:50:34.239Z",
-      "source": "InsiderGamingtriks",
-      "topic": "JEUX"
     }
   ],
-  "generatedAt": "2026-04-23T07:57:02.220Z"
+  "generatedAt": "2026-04-23T16:18:46.927Z"
 }

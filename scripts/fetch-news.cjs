@@ -194,7 +194,7 @@ function mergeArticles(existingArticles, newArticles, maxTotal = 6) {
 
 async function main() {
   console.log('=== Fetching Gaming News ===');
-  
+   
   const existingPath = path.join(__dirname, '..', 'public', 'news.json');
   let existingArticles = [];
   if (fs.existsSync(existingPath)) {
@@ -206,27 +206,34 @@ async function main() {
       console.log('No existing news found');
     }
   }
-  
+   
   let allArticles = [];
-  
+   
   const gnews = await fetchFromGNews();
-  
+   
   allArticles = [...gnews];
-  
+   
   if (allArticles.length === 0) {
     console.log('No articles from APIs, using fallback...');
     allArticles = getFallbackArticles();
   }
-  
-  console.log(`Total articles fetched: ${allArticles.length}`);
-  
+   
+  // Filter to only today's articles
+  const todayArticles = allArticles.filter(isArticleFromToday);
+  console.log(`Today's articles: ${todayArticles.length} out of ${allArticles.length}`);
+   
+  // Use today's articles, or fallback to all if none found today
+  const articlesToProcess = todayArticles.length > 0 ? todayArticles : allArticles;
+   
+  console.log(`Processing ${articlesToProcess.length} articles`);
+   
   const categorized = {
     fps: [],
     competition: [],
     jeux: []
   };
-  
-  for (const article of allArticles) {
+   
+  for (const article of articlesToProcess) {
     const topic = categorizeArticle(article.title, article.description || article.content);
     if (topic && categorized[topic]) {
       categorized[topic].push(article);
@@ -239,38 +246,36 @@ async function main() {
     jeux: categorized.jeux.length
   });
   
-  const finalArticles = [];
-  
-  if (categorized.fps.length > 0) {
-    const article = categorized.fps[Math.floor(Math.random() * categorized.fps.length)];
-    finalArticles.push(transformContent(article, 'fps'));
-  }
-  
-  if (categorized.competition.length > 0) {
-    const article = categorized.competition[Math.floor(Math.random() * categorized.competition.length)];
-    finalArticles.push(transformContent(article, 'competition'));
-  } else if (categorized.jeux.length > 0) {
-    const article = categorized.jeux[Math.floor(Math.random() * categorized.jeux.length)];
-    finalArticles.push(transformContent(article, 'jeux'));
-  }
-  
-  while (finalArticles.length < 3) {
-    const available = categorized.jeux.filter(a => !finalArticles.some(f => f.title === a.title));
-    if (available.length === 0) break;
-    const article = available[Math.floor(Math.random() * available.length)];
-    finalArticles.push(transformContent(article, 'jeux'));
-  }
-  
-  if (finalArticles.length === 0) {
-    const fallback = getFallbackArticles();
-    finalArticles.push(transformContent(fallback[0], 'jeux'));
-    if (fallback[1]) {
-      finalArticles.push(transformContent(fallback[1], 'competition'));
-    }
-    if (fallback[2]) {
-      finalArticles.push(transformContent(fallback[2], 'fps'));
-    }
-  }
+   const finalArticles = [];
+   
+   // Aim for 2 articles: one FPS and one Competition if available
+   if (categorized.fps.length > 0) {
+     const article = categorized.fps[Math.floor(Math.random() * categorized.fps.length)];
+     finalArticles.push(transformContent(article, 'fps'));
+   }
+   
+   if (categorized.competition.length > 0) {
+     const article = categorized.competition[Math.floor(Math.random() * categorized.competition.length)];
+     finalArticles.push(transformContent(article, 'competition'));
+   }
+   
+   // If we still have less than 2, fill with Jeux articles
+   while (finalArticles.length < 2 && categorized.jeux.length > 0) {
+     const available = categorized.jeux.filter(a => !finalArticles.some(f => f.title === a.title));
+     if (available.length === 0) break;
+     const article = available[Math.floor(Math.random() * available.length)];
+     finalArticles.push(transformContent(article, 'jeux'));
+   }
+   
+   // Fallback: if still no articles, use fallback articles (up to 2)
+   if (finalArticles.length === 0) {
+     const fallback = getFallbackArticles();
+     for (let i = 0; i < Math.min(2, fallback.length); i++) {
+       // Alternate topics for fallback: first jeux, then competition, then fps
+       const topic = i === 0 ? 'jeux' : (i === 1 ? 'competition' : 'fps');
+       finalArticles.push(transformContent(fallback[i], topic));
+     }
+   }
 
   const mergedArticles = mergeArticles(existingArticles, finalArticles, 6);
 
