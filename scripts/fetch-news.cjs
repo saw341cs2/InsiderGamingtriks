@@ -25,7 +25,6 @@ function categorizeArticle(title, description) {
   for (const topic of TOPICS.jeux) {
     if (text.includes(topic)) return 'jeux';
   }
-  return null;
 }
 
 function transformContent(article, topic) {

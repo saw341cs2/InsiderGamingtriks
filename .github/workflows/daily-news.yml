@@ -1,9 +1,9 @@
-name: Daily Gaming News
+﻿name: Daily Gaming News
 
 on:
   schedule:
-    - cron: '0 6 * * *'
-    - cron: '0 18 * * *'
+    - cron: '0 6 * * *'   # 6:00 UTC = ~7h/8h FR (matin)
+    - cron: '0 18 * * *'  # 18:00 UTC = ~19h/20h FR (soir)
   workflow_dispatch:
 
 permissions:
