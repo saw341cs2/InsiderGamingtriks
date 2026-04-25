@@ -59,7 +59,7 @@ const videos = [
     likes: '18K',
     date: 'Il y a 45 minutes',
     game: 'CoD',
-    youtubeId: 'C_N0ZpS_o_Q',
+    youtubeId: 'yv_2I_6_i_U',
     featured: false,
   },
 ];
