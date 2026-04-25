@@ -23,7 +23,7 @@ const videos = [
     likes: '450',
     date: 'Il y a 2 minutes',
     game: 'CS2',
-    youtubeId: 'yv_2I_6_i_U',
+    youtubeId: 'pS-rS6K_Kq8',
     featured: false,
   },
   {
@@ -59,7 +59,7 @@ const videos = [
     likes: '18K',
     date: 'Il y a 45 minutes',
     game: 'CoD',
-    youtubeId: 'yv_2I_6_i_U',
+    youtubeId: 'dQw4w9WgXcQ',
     featured: false,
   },
 ];
