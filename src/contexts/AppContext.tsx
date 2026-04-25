@@ -1,5 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+﻿import React, { createContext, useContext, useState, useEffect } from 'react';
 import { toast } from '@/components/ui/use-toast';
 import { supabase } from '@/lib/supabase';
 import { User } from '@supabase/supabase-js';
@@ -41,17 +40,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   useEffect(() => {
-    // Check current session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       
-      // Get username from metadata or localStorage
       const metadataUsername = session?.user?.user_metadata?.username;
       const pendingUsername = localStorage.getItem('pendingUsername');
       
       if (metadataUsername) {
         setUsername(metadataUsername);
-        localStorage.removeItem('pendingUsername'); // Clean up
+        localStorage.removeItem('pendingUsername');
       } else if (pendingUsername) {
         setUsername(pendingUsername);
       } else {
@@ -60,21 +57,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       
       setLoading(false);
     }).catch(() => {
-      // Supabase not available, continue without auth
       setLoading(false);
     });
 
-    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       
-      // Get username from metadata or localStorage
       const metadataUsername = session?.user?.user_metadata?.username;
       const pendingUsername = localStorage.getItem('pendingUsername');
       
       if (metadataUsername) {
         setUsername(metadataUsername);
-        localStorage.removeItem('pendingUsername'); // Clean up
+        localStorage.removeItem('pendingUsername');
       } else if (pendingUsername) {
         setUsername(pendingUsername);
       } else {
@@ -100,31 +94,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       
       if (error) throw error;
       
-      setUser(data.user);
-      setUsername(username);
-      
-      localStorage.setItem('userEmail', email);
-      localStorage.setItem('userPassword', password);
-
-      // Trigger Edge Functions to send emails via Resend
-      try {
-        console.log('Attempting to send verification email...');
-        await supabase.functions.invoke('send-verification-email', {
-          body: { email, username }
-        });
-        
-        console.log('Attempting to send welcome email...');
-        await supabase.functions.invoke('send-welcome-email', {
-          body: { email, username }
-        });
-      } catch (emailErr) {
-        console.error('Error triggering email functions:', emailErr);
-        // We don't throw here as the account is already created
+      if (data.user?.identities && data.user.identities.length === 0) {
+        throw new Error("Cette adresse email est déjà utilisée");
       }
       
       toast({
-        title: "Bienvenue chez Insider Gaming Tricks ! 👾",
-        description: "Inscription réussie ! Vérifie tes emails pour confirmer ton compte et commencer l'aventure.",
+        title: "Inscription réussie ! 🎮",
+        description: "Un email de vérification a été envoyé à " + email + ". Vérifie ta boîte de réception et tes spams.",
       });
     } catch (err: any) {
       console.error('Signup error:', err);
@@ -143,7 +119,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (error) throw error;
     setUser(data.user);
     setUsername(data.user?.user_metadata?.username || null);
-    localStorage.removeItem('pendingUsername'); // Clean up
+    localStorage.removeItem('pendingUsername');
   };
 
   const signOut = async () => {
