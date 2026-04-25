@@ -6,6 +6,9 @@ on:
     - cron: '0 18 * * *'
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   fetch-and-publish-news:
     runs-on: ubuntu-latest
@@ -14,14 +17,12 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
-
-      - name: Install dependencies
-        run: npm ci
+          node-version: '20'
 
       - name: Fetch and transform gaming news
         env:
@@ -29,17 +30,15 @@ jobs:
           NEWSDATA_API_KEY: ${{ secrets.NEWSDATA_API_KEY }}
         run: node scripts/fetch-news.cjs
 
-      - name: Copy news to docs
-        run: cp public/news.json docs/news.json
+      - name: Copy news to root and docs
+        run: |
+          cp public/news.json news.json
+          cp public/news.json docs/news.json
 
-      - name: Commit and push
+      - name: Commit and push changes
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add public/news.json docs/news.json
-          git commit -m "Daily gaming news - $(date '+%Y-%m-%d')" || echo "No changes to commit"
-          git push || echo "Push failed"
-          git checkout docs
-          git pull origin main
-          git checkout main -- docs && git commit -m "Update docs folder with new news" --allow-empty || echo "No docs changes"
-          git push || echo "Docs push failed"
+          git add public/news.json news.json docs/news.json
+          git diff --staged --quiet || git commit -m "Daily gaming news - $(date '+%Y-%m-%d %H:%M UTC')"
+          git push

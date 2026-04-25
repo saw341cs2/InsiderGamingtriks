@@ -1,6 +1,24 @@
 {
   "articles": [
     {
+      "title": "⚔️ Guide complet : améliorer son aim en FPS",
+      "body": "Nos conseils et astuces pour progresser rapidement dans tous les jeux de tir. Entraînement, paramètres, matériel. #FPS #Gaming",
+      "url": "https://insidergamingtriks.com/news/aim-guide-2026-04-25",
+      "image": "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&h=450&fit=crop",
+      "dateTimePub": "2026-04-25T18:19:35.917Z",
+      "source": "InsiderGamingtriks",
+      "topic": "FPS"
+    },
+    {
+      "title": "🏆 Mise à jour majeure pour ce jeu compétitif",
+      "body": "Les développeurs ont dévoilé une mise à jour importante avec de nouveaux contenus et équilibrages. #Esport #Competition",
+      "url": "https://insidergamingtriks.com/news/update-2026-04-25",
+      "image": "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&h=450&fit=crop",
+      "dateTimePub": "2026-04-25T18:19:35.917Z",
+      "source": "InsiderGamingtriks",
+      "topic": "COMPETITION"
+    },
+    {
       "title": "🎮 Dignes d’une vente à perte : Fnac relance un déstockage massif avec des milliers d’offres à prix cassés",
       "body": "En ce mois d’avril, profitez d’offres exceptionnelles durant la grande opération déstockage Fnac, active jusqu’au 26 avril. Dénichez vos nouveaux équipements high-tech, photo, gaming, décoration à ...",
       "url": "https://www.ouest-france.fr/shopping/vie-quotidienne/dignes-dune-vente-a-perte-fnac-relance-un-destockage-massif-avec-des-milliers-doffres-a-prix-casses-1dde1c2c-3ef3-11f1-ac09-2dd9a94cc119",
@@ -35,25 +53,7 @@
       "dateTimePub": "2026-04-24T08:06:44.503Z",
       "source": "InsiderGamingtriks",
       "topic": "JEUX"
-    },
-    {
-      "title": "📢 Bons plans tech du 23 avril 2026 : iPhone Air, Switch 2 et VTT Lidl",
-      "body": "Ce jeudi 23 avril 2026, plusieurs produits très attendus sont en forte promotion. Les amateurs de gaming peuvent enfin s’équiper à prix réduit avec les #JeuxVideo",
-      "url": "https://www.frandroid.com/bons-plans/3076287_nintendo-switch-2-joy-con-iphone-air-et-vtt-electrique-lidl-crivit-les-3-meilleurs-bons-plans-du-jeudi-23-avril-2026",
-      "image": "https://c0.lestechnophiles.com/images.frandroid.com/wp-content/uploads/2026/04/recap-bons-plans-20.jpg?resize=1600,900&key=f792cef3&watermark",
-      "dateTimePub": "2026-04-24T08:06:44.503Z",
-      "source": "InsiderGamingtriks",
-      "topic": "JEUX"
-    },
-    {
-      "title": "✨ BenQ W4100i à -10% avec ce code promo : ce vidéoprojecteur 4K LED à 3 200 lumens fait du cinéma, du gaming et du streaming sans appareil externe",
-      "body": "Le BenQ W4100i est un vidéoprojecteur DLP 4K LED de 3 200 lumens avec Android TV intégré, 100 % du DCI-P3, HDR10+, trois HDMI 2.1 et une latence de 6,5 ms en 1080p 240 Hz. Il est à 2 990 euros sur ...",
-      "url": "https://www.lefigaro.fr/bons-plans/high-tech/benq-w4100i-a-10-avec-ce-code-promo-ce-videoprojecteur-4k-led-a-3-200-lumens-fait-du-cinema-du-gaming-et-du-streaming-sans-appareil-externe-20260422",
-      "image": "https://i.f1g.fr/media/cms/1200x630_crop/2026/04/22/9b383e4768496339e3ea6af538122ccb59ab038db9a30bc40b62f0f5b854a714.jpg",
-      "dateTimePub": "2026-04-23T18:55:25.273Z",
-      "source": "InsiderGamingtriks",
-      "topic": "JEUX"
     }
   ],
-  "generatedAt": "2026-04-25T07:20:08.997Z"
+  "generatedAt": "2026-04-25T18:19:35.917Z"
 }
