@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { User, Gamepad2, Map, Crosshair, Target, Shield, Save, Edit2, X, ArrowLeft, Globe, Calendar } from 'lucide-react';
+﻿import React, { useState, useEffect } from 'react';
+import { User, Gamepad2, Map, Crosshair, Target, Shield, Save, Edit2, X, ArrowLeft, Globe, Calendar, Camera } from 'lucide-react';
 import { useAppContext } from '@/contexts/AppContext';
 import { toast } from '@/components/ui/use-toast';
+import { supabase } from '@/lib/supabase';
 
 interface ProfileData {
+  avatarUrl: string;
   age: string;
   sexe: string;
   pays: string;
@@ -66,6 +68,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [profile, setProfile] = useState<ProfileData>({
+    avatarUrl: '',
     age: '',
     sexe: '',
     pays: '',
@@ -81,6 +84,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
   useEffect(() => {
     if (user?.user_metadata) {
       setProfile({
+        avatarUrl: user.user_metadata.avatarUrl || '',
         age: user.user_metadata.age || '',
         sexe: user.user_metadata.sexe || '',
         pays: user.user_metadata.pays || '',
@@ -120,8 +124,9 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const { error } = await (window as any).supabase?.auth.updateUser({
+      const { error } = await supabase.auth.updateUser({
         data: {
+          avatarUrl: profile.avatarUrl,
           age: profile.age,
           sexe: profile.sexe,
           pays: profile.pays,
@@ -168,8 +173,18 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-red-600 to-orange-600 flex items-center justify-center">
-              <User className="w-10 h-10 text-white" />
+            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-red-600 to-orange-600 flex items-center justify-center overflow-hidden relative">
+              {profile.avatarUrl ? (
+                <img src={profile.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
+              ) : (
+                <User className="w-10 h-10 text-white" />
+              )}
+              {isEditing && (
+                <label className="absolute bottom-0 right-0 w-7 h-7 bg-gray-800 rounded-full flex items-center justify-center cursor-pointer border-2 border-gray-900 hover:bg-gray-700">
+                  <Camera className="w-3 h-3 text-white" />
+                  <input type="text" value={profile.avatarUrl} onChange={(e) => setProfile({ ...profile, avatarUrl: e.target.value })} className="hidden" />
+                </label>
+              )}
             </div>
             <div>
               <h1 className="text-3xl font-black text-white">{username || user.user_metadata?.username || 'Joueur'}</h1>
@@ -216,6 +231,15 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
+            {/* Avatar URL */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2"><Camera className="w-4 h-4 inline mr-2" />Photo de profil (URL)</label>
+              {isEditing ? (
+                <input type="text" value={profile.avatarUrl} onChange={(e) => setProfile({ ...profile, avatarUrl: e.target.value })}
+                  placeholder="https://exemple.com/ma-photo.jpg" className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-red-500" />
+              ) : <p className="text-white py-3">{profile.avatarUrl ? 'Définie' : 'Non définie'}</p>}
+            </div>
+
             {/* Âge */}
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2"><Calendar className="w-4 h-4 inline mr-2" />Âge</label>
@@ -241,7 +265,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
 
             {/* Pays */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2"><Globe className="w-4 h-4 inline mr-2" />Pays</label>
+              <label className="block text-sm font-medium text-gray-300 mb-2"><Globe className="w-4 h-4 inline mr-2" />Pays / Ville</label>
               {isEditing ? (
                 <select value={profile.pays} onChange={(e) => setProfile({ ...profile, pays: e.target.value })}
                   className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-red-500">
@@ -275,7 +299,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
               ) : <p className="text-white py-3">{profile.level || 'Non défini'}</p>}
             </div>
 
-            {/* Rôle */}
+            {/* Rôle / Poste */}
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2"><Shield className="w-4 h-4 inline mr-2" />Rôle / Poste</label>
               {isEditing ? (
