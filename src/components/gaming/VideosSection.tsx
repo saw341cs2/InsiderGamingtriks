@@ -1,93 +1,65 @@
-import React, { useState } from 'react';
+﻿﻿import React, { useState } from 'react';
 import { Play, ExternalLink, Clock, Eye, ThumbsUp, ChevronRight } from 'lucide-react';
 
 const videos = [
   {
     id: 1,
-    title: 'CS2 - Les 10 Smokes que TOUT le monde doit connatre',
+    title: 'CS2 - TOP 10 DES MOMENTS LES PLUS DRÔLES (Fail & Win)',
     thumbnail: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=640&h=360&fit=crop',
-    duration: '14:32',
-    views: '12K',
-    likes: '890',
-    date: 'Il y a 1 jour',
+    duration: '12:45',
+    views: '45K',
+    likes: '3.2K',
+    date: 'Il y a 4 heures',
     game: 'CS2',
+    youtubeId: 'dQw4w9WgXcQ', // Exemple
     featured: true,
   },
   {
     id: 2,
-    title: 'Warzone - Loadout META Saison 3 (Imbattable)',
-    thumbnail: 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=640&h=360&fit=crop',
-    duration: '18:45',
-    views: '8.5K',
-    likes: '720',
-    date: 'Il y a 2 jours',
-    game: 'CoD',
+    title: '⭐ MASTERCLASS : Pourquoi vous ne progresserez JAMAIS sans ces astuces (SÉRIEUX)',
+    thumbnail: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=640&h=360&fit=crop',
+    duration: '59:59',
+    views: '1.2K',
+    likes: '450',
+    date: 'Il y a 2 minutes',
+    game: 'CS2',
+    youtubeId: 'yv_2I_6_i_U',
     featured: false,
   },
   {
     id: 3,
-    title: 'Battlefield - Guide Pilotage Helico (De Noob a Pro)',
-    thumbnail: 'https://images.unsplash.com/photo-1552820728-8b83bb6b2b28?w=640&h=360&fit=crop',
-    duration: '22:10',
-    views: '6.2K',
-    likes: '540',
-    date: 'Il y a 2 jours',
+    title: 'FUNNY : Les pires bugs de collision sur Battlefield (Compilation)',
+    thumbnail: 'https://images.unsplash.com/photo-1511882150382-421056c89033?w=640&h=360&fit=crop',
+    duration: '03:40',
+    views: '42K',
+    likes: '3.1K',
+    date: 'Il y a 12 minutes',
     game: 'BF',
+    youtubeId: 'Yv7H_K_k6fE',
     featured: false,
   },
   {
     id: 4,
-    title: 'CS2 - Aim Training Routine (30 min/jour)',
+    title: 'ANALYSE PRO : Pourquoi cette lunette change tout sur Warzone',
     thumbnail: 'https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=640&h=360&fit=crop',
-    duration: '11:20',
-    views: '15K',
-    likes: '1.2K',
-    date: 'Il y a 3 jours',
-    game: 'CS2',
+    duration: '45:00',
+    views: '5.4K',
+    likes: '420',
+    date: 'Il y a 20 minutes',
+    game: 'CoD',
+    youtubeId: 'pS-rS6K_Kq8',
     featured: false,
   },
   {
     id: 5,
-    title: 'CoD MW3 - Les Meilleurs Settings Pro 2026',
-    thumbnail: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=640&h=360&fit=crop',
-    duration: '09:55',
-    views: '9.8K',
-    likes: '680',
-    date: 'Il y a 3 jours',
+    title: 'TROLL : Je gagne une game au lance-patate (C\'est n\'importe quoi)',
+    thumbnail: 'https://images.unsplash.com/photo-1542751110-97427bb9f75c?w=640&h=360&fit=crop',
+    duration: '08:15',
+    views: '125K',
+    likes: '18K',
+    date: 'Il y a 45 minutes',
     game: 'CoD',
-    featured: false,
-  },
-  {
-    id: 6,
-    title: 'Battlefield - Strategies Squad Avancees',
-    thumbnail: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=640&h=360&fit=crop',
-    duration: '16:40',
-    views: '4.1K',
-    likes: '380',
-    date: 'Il y a 4 jours',
-    game: 'BF',
-    featured: false,
-  },
-  {
-    id: 7,
-    title: 'CS2 - Economie et Buy Rounds Expliques',
-    thumbnail: 'https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?w=640&h=360&fit=crop',
-    duration: '13:15',
-    views: '7.3K',
-    likes: '510',
-    date: 'Il y a 4 jours',
-    game: 'CS2',
-    featured: false,
-  },
-  {
-    id: 8,
-    title: 'Warzone - Drop Spots Secrets (Personne ne les connoit)',
-    thumbnail: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=640&h=360&fit=crop',
-    duration: '20:05',
-    views: '11K',
-    likes: '950',
-    date: 'Il y a 5 jours',
-    game: 'CoD',
+    youtubeId: 'C_N0ZpS_o_Q',
     featured: false,
   },
 ];
@@ -96,10 +68,17 @@ const gameTagColors: Record<string, string> = {
   'CS2': 'bg-orange-500/20 text-orange-400',
   'BF': 'bg-blue-500/20 text-blue-400',
   'CoD': 'bg-green-500/20 text-green-400',
+  'Fortnite': 'bg-purple-500/20 text-purple-400',
+  'LoL': 'bg-cyan-500/20 text-cyan-400',
+  'Valorant': 'bg-red-500/20 text-red-400',
+  'RL': 'bg-sky-500/20 text-sky-400',
+  'GTA': 'bg-yellow-500/20 text-yellow-400',
+  'Apex': 'bg-rose-500/20 text-rose-400',
 };
 
 const VideosSection: React.FC = () => {
-  const [activeVideo, setActiveVideo] = useState<number | null>(1);
+  const [playingVideoId, setPlayingVideoId] = useState<number | null>(null);
+  const featuredVideo = videos.find(v => v.featured) || videos[0];
 
   return (
     <section id="videos-section" className="bg-gray-950 py-20 md:py-28">
@@ -130,83 +109,94 @@ const VideosSection: React.FC = () => {
         </div>
 
         {/* Featured Video */}
-        {videos.find(v => v.featured) && (
-          <div className="mb-12">
-            <div className="relative aspect-video rounded-2xl overflow-hidden bg-gray-900 group">
+        <div className="mb-12">
+          <div className="relative aspect-video rounded-2xl overflow-hidden bg-gray-900 group shadow-2xl">
+            {playingVideoId === featuredVideo.id ? (
+              <iframe
+                className="w-full h-full"
+                src={`https://www.youtube.com/embed/${featuredVideo.youtubeId}?autoplay=1&mute=1&rel=0&modestbranding=1`}
+                title={featuredVideo.title}
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen={true}
+              ></iframe>
+            ) : (
+              <>
               <img
-                src={videos[0].thumbnail}
-                alt={videos[0].title}
+                src={featuredVideo.thumbnail}
+                alt={featuredVideo.title}
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
               
-              {/* Play Button */}
               <button
-                onClick={() => setActiveVideo(videos[0].id)}
+                onClick={() => setPlayingVideoId(featuredVideo.id)}
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-red-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg shadow-red-600/30"
               >
                 <Play className="w-8 h-8 text-white ml-1" fill="white" />
               </button>
 
-              {/* Video Info */}
               <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
                 <div className="flex items-center gap-3 mb-3">
-                  <span className={`px-2 py-1 rounded text-xs font-bold ${gameTagColors[videos[0].game]}`}>
-                    {videos[0].game}
+                  <span className={`px-2 py-1 rounded text-xs font-bold ${gameTagColors[featuredVideo.game]}`}>
+                    {featuredVideo.game}
                   </span>
                   <span className="inline-block w-2 h-2 bg-red-500 rounded-full animate-pulse" />
                   Video de la semaine
                 </div>
                 <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
-                  {videos[0].title}
+                  {featuredVideo.title}
                 </h3>
                 <div className="flex items-center gap-6 text-gray-300">
                   <span className="flex items-center gap-2">
                     <Eye className="w-4 h-4" />
-                    {videos[0].views} vues
+                    {featuredVideo.views} vues
                   </span>
                   <span className="flex items-center gap-2">
                     <ThumbsUp className="w-4 h-4" />
-                    {videos[0].likes}
+                    {featuredVideo.likes}
                   </span>
                   <span className="flex items-center gap-2">
                     <Clock className="w-4 h-4" />
-                    {videos[0].date}
+                    {featuredVideo.date}
                   </span>
                 </div>
               </div>
-            </div>
+              </>
+            )}
           </div>
-        )}
+        </div>
 
         {/* Videos Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {videos.filter(v => !v.featured).slice(0, 4).map((video) => (
-            <a
+            <div
               key={video.id}
-              href="#"
+              onClick={() => setPlayingVideoId(video.id)}
               className="group bg-gray-900/50 border border-gray-800 rounded-xl overflow-hidden hover:border-red-500/30 transition-all duration-300"
             >
-              {/* Thumbnail */}
-              <div className="relative aspect-video overflow-hidden">
-                <img
-                  src={video.thumbnail}
-                  alt={video.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent" />
-                
-                {/* Duration Badge */}
-                <div className="absolute bottom-2 right-2 px-1.5 py-0.5 bg-black/80 rounded text-xs text-white font-medium">
-                  {video.duration}
-                </div>
-                
-                {/* Play Overlay */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30">
-                  <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center">
-                    <Play className="w-5 h-5 text-white ml-0.5" fill="white" />
-                  </div>
-                </div>
+              <div className="relative aspect-video overflow-hidden cursor-pointer">
+                {playingVideoId === video.id ? (
+                  <iframe
+                    className="w-full h-full"
+                    src={`https://www.youtube.com/embed/${video.youtubeId}?autoplay=1&mute=1&rel=0&modestbranding=1`}
+                    title={video.title}
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen={true}
+                  ></iframe>
+                ) : (
+                  <>
+                    <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent" />
+                    <div className="absolute bottom-2 right-2 px-1.5 py-0.5 bg-black/80 rounded text-xs text-white font-medium">{video.duration}</div>
+                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/30">
+                      <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center">
+                        <Play className="w-5 h-5 text-white ml-0.5" fill="white" />
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Content */}
@@ -231,7 +221,7 @@ const VideosSection: React.FC = () => {
                   <span>{video.date}</span>
                 </div>
               </div>
-            </a>
+            </div>
           ))}
         </div>
       </div>
