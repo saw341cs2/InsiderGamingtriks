@@ -1,44 +1,14 @@
-﻿name: Daily Gaming News
-
-on:
-  schedule:
-    - cron: '0 6 * * *'   # 6:00 UTC = ~7h/8h FR (matin)
-    - cron: '0 18 * * *'  # 18:00 UTC = ~19h/20h FR (soir)
-  workflow_dispatch:
-
-permissions:
-  contents: write
-
-jobs:
-  fetch-and-publish-news:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          ref: main
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Fetch and transform gaming news
+﻿      - name: Fetch and transform gaming news
         env:
           GNEWS_API_KEY: ${{ secrets.GNEWS_API_KEY }}
           NEWSDATA_API_KEY: ${{ secrets.NEWSDATA_API_KEY }}
-        run: node scripts/fetch-news.cjs
+        run: |
+          node scripts/fetch-news.mjs
+          echo '--- Building site ---'
+          npm run build 2>/dev/null || npm install && npm run build
 
-      - name: Copy news to root and docs
+      - name: Copy news to all locations
         run: |
           cp public/news.json news.json
           cp public/news.json docs/news.json
-
-      - name: Commit and push changes
-        run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add public/news.json news.json docs/news.json
-          git diff --staged --quiet || git commit -m "Daily gaming news - $(date '+%Y-%m-%d %H:%M UTC')"
-          git push
+          cp public/news.json dist/news.json
