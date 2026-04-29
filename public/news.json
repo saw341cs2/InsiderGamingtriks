@@ -2,12 +2,21 @@
   "articles": [
     {
       "title": "ðŸ”¥ Michael B. Jordan et Christopher McQuarrie se lancent dans l’adaptation au cinéma du jeu Battlefield",
-      "body": "Après l’immense succès commercial du dernier jeu de la franchise militaire, l’éditeur Electronic Arts ambitionne de transposer l’un des plus emblématiques univers du gaming sur grand écran. #FPS #G...",
+      "body": "Après l’immense succès commercial du dernier jeu de la franchise militaire, l’éditeur Electronic Arts ambitionne de transposer l’un des plus emblématiques univers du gaming sur grand écran. #Shooter",
       "url": "https://www.lefigaro.fr/cinema/michael-b-jordan-et-christopher-mcquarrie-se-lancent-dans-l-adaptation-au-cinema-du-jeu-battlefield-20260427",
       "image": "https://i.f1g.fr/media/cms/1200x630_crop/2026/04/27/8e449b91f03ae9b220884b4893c07aca7a166f5fd54b89dccdcd098ab715c349.jpg",
-      "dateTimePub": "2026-04-29T13:49:46.807Z",
+      "dateTimePub": "2026-04-29T13:56:20.927Z",
       "source": "InsiderGamingtriks",
       "topic": "FPS"
+    },
+    {
+      "title": "ðŸ“¢ Meilleures promos du jour : écran gaming 4K ASUS ROG Strix OLED à 675€, SSD magnétique Lexar 2To à 180€...",
+      "body": "GNT est le portail Hi-Tech français consacré aux nouvelles technologies (internet, logiciel, matériel, mobilité, entreprise) et au jeu vidéo PC et consoles. #Actualites",
+      "url": "https://www.generation-nt.com/actualites/promos-pas-cher-ssd-externe-portable-lexar-seagate-ecran-gaming-oled-4k-asus-rog-strix-lenovo-ideapad-slim-3-ventirad-corsair-2074712",
+      "image": "https://img.generation-nt.com/gnt-meilleures-promos-jour_04B002A301715900.webp",
+      "dateTimePub": "2026-04-29T13:56:20.927Z",
+      "source": "InsiderGamingtriks",
+      "topic": "JEUX"
     },
     {
       "title": "ðŸ•¹ï¸ L'excellent Split Fiction est à un prix inédit sur Amazon",
@@ -15,15 +24,6 @@
       "url": "https://www.numerama.com/pop-culture/2242121-lexcellent-split-fiction-est-a-un-prix-inedit-sur-amazon.html",
       "image": "https://c0.lestechnophiles.com/www.numerama.com/wp-content/uploads/2025/03/img-2616.jpg?resize=1600,900&key=557d00b7&watermark",
       "dateTimePub": "2026-04-29T13:49:46.807Z",
-      "source": "InsiderGamingtriks",
-      "topic": "JEUX"
-    },
-    {
-      "title": "ðŸ•¹ï¸ Meilleures promos du jour : écran gaming 4K ASUS ROG Strix OLED à 675€, SSD magnétique Lexar 2To à 180€...",
-      "body": "GNT est le portail Hi-Tech français consacré aux nouvelles technologies (internet, logiciel, matériel, mobilité, entreprise) et au jeu vidéo PC et consoles. #Gaming",
-      "url": "https://www.generation-nt.com/actualites/promos-pas-cher-ssd-externe-portable-lexar-seagate-ecran-gaming-oled-4k-asus-rog-strix-lenovo-ideapad-slim-3-ventirad-corsair-2074712",
-      "image": "https://img.generation-nt.com/gnt-meilleures-promos-jour_04B002A301715900.webp",
-      "dateTimePub": "2026-04-29T08:21:32.847Z",
       "source": "InsiderGamingtriks",
       "topic": "JEUX"
     },
@@ -55,5 +55,5 @@
       "topic": "JEUX"
     }
   ],
-  "generatedAt": "2026-04-29T13:49:46.808Z"
+  "generatedAt": "2026-04-29T13:56:20.927Z"
 }
