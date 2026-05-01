@@ -62,7 +62,7 @@ serve(async (req) => {
 
               <p><strong>Quelques petites choses pour démarrer :</strong></p>
               <ul>
-                <li>Viens nous dire bonjour sur le <a href="https://discord.gg/XsHYc4tQpx" style="color: #5865F2;">Discord</a>, c'est notre quartier général et l'ambiance y est top.</li>
+                 <li>Viens nous dire bonjour sur le <a href="https://discord.gg/rnh32gTDjp" style="color: #5865F2;">Discord</a>, c'est notre quartier général et l'ambiance y est top.</li>
                 <li>Jette un œil aux dernières astuces sur le site, y a sûrement de quoi t'aider à monter ton rank.</li>
                 <li>N'hésite <strong>JAMAIS</strong> à poser une question, même si tu trouves ça "noob". La seule question bête, c'est celle qu'on ne pose pas.</li>
               </ul>
@@ -77,7 +77,7 @@ serve(async (req) => {
 
               <p style="text-align: center;"><strong>📢 Rejoins-nous :</strong></p>
               <p style="text-align: center;">
-                <a href="https://discord.gg/XsHYc4tQpx" class="discord">Discord</a>
+                 <a href="https://discord.gg/rnh32gTDjp" class="discord">Discord</a>
                 <a href="https://www.youtube.com/@InsiderHackGaming" class="youtube">YouTube</a>
               </p>
 
