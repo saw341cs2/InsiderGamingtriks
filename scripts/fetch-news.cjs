@@ -1,5 +1,7 @@
-﻿const fs = require('fs');
+﻿﻿const fs = require('fs');
 const path = require('path');
+
+const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
 const TOPICS = {
   fps: ['fps', 'shooter', 'call of duty', 'valorant', 'counter-strike', 'battlefield', 'halo'],
@@ -31,15 +33,15 @@ function categorizeArticle(title, description) {
 function transformContent(article, topic) {
   const transformations = {
     fps: {
-      prefixes: ['ðŸ”¥ ', 'ðŸ’¥ ', 'ðŸŽ¯ ', 'âš”ï¸ '],
+      prefixes: ['🔥 ', '💥 ', '🎯 ', '⚔️ '],
       suffixes: [' #FPS #Gaming', ' #Shooter', ' #JeuxVideo']
     },
     competition: {
-      prefixes: ['ðŸ† ', 'ðŸŽ® ', 'âš¡ ', 'ðŸ… '],
+      prefixes: ['🏆 ', '🎮 ', '⚡ ', '🥇 '],
       suffixes: [' #Esport', ' #Competition', ' #Tournoi']
     },
     jeux: {
-      prefixes: ['ðŸŽ® ', 'âœ¨ ', 'ðŸ•¹ï¸ ', 'ðŸ“¢ '],
+      prefixes: ['🎮 ', '✨ ', '🕹️ ', '📢 '],
       suffixes: [' #JeuxVideo', ' #Gaming', ' #Actualites']
     }
   };
@@ -55,12 +57,13 @@ function transformContent(article, topic) {
   }
   
   const suffix = transform.suffixes[Math.floor(Math.random() * transform.suffixes.length)];
-  if (!newDesc.endsWith(suffix)) {
+  // Vérifier si le suffixe n'est pas déjà présent
+  if (newDesc && !newDesc.includes(suffix.trim())) {
     newDesc = newDesc + suffix;
   }
   
   newDesc = newDesc
-    .replace(/[Â«Â»""'']/g, '')
+    .replace(/[«»""'']/g, '')
     .replace(/\s+/g, ' ')
     .trim();
   
@@ -70,7 +73,8 @@ function transformContent(article, topic) {
   
   const images = IMAGE_KEYWORDS[topic] || IMAGE_KEYWORDS.jeux;
   const imageKeyword = images[Math.floor(Math.random() * images.length)];
-  const customImage = `https://source.unsplash.com/800x450/?${encodeURIComponent(imageKeyword)}`;
+  // Utilisation d'une image plus pertinente basée sur le sujet si l'article n'en a pas
+  const customImage = `https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=800&auto=format&fit=crop&sig=${Math.random()}`;
   
   return {
     title: newTitle,
@@ -96,7 +100,10 @@ async function fetchFromGNews() {
     
     for (const query of queries) {
       const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=fr&max=15&apikey=${apiKey}`;
-      const response = await fetch(url);
+      const response = await fetch(url, { 
+        headers: { 'User-Agent': USER_AGENT },
+        signal: AbortSignal.timeout(5000)
+      });
       const data = await response.json();
       
       if (data.articles) {
@@ -120,7 +127,10 @@ async function fetchFromNewsDataIO() {
   
   try {
     const url = `https://newsdata.io/api/1/news?apikey=${apiKey}&q=gaming&language=fr&category=technology`;
-    const response = await fetch(url);
+    const response = await fetch(url, { 
+      headers: { 'User-Agent': USER_AGENT },
+      signal: AbortSignal.timeout(10000)
+    });
     const data = await response.json();
     
     if (data.results) {
@@ -140,6 +150,17 @@ async function fetchFromNewsDataIO() {
   }
 }
 
+function decodeHTMLEntities(text) {
+  if (!text) return '';
+  return text
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, ' ');
+}
+
 async function fetchFromRSS() {
   try {
     const rssUrls = [
@@ -151,23 +172,34 @@ async function fetchFromRSS() {
     let allArticles = [];
     
     for (const rssUrl of rssUrls) {
-      const response = await fetch(rssUrl);
-      const text = await response.text();
+      console.log(`📡 Récupération RSS : ${rssUrl}`);
+      const response = await fetch(rssUrl, { 
+        headers: { 'User-Agent': USER_AGENT },
+        signal: AbortSignal.timeout(8000)
+      });
       
-      const items = text.match(/<item>[\s\S]*?<\/item>/g) || [];
+      if (!response.ok) continue;
+      
+      const text = await response.text();
+      const items = text.match(/<item[\s\S]*?>[\s\S]*?<\/item>/g) || [];
+      console.log(`✅ ${items.length} articles trouvés sur ${rssUrl}`);
       
       for (const item of items.slice(0, 10)) {
-        const titleMatch = item.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>/);
-        const descMatch = item.match(/<description><!\[CDATA\[(.*?)\]\]><\/description>/);
-        const linkMatch = item.match(/<link>(.*?)<\/link>/);
-        const imageMatch = item.match(/<media:content url="(.*?)"|<enclosure url="(.*?)"/);
-        const dateMatch = item.match(/<pubDate>(.*?)<\/pubDate>/);
+        const titleMatch = item.match(/<title>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/title>/i);
+        const descMatch = item.match(/<description>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/description>/i);
+        const linkMatch = item.match(/<link>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/link>/i);
+        const imageMatch = item.match(/<media:content[^>]+url="'["']|<enclosure[^>]+url="'["']/i);
+        const dateMatch = item.match(/<pubDate>(.*?)<\/pubDate>/i);
         
         if (titleMatch && linkMatch) {
+          const title = decodeHTMLEntities(titleMatch[1].trim());
+          const rawDesc = descMatch ? descMatch[1] : '';
+          const description = decodeHTMLEntities(rawDesc.replace(/<[^>]*>/g, '').trim()).substring(0, 200);
+
           allArticles.push({
-            title: titleMatch[1],
-            description: descMatch ? descMatch[1].replace(/<[^>]*>/g, '').substring(0, 200) : '',
-            url: linkMatch[1],
+            title,
+            description,
+            url: linkMatch[1].trim(),
             image: imageMatch ? (imageMatch[1] || imageMatch[2]) : null,
             publishedAt: dateMatch ? new Date(dateMatch[1]).toISOString() : new Date().toISOString()
           });
@@ -429,7 +461,15 @@ async function main() {
   };
   
   const outputPath = path.join(__dirname, '..', 'public', 'news.json');
-  fs.writeFileSync(outputPath, JSON.stringify(output, null, 2));
+  const docsPath = path.join(__dirname, '..', 'docs', 'news.json');
+  
+  fs.writeFileSync(outputPath, JSON.stringify(output, null, 2), 'utf8');
+  
+  // Également écrire dans docs/ si le dossier existe (pour GitHub Pages)
+  if (fs.existsSync(path.join(__dirname, '..', 'docs'))) {
+    fs.writeFileSync(docsPath, JSON.stringify(output, null, 2), 'utf8');
+    console.log(`Copied to: ${docsPath}`);
+  }
   
   console.log(`\n=== Generated ${finalArticles.length} new articles ===`);
   finalArticles.forEach((a, i) => {
@@ -440,4 +480,3 @@ async function main() {
 }
 
 main().catch(console.error);
-
