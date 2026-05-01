@@ -119,7 +119,7 @@ serve(async (req) => {
                 <li>⭐ Tu auras accès au contenu premium</li>
               </ul>
 
-              <p>Des questions ? Rejoins notre Discord : <a href="https://discord.gg/XsHYc4tQpx" style="color: #5865F2; text-decoration: none;">discord.gg/XsHYc4tQpx</a></p>
+               <p>Des questions ? Rejoins notre Discord : <a href="https://discord.gg/rnh32gTDjp" style="color: #5865F2; text-decoration: none;">discord.gg/rnh32gTDjp</a></p>
 
               <div class="footer">
                 <p>© 2026 InsiderGamingTricks - Tous droits réservés</p>
