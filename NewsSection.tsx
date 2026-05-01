@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Newspaper, RefreshCw, Clock, ChevronRight } from 'lucide-react';
+import axios from 'axios'; // Importez axios si vous l'utilisez pour les requêtes API
 
 interface NewsArticle {
   title: string;
@@ -15,14 +16,32 @@ const NewsSection: React.FC = () => {
   const [articles, setArticles] = useState<NewsArticle[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Récupération de la clé API depuis les variables d'environnement de Vite
+  const NEWS_API_KEY = import.meta.env.VITE_NEWS_API_KEY;
+  const NEWS_API_URL = `https://newsapi.org/v2/everything?q=gaming&apiKey=${NEWS_API_KEY}&language=fr`;
+  const CORS_PROXY_URL = 'https://corsproxy.io/?'; // Un proxy CORS générique
+
   const fetchNews = async () => {
     setLoading(true);
     try {
-      // Récupère les news du fichier JSON mis à jour par l'automatisation
-      const response = await fetch('news.json');
-      if (!response.ok) throw new Error('Fichier news.json non trouvé');
-      const data = await response.json();
-      setArticles(data.articles || []);
+      if (!NEWS_API_KEY) {
+        console.error("La clé API NewsAPI n'est pas configurée. Veuillez ajouter VITE_NEWS_API_KEY dans votre fichier .env");
+        setArticles([]);
+        return;
+      }
+
+      // Utilisation du proxy CORS pour contourner les restrictions de domaine
+      const response = await axios.get(`${CORS_PROXY_URL}${encodeURIComponent(NEWS_API_URL)}`);
+      const fetchedArticles = response.data.articles.map((article: any) => ({
+        title: article.title,
+        body: article.description,
+        url: article.url,
+        image: article.urlToImage,
+        source: article.source.name,
+        dateTimePub: article.publishedAt,
+        topic: 'GAMING', // Ou une logique pour déterminer le topic
+      }));
+      setArticles(fetchedArticles);
     } catch (error) {
       console.error('Erreur News:', error);
       setArticles([]);
