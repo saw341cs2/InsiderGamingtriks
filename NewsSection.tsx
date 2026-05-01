@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Newspaper, RefreshCw, Clock, ChevronRight } from 'lucide-react';
 import axios from 'axios'; // Importez axios si vous l'utilisez pour les requêtes API
 
@@ -21,7 +21,7 @@ const NewsSection: React.FC = () => {
   const NEWS_API_URL = `https://newsapi.org/v2/everything?q=gaming&apiKey=${NEWS_API_KEY}&language=fr`;
   const CORS_PROXY_URL = 'https://corsproxy.io/?'; // Un proxy CORS générique
 
-  const fetchNews = async () => {
+  const fetchNews = useCallback(async () => {
     setLoading(true);
     try {
       if (!NEWS_API_KEY) {
@@ -48,11 +48,11 @@ const NewsSection: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [NEWS_API_KEY, NEWS_API_URL, CORS_PROXY_URL]);
 
   useEffect(() => {
     fetchNews();
-  }, []);
+  }, [fetchNews]);
 
   return (
     <section id="news" className="bg-gray-950 py-20">
