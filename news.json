@@ -1,59 +1,58 @@
 {
   "articles": [
     {
-      "title": "⚔️ Guide complet : améliorer son aim en FPS",
-      "body": "Nos conseils et astuces pour progresser rapidement dans tous les jeux de tir. Entraînement, paramètres, matériel. #FPS #Gaming",
-      "url": "https://insidergamingtriks.com/news/aim-guide-2026-04-25",
-      "image": "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&h=450&fit=crop",
-      "dateTimePub": "2026-04-25T18:19:35.917Z",
-      "source": "InsiderGamingtriks",
-      "topic": "FPS"
+      "title": "NVIDIA RTX 5090 : Les spécifications fuitent sur le web",
+      "body": "Le prochain monstre de NVIDIA promet un saut de performance massif pour le gaming 4K à plus de 240Hz. Le matériel de demain arrive plus vite que prévu.",
+      "url": "https://www.hardwareluxx.de",
+      "image": "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=800",
+      "source": "HardwareLuxx",
+      "dateTimePub": "2026-05-30T10:00:00Z",
+      "topic": "MATERIEL"
     },
     {
-      "title": "🏆 Mise à jour majeure pour ce jeu compétitif",
-      "body": "Les développeurs ont dévoilé une mise à jour importante avec de nouveaux contenus et équilibrages. #Esport #Competition",
-      "url": "https://insidergamingtriks.com/news/update-2026-04-25",
-      "image": "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&h=450&fit=crop",
-      "dateTimePub": "2026-04-25T18:19:35.917Z",
-      "source": "InsiderGamingtriks",
+      "title": "Major CS2 : Le roster de Vitality en pleine forme",
+      "body": "L'équipe française domine les phases de qualification. Les joueurs affichent des statistiques impressionnantes avant les playoffs de ce week-end.",
+      "url": "https://www.hltv.org",
+      "image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800",
+      "source": "HLTV",
+      "dateTimePub": "2026-05-30T09:30:00Z",
       "topic": "COMPETITION"
     },
     {
-      "title": "🎮 Dignes d’une vente à perte : Fnac relance un déstockage massif avec des milliers d’offres à prix cassés",
-      "body": "En ce mois d’avril, profitez d’offres exceptionnelles durant la grande opération déstockage Fnac, active jusqu’au 26 avril. Dénichez vos nouveaux équipements high-tech, photo, gaming, décoration à ...",
-      "url": "https://www.ouest-france.fr/shopping/vie-quotidienne/dignes-dune-vente-a-perte-fnac-relance-un-destockage-massif-avec-des-milliers-doffres-a-prix-casses-1dde1c2c-3ef3-11f1-ac09-2dd9a94cc119",
-      "image": "https://media.ouest-france.fr/v1/pictures/MjAyNjA0MTNhZDlkMTZiYzNlNmI4NzkyNmViYjQ0YTE5NTBkYzA?width=1260&height=708&focuspoint=50%2C25&cropresize=1&client_id=bpeditorial&sign=26c4430bd03efad26d530bf4dfcc065626fefc90e186d9702478ca9d3e88d8bb",
-      "dateTimePub": "2026-04-25T07:20:08.997Z",
-      "source": "InsiderGamingtriks",
-      "topic": "JEUX"
+      "title": "S1mple : 'Je reviens pour gagner le prochain Major'",
+      "body": "Le meilleur joueur du monde a confirmé lors d'une interview son retour à la compétition active. La scène pro tremble déjà.",
+      "url": "https://www.navi.gg",
+      "image": "https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=800",
+      "source": "NAVI",
+      "dateTimePub": "2026-05-30T08:15:00Z",
+      "topic": "PLAYER"
     },
     {
-      "title": "🎮 Le rouge au KMSKA, Jan Lisiecki, Paul Simon, Pragmata, Spotify: nos 5 coups de cœur culturels du week-end",
-      "body": "Albums, expos, festivals, concerts, gaming... Toute la rédaction Culture de LÉcho sy met chaque semaine pour vous livrer ses coups de cœur. À savourer sans modération! #JeuxVideo",
-      "url": "https://www.lecho.be/culture/expo/le-rouge-au-kmska-jan-lisiecki-paul-simon-pragmata-spotify-nos-5-coups-de-c-ur-culturels-du-week-end/10657969.html",
-      "image": "https://images.lecho.be/view?iid=Elvis:CUkEFov74cqBhDpimZ-H57&context=ONLINE&ratio=16/9&width=1280&u=1777036872000",
-      "dateTimePub": "2026-04-25T07:20:08.997Z",
-      "source": "InsiderGamingtriks",
-      "topic": "JEUX"
+      "title": "GTA VI : De nouvelles images de gameplay secouent la toile",
+      "body": "Des fuites récentes montrent des détails jamais vus sur la gestion de l'eau et de la foule dans Vice City. Le jeu le plus attendu de la décennie.",
+      "url": "https://www.rockstargames.com",
+      "image": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800",
+      "source": "Rockstar Feed",
+      "dateTimePub": "2026-05-30T07:00:00Z",
+      "topic": "GAMING"
     },
     {
-      "title": "🕹️ Asus ROG Strix OLED XG27AQDNG à 599 euros : un moniteur QD-OLED 360 Hz avec 0,03 ms de temps de réponse et 100 euros de remise",
-      "body": "L’Asus ROG Strix OLED XG27AQDNG est un moniteur gaming QD-OLED de 26,5 pouces en 2K QHD, avec un taux de rafraîchissement de 360 Hz, un temps de réponse de 0,03 ms, 99 % du DCI-P3, 1 000 nits en HD...",
-      "url": "https://www.lefigaro.fr/bons-plans/high-tech/asus-rog-strix-oled-xg27aqdng-a-599-euros-un-moniteur-qd-oled-360-hz-avec-0-03-ms-de-temps-de-reponse-et-100-euros-de-remise-20260422",
-      "image": "https://i.f1g.fr/media/cms/1200x630_crop/2026/04/22/4b80f11dc1546cf5630dc27b2134388c79b142fe939bccc5b004c3affc978d05.jpg",
-      "dateTimePub": "2026-04-24T18:37:04.339Z",
-      "source": "InsiderGamingtriks",
-      "topic": "JEUX"
+      "title": "Zowie dévoile sa nouvelle souris XL : Le capteur ultime",
+      "body": "Le nouveau capteur optique 8000Hz promet une latence quasi nulle, idéale pour les joueurs de compétition cherchant la précision absolue.",
+      "url": "https://zowie.benq.com",
+      "image": "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=800",
+      "source": "Zowie News",
+      "dateTimePub": "2026-05-29T18:00:00Z",
+      "topic": "MATERIEL"
     },
     {
-      "title": "✨ Sony 55 Bravia 5 à 1 099 euros : la Mini LED avec le processeur XR des modèles haut de gamme Sony pour moins de 1 100 euros",
-      "body": "Le Sony 55 Bravia 5 embarque le processeur XR optimisé par IA, un rétroéclairage Mini LED localisé, le Dolby Vision, l’IMAX Enhanced, le gaming 4K 120 Hz avec certification Perfect for PlayStation ...",
-      "url": "https://www.lefigaro.fr/bons-plans/high-tech/sony-55-bravia-5-a-1-099-euros-la-mini-led-avec-le-processeur-xr-des-modeles-haut-de-gamme-sony-pour-moins-de-1-100-euros-20260423",
-      "image": "https://i.f1g.fr/media/cms/1200x630_crop/2026/04/23/cee1d388b27d680621397addb18880f7bde9eea1fc0c1827544ca9657caa8aed.png",
-      "dateTimePub": "2026-04-24T08:06:44.503Z",
-      "source": "InsiderGamingtriks",
-      "topic": "JEUX"
+      "title": "World Tour : Un nouveau tournoi Battlefield annoncé",
+      "body": "Electronic Arts lance un circuit mondial pour Battlefield avec un cashprize record. Les inscriptions pour les qualifiers sont ouvertes.",
+      "url": "https://www.ea.com/battlefield",
+      "image": "https://images.unsplash.com/photo-1552820728-8b83bb6b2b28?w=800",
+      "source": "EA Sports",
+      "dateTimePub": "2026-05-29T15:45:00Z",
+      "topic": "COMPETITION"
     }
-  ],
-  "generatedAt": "2026-04-25T18:19:35.917Z"
+  ]
 }
