@@ -1,4 +1,4 @@
-﻿﻿import React, { useState } from 'react';
+﻿﻿﻿﻿import React, { useState } from 'react';
 import { Play, ExternalLink, Clock, Eye, ThumbsUp, ChevronRight } from 'lucide-react';
 
 const videos = [
@@ -138,7 +138,7 @@ const VideosSection: React.FC = () => {
 
               <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
                 <div className="flex items-center gap-3 mb-3">
-                  <span className={`px-2 py-1 rounded text-xs font-bold ${gameTagColors[featuredVideo.game]}`}>
+                  <span className={`px-2 py-1 rounded text-xs font-bold ${gameTagColors[featuredVideo.game] || 'bg-gray-500/20 text-gray-400'}`}>
                     {featuredVideo.game}
                   </span>
                   <span className="inline-block w-2 h-2 bg-red-500 rounded-full animate-pulse" />
@@ -202,7 +202,7 @@ const VideosSection: React.FC = () => {
               {/* Content */}
               <div className="p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className={`px-2 py-0.5 rounded text-xs font-bold ${gameTagColors[video.game]}`}>
+                  <span className={`px-2 py-0.5 rounded text-xs font-bold ${gameTagColors[video.game] || 'bg-gray-500/20 text-gray-400'}`}>
                     {video.game}
                   </span>
                 </div>
