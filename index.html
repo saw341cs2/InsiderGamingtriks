@@ -34,6 +34,51 @@
             border-radius: 10px;
             margin: 20px 0;
         }
+        .sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+        .section {
+            background: rgba(255,255,255,0.1);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+        .section:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.15);
+        }
+        .section h3 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #ffd700;
+        }
+        .btn {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255,107,107,0.4);
+        }
+        .btn.premium {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #333;
+        }
+        .btn.premium:hover {
+            box-shadow: 0 5px 15px rgba(255,215,0,0.4);
+        }
     </style>
 </head>
 <body>
@@ -44,7 +89,38 @@
             <p>GitHub Pages est maintenant actif</p>
         </div>
         <p>Bienvenue sur votre plateforme gaming ultime</p>
-        <p>Le site est prêt à être développé</p>
+        
+        <div class="sections">
+            <div class="section">
+                <h3>📰 Dernières News</h3>
+                <p>Découvrez les dernières actualités du gaming</p>
+                <button class="btn">Voir les news</button>
+            </div>
+            
+            <div class="section">
+                <h3>🎯 Astuces & Tricks</h3>
+                <p>Les meilleures stratégies pour améliorer votre gameplay</p>
+                <button class="btn">Découvrir les astuces</button>
+            </div>
+            
+            <div class="section">
+                <h3>🎥 Vidéos Gaming</h3>
+                <p>Tutoriels et gameplay des meilleurs joueurs</p>
+                <button class="btn">Regarder les vidéos</button>
+            </div>
+            
+            <div class="section">
+                <h3>👥 Communauté</h3>
+                <p>Rejoignez notre communauté de gamers passionnés</p>
+                <button class="btn">Rejoindre</button>
+            </div>
+            
+            <div class="section">
+                <h3>💎 Premium</h3>
+                <p>Débloquez du contenu exclusif et des avantages</p>
+                <button class="btn premium">Devenir Premium</button>
+            </div>
+        </div>
     </div>
 </body>
 </html>
