@@ -76,7 +76,7 @@ const NewsSection: React.FC = () => {
            <p className="text-gray-400 max-w-xl">
               Les actualités sont mises à jour en temps réel pour vous tenir informé.
            </p>
-div>
+          </div>
           <button
             onClick={fetchNews}
             disabled={loading}
@@ -88,7 +88,7 @@ div>
         </div>
 
         {loading ? (
-         div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <div key={i} className="bg-gray-900 h-80 rounded-xl animate-pulse" />
             ))}
@@ -103,13 +103,16 @@ div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {articles.slice(0, 6).map((article, idx) =>a
+            {articles.slice(0, 6).map((article, idx) => (
+              <a
                 key={idx}
                 href={article.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:border-red-500/30 transition-all duration-300 hover:scale-[1.02] flex flex-col"
-             div className="relative h-48 overflow-hiddenimg
+              >
+                <div className="relative h-48 overflow-hidden">
+                  <img
                     src={article.image}
                     alt={article.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -140,12 +143,12 @@ div>
                    <span className="text-gray-400">{article.source}</span>
                  </div>
                </div>
-             </a>
+              </a>
             ))}
-         div>
+          </div>
         )}
-     div>
-   section>
+      </div>
+    </section>
   );
 };
 
