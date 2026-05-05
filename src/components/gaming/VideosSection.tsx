@@ -11,7 +11,7 @@ const videos = [
     likes: '3.2K',
     date: 'Il y a 4 heures',
     game: 'CS2',
-    youtubeId: 'dQw4w9WgXcQ', // Exemple
+    youtubeId: 'yv_2I_6_i_U',
     featured: true,
   },
   {
@@ -23,7 +23,7 @@ const videos = [
     likes: '450',
     date: 'Il y a 2 minutes',
     game: 'CS2',
-    youtubeId: 'pS-rS6K_Kq8',
+    youtubeId: 'h7nE8m-m1s4',
     featured: false,
   },
   {
@@ -35,7 +35,7 @@ const videos = [
     likes: '3.1K',
     date: 'Il y a 12 minutes',
     game: 'BF',
-    youtubeId: 'Yv7H_K_k6fE',
+    youtubeId: 'XpS6K_Kq8pY',
     featured: false,
   },
   {
@@ -47,7 +47,7 @@ const videos = [
     likes: '420',
     date: 'Il y a 20 minutes',
     game: 'CoD',
-    youtubeId: 'pS-rS6K_Kq8',
+    youtubeId: 'M7lc1UVf-VE',
     featured: false,
   },
   {
@@ -59,7 +59,7 @@ const videos = [
     likes: '18K',
     date: 'Il y a 45 minutes',
     game: 'CoD',
-    youtubeId: 'dQw4w9WgXcQ',
+    youtubeId: 'pS-rS6K_Kq8',
     featured: false,
   },
 ];
@@ -114,7 +114,7 @@ const VideosSection: React.FC = () => {
             {playingVideoId === featuredVideo.id ? (
               <iframe
                 className="w-full h-full"
-                src={`https://www.youtube.com/embed/${featuredVideo.youtubeId}?autoplay=1&mute=1&rel=0&modestbranding=1`}
+                src={`https://www.youtube-nocookie.com/embed/${featuredVideo.youtubeId}?autoplay=1&mute=1&rel=0&modestbranding=1`}
                 title={featuredVideo.title}
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -179,7 +179,7 @@ const VideosSection: React.FC = () => {
                 {playingVideoId === video.id ? (
                   <iframe
                     className="w-full h-full"
-                    src={`https://www.youtube.com/embed/${video.youtubeId}?autoplay=1&mute=1&rel=0&modestbranding=1`}
+                    src={`https://www.youtube-nocookie.com/embed/${video.youtubeId}?autoplay=1&mute=1&rel=0&modestbranding=1`}
                     title={video.title}
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
