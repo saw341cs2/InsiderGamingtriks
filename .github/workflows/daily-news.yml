@@ -1,4 +1,4 @@
-﻿name: Daily Gaming News
+﻿﻿﻿﻿name: Daily Gaming News
 
 on:
   schedule:
@@ -30,15 +30,10 @@ jobs:
           NEWSDATA_API_KEY: ${{ secrets.NEWSDATA_API_KEY }}
         run: node scripts/fetch-news.cjs
 
-      - name: Copy news to root and docs
-        run: |
-          cp public/news.json news.json
-          cp public/news.json docs/news.json
-
       - name: Commit and push changes
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add public/news.json news.json docs/news.json
+          git add public/news.json docs/news.json || true
           git diff --staged --quiet || git commit -m "Daily gaming news - $(date '+%Y-%m-%d %H:%M UTC')"
           git push

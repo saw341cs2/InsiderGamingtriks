@@ -1,27 +1,25 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import path from 'path'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
-  server: {
-    host: '0.0.0.0',
-    port: 5175,
-  },
-  base: './',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
     },
   },
+  base: '/InsiderGamingtriks/',
   build: {
-    minify: 'esbuild',
-    sourcemap: false,
     rollupOptions: {
       output: {
-        manualChunks: undefined,
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-supabase': ['@supabase/supabase-js'],
+          'vendor-icons': ['lucide-react'],
+        },
       },
     },
+    chunkSizeWarningLimit: 600,
   },
-  cacheDir: false,
-})
+});

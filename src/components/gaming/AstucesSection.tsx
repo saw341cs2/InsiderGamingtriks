@@ -8,7 +8,7 @@ interface AstucesSectionProps {
 }
 
 type Difficulty = 'Débutant' | 'Intermédiaire' | 'Avancé' | 'Expert';
-type GameFilter = 'all' | 'counter-strike' | 'battlefield' | 'call-of-duty';
+type GameFilter = 'all' | 'counter-strike' | 'battlefield' | 'call-of-duty' | 'general';
 
 interface Astuce {
   id: number;
@@ -42,14 +42,8 @@ const astuces: Astuce[] = [
     image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=300&fit=crop', 
     description: 'Je vous recommande de télécharger une astuce basique pour CS2 ESP sur Counter-Strike 2 qui vous permettra de visualiser vos ennemis à travers n\'importe quelle texture de la carte : immeubles, murs, obstacles, etc. Si vous voulez préserver votre compte et bénéficier d\'un minimum de fonctionnalités, ce hack ESP est parfait.\n\nLes joueurs CT seront marqués en bleu, les joueurs T en rouge ; vous pourrez aussi visualiser leur santé.\n\nComment employer :\n1. Démarrez le jeu Counter-Strike 2\n2. Lancez le fichier de triche cs2-external-esp.exe.' 
   },
-  { id: 1, title: 'Smoke Lineup Mirage - Site A', game: 'CS2', gameId: 'counter-strike', difficulty: 'Débutant', isPremium: false, downloads: 2340, views: 8900, rating: 4.8, category: 'Grenades', date: 'Hier', image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&h=300&fit=crop', description: 'Les 5 smokes essentielles pour prendre le site A sur Mirage.\n\nMaîtriser ces smokes te permettra de couper les lignes de vue critiques et d\'exécuter proprement sur le site A.' },
-  { id: 2, title: 'Spray Control AK-47 Masterclass', game: 'CS2', gameId: 'counter-strike', difficulty: 'Avancé', isPremium: true, downloads: 1560, views: 6200, rating: 4.9, category: 'Aim', date: 'Il y a 3 jours', image: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=400&h=300&fit=crop', description: 'Maîtrise le pattern de spray de l\'AK-47 en 7 étapes.' },
-  { id: 3, title: 'Positions Sniper Dust2', game: 'CS2', gameId: 'counter-strike', difficulty: 'Intermédiaire', isPremium: false, downloads: 3100, views: 12000, rating: 4.7, category: 'Positions', date: 'Il y a 5 jours', image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=400&h=300&fit=crop', description: 'Les meilleures positions AWP pour contrôler la carte Dust2.' },
-  { id: 4, title: 'Pilotage Hélicoptère Avancé', game: 'BF', gameId: 'battlefield', difficulty: 'Expert', isPremium: true, downloads: 890, views: 4500, rating: 4.6, category: 'Véhicules', date: 'Le 20/05', image: 'https://images.unsplash.com/photo-1609220136736-443140cffec6?w=400&h=300&fit=crop', description: 'Techniques de vol avancées pour dominer le ciel dans Battlefield.' },
-  { id: 5, title: 'Loadout Médecin Optimal', game: 'BF', gameId: 'battlefield', difficulty: 'Débutant', isPremium: false, downloads: 2100, views: 7800, rating: 4.5, category: 'Classes', date: 'Le 15/05', image: 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=400&h=300&fit=crop', description: 'Le meilleur setup médecin pour maximiser les soins et XP dans Battlefield.' },
-  { id: 6, title: 'Rush B Stratégie Complète', game: 'CS2', gameId: 'counter-strike', difficulty: 'Intermédiaire', isPremium: false, downloads: 4200, views: 15000, rating: 4.8, category: 'Stratégies', date: 'Mois dernier', image: 'https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=400&h=300&fit=crop', description: 'Exécution parfaite du rush B avec timings et utility.' },
-  { id: 7, title: 'Warzone Meta Loadout S3', game: 'CoD', gameId: 'call-of-duty', difficulty: 'Intermédiaire', isPremium: false, downloads: 5600, views: 22000, rating: 4.9, category: 'Loadouts', date: 'Aujourd\'hui', image: 'https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?w=400&h=300&fit=crop', description: 'Les meilleurs loadouts de la saison 3 de Warzone.' },
   { id: 17, title: 'Tuto Complet : Débuter sur CS2', game: 'CS2', gameId: 'counter-strike', difficulty: 'Débutant', isPremium: false, downloads: 4100, views: 18500, rating: 4.9, category: 'Tuto Game', date: 'Hier soir', image: 'https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=400&h=300&fit=crop', description: 'Guide complet pour bien débuter sur Counter-Strike 2.\n\n1. Comprendre les modes de jeu (Compétitif, Casual, Deathmatch)\n2. Configurer ses paramètres graphiques et réseau\n3. Apprendre les bases du mouvement (counter-strafing)\n4. Choisir ses premières armes et économie\n5. Lire la mini-map et communiquer avec son équipe\n\nSuis ce guide étape par étape pour progresser rapidement et éviter les erreurs des débutants.' },
+  { id: 7, title: 'Warzone Meta Loadout S3', game: 'CoD', gameId: 'call-of-duty', difficulty: 'Intermédiaire', isPremium: false, downloads: 5600, views: 22000, rating: 4.9, category: 'Loadouts', date: 'Aujourd\'hui', image: 'https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?w=400&h=300&fit=crop', description: 'Les meilleurs loadouts de la saison 3 de Warzone.' },
 ];
 
 const difficultyColors: Record<Difficulty, string> = {
@@ -63,18 +57,21 @@ const gameIcons: Record<string, React.ElementType> = {
   'CS2': Crosshair,
   'BF': Bomb,
   'CoD': Target,
+  'FPS': Star,
 };
 
 const gameColors: Record<string, string> = {
   'CS2': 'text-orange-400',
   'BF': 'text-blue-400',
   'CoD': 'text-green-400',
+  'FPS': 'text-purple-400',
 };
 
 const defaultImages: Record<string, string> = {
   'CS2': 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&q=80',
   'BF': 'https://images.unsplash.com/photo-1609220136736-443140cffec6?w=400&q=80',
   'CoD': 'https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?w=400&q=80',
+  'FPS': 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&q=80',
 };
 
 const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
@@ -152,6 +149,7 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
               <option value="counter-strike">Counter-Strike 2</option>
               <option value="battlefield">Battlefield</option>
               <option value="call-of-duty">Call of Duty</option>
+              <option value="general">FPS Général</option>
             </select>
             <select 
               value={difficultyFilter} 

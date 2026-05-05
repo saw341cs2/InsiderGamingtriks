@@ -234,7 +234,7 @@ const MembersSection: React.FC = () => {
               <h4 className="text-white font-bold text-lg mb-4">Comment nous contacter ?</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <a
-                  href="https://discord.gg/XsHYc4tQpx"
+                  href="https://discord.gg/rnh32gTDjp"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-3 p-4 bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/30 rounded-lg transition-colors"
@@ -264,7 +264,7 @@ const MembersSection: React.FC = () => {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
-                href="https://discord.gg/XsHYc4tQpx"
+                 href="https://discord.gg/rnh32gTDjp"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition-colors"

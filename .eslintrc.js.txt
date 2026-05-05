@@ -1,0 +1,27 @@
+module.exports = {
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended"
+  ],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  },
+  "plugins": [
+    "react"
+  ],
+  "rules": {
+    // Tu peux ajouter des règles personnalisées ici plus tard
+  }
+};
+
+
+
+api 0a40363bd5b1077c8626e3b0235c8b674e170193b891bd39c88711be77be4ea5

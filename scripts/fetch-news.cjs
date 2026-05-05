@@ -1,10 +1,12 @@
-﻿const fs = require('fs');
+﻿﻿const fs = require('fs');
 const path = require('path');
+
+const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
 const TOPICS = {
   fps: ['fps', 'shooter', 'call of duty', 'valorant', 'counter-strike', 'battlefield', 'halo'],
   competition: ['esport', 'tournoi', 'competition', 'league of legends', 'csgo', 'dota'],
-  jeux: ['jeu vidÃ©o', 'game', 'sortie', 'release', 'test', 'review', 'gaming']
+  jeux: ['jeu vidéo', 'game', 'sortie', 'release', 'test', 'review', 'gaming', 'video']
 };
 
 const IMAGE_KEYWORDS = {
@@ -31,15 +33,15 @@ function categorizeArticle(title, description) {
 function transformContent(article, topic) {
   const transformations = {
     fps: {
-      prefixes: ['ðŸ”¥ ', 'ðŸ’¥ ', 'ðŸŽ¯ ', 'âš”ï¸ '],
+      prefixes: ['🔥 ', '💥 ', '🎯 ', '⚔️ '],
       suffixes: [' #FPS #Gaming', ' #Shooter', ' #JeuxVideo']
     },
     competition: {
-      prefixes: ['ðŸ† ', 'ðŸŽ® ', 'âš¡ ', 'ðŸ… '],
+      prefixes: ['🏆 ', '🎮 ', '⚡ ', '🥇 '],
       suffixes: [' #Esport', ' #Competition', ' #Tournoi']
     },
     jeux: {
-      prefixes: ['ðŸŽ® ', 'âœ¨ ', 'ðŸ•¹ï¸ ', 'ðŸ“¢ '],
+      prefixes: ['🎮 ', '✨ ', '🕹️ ', '📢 '],
       suffixes: [' #JeuxVideo', ' #Gaming', ' #Actualites']
     }
   };
@@ -55,12 +57,13 @@ function transformContent(article, topic) {
   }
   
   const suffix = transform.suffixes[Math.floor(Math.random() * transform.suffixes.length)];
-  if (!newDesc.endsWith(suffix)) {
+  // Vérifier si le suffixe n'est pas déjà présent
+  if (newDesc && !newDesc.includes(suffix.trim())) {
     newDesc = newDesc + suffix;
   }
   
   newDesc = newDesc
-    .replace(/[Â«Â»""'']/g, '')
+    .replace(/[«»""'']/g, '')
     .replace(/\s+/g, ' ')
     .trim();
   
@@ -70,7 +73,8 @@ function transformContent(article, topic) {
   
   const images = IMAGE_KEYWORDS[topic] || IMAGE_KEYWORDS.jeux;
   const imageKeyword = images[Math.floor(Math.random() * images.length)];
-  const customImage = `https://source.unsplash.com/800x450/?${encodeURIComponent(imageKeyword)}`;
+  // Utilisation d'une image plus pertinente basée sur le sujet si l'article n'en a pas
+  const customImage = `https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=800&auto=format&fit=crop&sig=${Math.random()}`;
   
   return {
     title: newTitle,
@@ -96,7 +100,10 @@ async function fetchFromGNews() {
     
     for (const query of queries) {
       const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=fr&max=15&apikey=${apiKey}`;
-      const response = await fetch(url);
+      const response = await fetch(url, { 
+        headers: { 'User-Agent': USER_AGENT },
+        signal: AbortSignal.timeout(5000)
+      });
       const data = await response.json();
       
       if (data.articles) {
@@ -120,7 +127,10 @@ async function fetchFromNewsDataIO() {
   
   try {
     const url = `https://newsdata.io/api/1/news?apikey=${apiKey}&q=gaming&language=fr&category=technology`;
-    const response = await fetch(url);
+    const response = await fetch(url, { 
+      headers: { 'User-Agent': USER_AGENT },
+      signal: AbortSignal.timeout(10000)
+    });
     const data = await response.json();
     
     if (data.results) {
@@ -140,6 +150,17 @@ async function fetchFromNewsDataIO() {
   }
 }
 
+function decodeHTMLEntities(text) {
+  if (!text) return '';
+  return text
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&nbsp;/g, ' ');
+}
+
 async function fetchFromRSS() {
   try {
     const rssUrls = [
@@ -151,23 +172,34 @@ async function fetchFromRSS() {
     let allArticles = [];
     
     for (const rssUrl of rssUrls) {
-      const response = await fetch(rssUrl);
-      const text = await response.text();
+      console.log(`📡 Récupération RSS : ${rssUrl}`);
+      const response = await fetch(rssUrl, { 
+        headers: { 'User-Agent': USER_AGENT },
+        signal: AbortSignal.timeout(8000)
+      });
       
-      const items = text.match(/<item>[\s\S]*?<\/item>/g) || [];
+      if (!response.ok) continue;
+      
+      const text = await response.text();
+      const items = text.match(/<item[\s\S]*?>[\s\S]*?<\/item>/g) || [];
+      console.log(`✅ ${items.length} articles trouvés sur ${rssUrl}`);
       
       for (const item of items.slice(0, 10)) {
-        const titleMatch = item.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>/);
-        const descMatch = item.match(/<description><!\[CDATA\[(.*?)\]\]><\/description>/);
-        const linkMatch = item.match(/<link>(.*?)<\/link>/);
-        const imageMatch = item.match(/<media:content url="(.*?)"|<enclosure url="(.*?)"/);
-        const dateMatch = item.match(/<pubDate>(.*?)<\/pubDate>/);
+        const titleMatch = item.match(/<title>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/title>/i);
+        const descMatch = item.match(/<description>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/description>/i);
+        const linkMatch = item.match(/<link>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/link>/i);
+        const imageMatch = item.match(/<media:content[^>]+url="'["']|<enclosure[^>]+url="'["']/i);
+        const dateMatch = item.match(/<pubDate>(.*?)<\/pubDate>/i);
         
         if (titleMatch && linkMatch) {
+          const title = decodeHTMLEntities(titleMatch[1].trim());
+          const rawDesc = descMatch ? descMatch[1] : '';
+          const description = decodeHTMLEntities(rawDesc.replace(/<[^>]*>/g, '').trim()).substring(0, 200);
+
           allArticles.push({
-            title: titleMatch[1],
-            description: descMatch ? descMatch[1].replace(/<[^>]*>/g, '').substring(0, 200) : '',
-            url: linkMatch[1],
+            title,
+            description,
+            url: linkMatch[1].trim(),
             image: imageMatch ? (imageMatch[1] || imageMatch[2]) : null,
             publishedAt: dateMatch ? new Date(dateMatch[1]).toISOString() : new Date().toISOString()
           });
@@ -188,70 +220,72 @@ function getFallbackArticles() {
   
   const articlesPool = [
     {
-      title: "Les meilleures ventes de jeux vidÃ©o cette semaine",
-      description: "DÃ©couvrez le classement des jeux les plus vendus sur toutes les plateformes. PS5, Xbox, PC : les chiffres sont tombÃ©s ! #JeuxVideo",
+      title: "Les meilleures ventes de jeux vidéo cette semaine",
+      description: "Découvrez le classement des jeux les plus vendus sur toutes les plateformes. PS5, Xbox, PC : les chiffres sont tombés ! #JeuxVideo",
       url: `https://insidergamingtriks.com/news/ventes-${today.toISOString().split('T')[0]}`,
       image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop",
       topic: 'jeux'
     },
     {
-      title: "Nouveau jeu FPS annoncÃ© pour 2026",
+      title: "Nouveau jeu FPS annoncé pour 2026",
       description: "Un nouveau jeu FPS arrive sur PC et console. Les joueurs attendent avec impatience ce titre prometteur. #FPS #Gaming",
       url: `https://insidergamingtriks.com/news/fps-${today.toISOString().split('T')[0]}`,
       image: "https://images.unsplash.com/photo-1552820728-8b83bb6b2b0f?w=800&h=450&fit=crop",
       topic: 'fps'
     },
     {
-      title: "Tournoi esport: les Ã©quipes favorites",
-      description: "Analyse des Ã©quipes favorites pour les prochains tournois majeurs. Qui va remporter le titre ? #Esport #Competition",
+      title: "Tournoi esport: les équipes favorites",
+      description: "Analyse des équipes favorites pour les prochains tournois majeurs. Qui va remporter le titre ? #Esport #Competition",
       url: `https://insidergamingtriks.com/news/esport-${today.toISOString().split('T')[0]}`,
       image: "https://images.unsplash.com/photo-1542751110-97427bbecf20?w=800&h=450&fit=crop",
       topic: 'competition'
     },
     {
-      title: "Guide complet : amÃ©liorer son aim en FPS",
-      description: "Nos conseils et astuces pour progresser rapidement dans tous les jeux de tir. EntraÃ®nement, paramÃ¨tres, matÃ©riel. #FPS #Gaming",
+      title: "Guide complet : améliorer son aim en FPS",
+      description: "Nos conseils et astuces pour progresser rapidement dans tous les jeux de tir. Entraînement, paramètres, matériel. #FPS #Gaming",
       url: `https://insidergamingtriks.com/news/aim-guide-${today.toISOString().split('T')[0]}`,
       image: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&h=450&fit=crop",
       topic: 'fps'
     },
     {
       title: "Les meilleures configurations PC gaming en 2026",
-      description: "Notre sÃ©lection des meilleurs PC gaming selon votre budget. De l'entrÃ©e de gamme au haut de gamme. #Gaming #PC",
+      description: "Notre sélection des meilleurs PC gaming selon votre budget. De l'entrée de gamme au haut de gamme. #Gaming #PC",
       url: `https://insidergamingtriks.com/news/pc-gaming-${today.toISOString().split('T')[0]}`,
       image: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=800&h=450&fit=crop",
       topic: 'jeux'
     },
     {
-      title: "Mise Ã  jour majeure pour ce jeu compÃ©titif",
-      description: "Les dÃ©veloppeurs ont dÃ©voilÃ© une mise Ã  jour importante avec de nouveaux contenus et Ã©quilibrages. #Esport #Competition",
+      title: "Mise à jour majeure pour ce jeu compétitif",
+      description: "Les développeurs ont dévoilé une mise à jour importante avec de nouveaux contenus et équilibrages. #Esport #Competition",
       url: `https://insidergamingtriks.com/news/update-${today.toISOString().split('T')[0]}`,
       image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&h=450&fit=crop",
       topic: 'competition'
     },
     {
-      title: "Sortie gaming : les dates Ã  retenir ce mois-ci",
-      description: "Voici tous les jeux vidÃ©o qui sortiront ce mois-ci. Il y en a pour tous les goÃ»ts ! #JeuxVideo #Gaming",
+      title: "Sortie gaming : les dates à retenir ce mois-ci",
+      description: "Voici tous les jeux vidéo qui sortiront ce mois-ci. Il y en a pour tous les goûts ! #JeuxVideo #Gaming",
       url: `https://insidergamingtriks.com/news/sorties-${today.toISOString().split('T')[0]}`,
       image: "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=800&h=450&fit=crop",
       topic: 'jeux'
     },
     {
       title: "Clavier gaming : notre top 5 du moment",
-      description: "MÃ©canique, membrane, sans fil : nous avons testÃ© les meilleurs claviers gaming pour vous aider Ã  choisir. #Gaming #Setup",
+      description: "Mécanique, membrane, sans fil : nous avons testé les meilleurs claviers gaming pour vous aider à choisir. #Gaming #Setup",
       url: `https://insidergamingtriks.com/news/clavier-${today.toISOString().split('T')[0]}`,
       image: "https://images.unsplash.com/photo-1595225476474-87563907a212?w=800&h=450&fit=crop",
       topic: 'jeux'
     }
   ];
   
-  // Rotate articles based on day of year to ensure variety
-  const startIndex = dayOfYear % articlesPool.length;
-  const selectedArticles = [];
-  
-  for (let i = 0; i < 4; i++) {
-    selectedArticles.push(articlesPool[(startIndex + i) % articlesPool.length]);
-  }
+// Rotate articles based on day of year to ensure variety
+const startIndex = dayOfYear % articlesPool.length;
+const selectedArticles = [];
+
+// Select up to 6 articles for variety
+const articlesToSelect = Math.min(6, articlesPool.length);
+for (let i = 0; i < articlesToSelect; i++) {
+  selectedArticles.push(articlesPool[(startIndex + i) % articlesPool.length]);
+}
   
   return selectedArticles.map(a => ({
     ...a,
@@ -352,35 +386,72 @@ async function main() {
     jeux: categorized.jeux.length
   });
   
-   const finalArticles = [];
-   
-   // Aim for 2 new articles: one FPS and one Competition if available
-   if (categorized.fps.length > 0) {
-     const article = categorized.fps[Math.floor(Math.random() * categorized.fps.length)];
-     finalArticles.push(transformContent(article, 'fps'));
-   }
-   
-   if (categorized.competition.length > 0) {
-     const article = categorized.competition[Math.floor(Math.random() * categorized.competition.length)];
-     finalArticles.push(transformContent(article, 'competition'));
-   }
-   
-   // If we still have less than 2, fill with Jeux articles
-   while (finalArticles.length < 2 && categorized.jeux.length > 0) {
-     const available = categorized.jeux.filter(a => !finalArticles.some(f => f.url === a.url));
-     if (available.length === 0) break;
-     const article = available[Math.floor(Math.random() * available.length)];
-     finalArticles.push(transformContent(article, 'jeux'));
-   }
-   
-   // Fallback: if still no articles, use fallback articles (up to 2)
-   if (finalArticles.length === 0) {
-     const fallback = getFallbackArticles();
-     for (let i = 0; i < Math.min(2, fallback.length); i++) {
-       const topic = fallback[i].topic || 'jeux';
-       finalArticles.push(transformContent(fallback[i], topic));
-     }
-   }
+    const finalArticles = [];
+    
+    // Generate up to 6 articles: aim for 2 from each category (FPS, Competition, Jeux)
+    // First, try to get up to 2 FPS articles
+    if (categorized.fps.length > 0) {
+      const fpsCount = Math.min(2, categorized.fps.length);
+      const usedIndices = new Set();
+      for (let i = 0; i < fpsCount; i++) {
+        let randomIndex;
+        do {
+          randomIndex = Math.floor(Math.random() * categorized.fps.length);
+        } while (usedIndices.has(randomIndex));
+        usedIndices.add(randomIndex);
+        const article = categorized.fps[randomIndex];
+        finalArticles.push(transformContent(article, 'fps'));
+      }
+    }
+    
+    // Second, try to get up to 2 Competition articles
+    if (categorized.competition.length > 0) {
+      const competitionCount = Math.min(2, categorized.competition.length);
+      const usedIndices = new Set();
+      for (let i = 0; i < competitionCount; i++) {
+        let randomIndex;
+        do {
+          randomIndex = Math.floor(Math.random() * categorized.competition.length);
+        } while (usedIndices.has(randomIndex) || 
+                 finalArticles.some(f => f.url === categorized.competition[randomIndex].url));
+        usedIndices.add(randomIndex);
+        const article = categorized.competition[randomIndex];
+        finalArticles.push(transformContent(article, 'competition'));
+      }
+    }
+    
+    // Third, try to get up to 2 Jeux articles
+    if (categorized.jeux.length > 0) {
+      const jeuxCount = Math.min(2, categorized.jeux.length);
+      const usedIndices = new Set();
+      for (let i = 0; i < jeuxCount; i++) {
+        let randomIndex;
+        do {
+          randomIndex = Math.floor(Math.random() * categorized.jeux.length);
+        } while (usedIndices.has(randomIndex) || 
+                 finalArticles.some(f => f.url === categorized.jeux[randomIndex].url));
+        usedIndices.add(randomIndex);
+        const article = categorized.jeux[randomIndex];
+        finalArticles.push(transformContent(article, 'jeux'));
+      }
+    }
+    
+    // Final fallback: if we still have less than 6 articles, use fallback articles
+    if (finalArticles.length < 6) {
+      const fallback = getFallbackArticles();
+      let needed = 6 - finalArticles.length;
+      const usedUrls = new Set(finalArticles.map(a => a.url));
+      for (let i = 0; i < Math.min(needed, fallback.length); i++) {
+        // Avoid duplicates by checking URL
+        const fallbackArticle = fallback[i];
+        if (!usedUrls.has(fallbackArticle.url) && 
+            !finalArticles.some(f => f.url === fallbackArticle.url)) {
+          const topic = fallbackArticle.topic || 'jeux';
+          finalArticles.push(transformContent(fallbackArticle, topic));
+          usedUrls.add(fallbackArticle.url);
+        }
+      }
+    }
 
   const mergedArticles = mergeArticles(existingArticles, finalArticles, 6);
 
@@ -390,7 +461,15 @@ async function main() {
   };
   
   const outputPath = path.join(__dirname, '..', 'public', 'news.json');
-  fs.writeFileSync(outputPath, JSON.stringify(output, null, 2));
+  const docsPath = path.join(__dirname, '..', 'docs', 'news.json');
+  
+  fs.writeFileSync(outputPath, JSON.stringify(output, null, 2), 'utf8');
+  
+  // Également écrire dans docs/ si le dossier existe (pour GitHub Pages)
+  if (fs.existsSync(path.join(__dirname, '..', 'docs'))) {
+    fs.writeFileSync(docsPath, JSON.stringify(output, null, 2), 'utf8');
+    console.log(`Copied to: ${docsPath}`);
+  }
   
   console.log(`\n=== Generated ${finalArticles.length} new articles ===`);
   finalArticles.forEach((a, i) => {
@@ -401,4 +480,3 @@ async function main() {
 }
 
 main().catch(console.error);
-
