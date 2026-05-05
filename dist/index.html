@@ -7,19 +7,83 @@
     <style>
       body {
         margin: 0;
-        padding: 0;
+        padding: 20px;
         background-color: black;
         color: white;
         font-family: Arial, sans-serif;
-      }
-      #root {
         min-height: 100vh;
       }
+      h1 {
+        color: #ff6b6b;
+        margin-bottom: 20px;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .section {
+        margin: 40px 0;
+        padding: 20px;
+        border: 1px solid #333;
+        border-radius: 8px;
+      }
+      .btn {
+        background: #ff6b6b;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 10px 5px;
+      }
+      .btn:hover {
+        background: #ff5252;
+      }
     </style>
-    <link rel="stylesheet" crossorigin href="/InsiderGamingtriks/assets/index-BXkvXWDY.css">
   </head>
   <body>
-    <div id="root">Chargement...</div>
-    <script crossorigin src="/InsiderGamingtriks/assets/index-BIsAwR4C.js"></script>
+    <div class="container">
+      <h1>🎮 InsiderGamingtriks</h1>
+      <p>Bienvenue sur votre guide ultime pour les tricks et astuces gaming !</p>
+      
+      <div class="section">
+        <h2>📰 Dernières News</h2>
+        <p>Découvrez les dernières actualités du gaming.</p>
+        <button class="btn">Voir les news</button>
+      </div>
+      
+      <div class="section">
+        <h2>🎯 Astuces & Tricks</h2>
+        <p>Les meilleures astuces pour améliorer votre gameplay.</p>
+        <button class="btn">Voir les astuces</button>
+      </div>
+      
+      <div class="section">
+        <h2>🎥 Vidéos Gaming</h2>
+        <p>Tutoriels et gameplay des meilleurs joueurs.</p>
+        <button class="btn">Voir les vidéos</button>
+      </div>
+      
+      <div class="section">
+        <h2>👥 Communauté</h2>
+        <p>Rejoignez notre communauté de gamers passionnés.</p>
+        <button class="btn">Rejoindre</button>
+      </div>
+      
+      <div class="section">
+        <h2>💎 Premium</h2>
+        <p>Débloquez du contenu exclusif et des avantages premium.</p>
+        <button class="btn">Devenir Premium</button>
+      </div>
+    </div>
+    
+    <script>
+      // Simple JavaScript pour les interactions
+      document.querySelectorAll('.btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          alert('Fonctionnalité bientôt disponible ! 🎮');
+        });
+      });
+    </script>
   </body>
 </html>
