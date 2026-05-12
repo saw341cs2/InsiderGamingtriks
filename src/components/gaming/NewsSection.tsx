@@ -1,173 +1,138 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Newspaper, RefreshCw, Clock } from 'lucide-react';
+﻿import React, { useEffect, useState } from 'react';
 
-interface NewsArticle {
+type NewsArticle = {
   title: string;
   body: string;
   url: string;
   image: string;
-  source: string;
   dateTimePub: string;
+  source: string;
   topic: string;
-}
+};
+
+type NewsResponse = {
+  articles: NewsArticle[];
+  generatedAt?: string;
+};
+
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) {
+    return dateString;
+  }
+  return date.toLocaleDateString('fr-FR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  });
+};
 
 const NewsSection: React.FC = () => {
-  const [articles, setArticles] = useState<NewsArticle[]>([])
+  const [articles, setArticles] = useState<NewsArticle[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchNews = useCallback(async () => {
+  const loadNews = async () => {
     setLoading(true);
-    setError(null); // Réinitialiser l'erreur à chaque nouvelle tentative
+    setError(null);
+
     try {
-      // Étape 1 : Tenter de charger les news locales (générées à 5h30)
-      // On ajoute un paramètre t=... pour éviter que le navigateur ne serve une version cachée
-      try {
-        const timestamp = new Date().getTime();
-        // Utilisation d'un chemin relatif pour être compatible avec les sous-dossiers GitHub Pages
-        const fallbackLocal = await fetch(`./news.json?t=${timestamp}`);
-        if (fallbackLocal.ok && fallbackLocal.headers.get('content-type')?.includes('application/json')) {
-          const localData = await fallbackLocal.json();
-          if (localData.articles && localData.articles.length > 0) {
-            setArticles(localData.articles);
-            setLoading(false);
-            return;
-          }
-        }
-      } catch (e) {
-        console.log("News locales non trouvées, tentative via API...");
-      }
-
-      // Étape 2 : Fallback sur NewsAPI si le fichier local n'est pas disponible
-      const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
-      if (!API_KEY) throw new Error("Clé API manquante");
-
-      // Utilisez un proxy CORS pour contourner les restrictions de domaine.
-      // Pour la production, envisagez une solution de proxy plus robuste ou auto-hébergée.
-      const CORS_PROXY_URL = 'https://cors-anywhere.herokuapp.com/'; // Exemple de proxy CORS
-
-      const gamingTopics = ['gaming', 'esports', 'videogames', 'hardware'];
-      const randomTopic = gamingTopics[Math.floor(Math.random() * gamingTopics.length)];
-
-      const newsApiUrl = `https://newsapi.org/v2/everything?q=${randomTopic}&language=fr&sortBy=publishedAt&pageSize=6&apiKey=${API_KEY}`;
-      const response = await fetch(CORS_PROXY_URL + newsApiUrl);
-
+      const newsUrl = new URL('news.json', document.baseURI);
+      newsUrl.searchParams.set('t', Date.now().toString());
+      const response = await fetch(newsUrl.href);
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`NewsAPI error: ${errorData.message || response.statusText}`);
+        throw new Error(`Impossible de charger les news (${response.status}).`);
       }
-
-      const data = await response.json();
-      if (!data || !data.articles) throw new Error("Format de réponse API invalide");
-
-      const formattedArticles: NewsArticle[] = (data.articles || []).map((article: any) => ({
-        title: article.title || 'Sans titre',
-        body: article.description || article.content || '',
-        url: article.url || '#',
-        image: article.urlToImage || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&q=80',
-        source: article.source?.name || 'Source inconnue',
-        dateTimePub: article.publishedAt || new Date().toISOString(),
-        topic: randomTopic,
-      }));
-      setArticles(formattedArticles);
-    } catch (error) {
-      console.error('Erreur News:', error);
-      setError("Impossible de charger les actualités. Vérifiez votre connexion ou la configuration de l'API.");
+      const data = (await response.json()) as NewsResponse;
+      if (!Array.isArray(data.articles)) {
+        throw new Error('Format de données invalide.');
+      }
+      setArticles(data.articles);
+    } catch (catchError) {
+      const message = catchError instanceof Error ? catchError.message : 'Erreur inconnue';
+      setError(message);
+      setArticles([]);
     } finally {
       setLoading(false);
     }
-  }, []);
+  };
 
   useEffect(() => {
-    fetchNews();
-  }, [fetchNews]);
+    loadNews();
+  }, []);
 
   return (
-    <section id="news" className="bg-gray-950 py-20">
+    <section className="bg-gray-950 py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
           <div>
-           <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-600/10 border border-red-600/20 rounded-full text-red-400 text-xs font-semibold uppercase tracking-widest mb-4">
-             <Newspaper className="w-3.5 h-3.5" />
+            <span className="inline-flex items-center gap-2 px-3 py-1 bg-red-600/10 border border-red-600/20 rounded-full text-red-400 text-xs font-semibold uppercase tracking-widest">
               Actualités
-           </div>
-           <h2 className="text-3xl md:text-5xl font-black text-white mb-4">
-              News<span className="text-red-500">Gaming</span>
-           </h2>
-           <p className="text-gray-400 max-w-xl">
-              Les actualités sont mises à jour en temps réel pour vous tenir informé.
-           </p>
+            </span>
+            <h2 className="mt-4 text-3xl md:text-5xl font-black text-white">
+              Actualités <span className="text-red-500">Gaming</span>
+            </h2>
+            <p className="mt-4 text-gray-400 max-w-xl">
+              Deux news sont publiées chaque matin à 5h30 et affichées dans la rubrique actualités du site.
+            </p>
           </div>
+
           <button
-            onClick={fetchNews}
+            type="button"
+            onClick={loadNews}
             disabled={loading}
-            className="mt-4 md:mt-0 inline-flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg text-sm font-medium transition-colors"
+            className="inline-flex items-center justify-center rounded-lg bg-gray-800 px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-            Actualiser
+            {loading ? 'Chargement...' : 'Actualiser les news'}
           </button>
         </div>
 
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="bg-gray-900 h-80 rounded-xl animate-pulse" />
-            ))}
+        {error ? (
+          <div className="rounded-3xl border border-red-500/30 bg-red-950/40 p-8 text-center text-red-200">
+            <p className="font-semibold">Erreur lors du chargement des actualités</p>
+            <p className="mt-2 text-sm text-red-300">{error}</p>
           </div>
-        ) : error ? (
-          <div className="text-center text-red-400 py-20">
-            Erreur lors du chargement des actualités : {error}
+        ) : null}
+
+        {!loading && articles.length === 0 && !error ? (
+          <div className="rounded-3xl border border-gray-800 bg-gray-900/80 p-12 text-center text-gray-300">
+            <p className="text-xl font-semibold">Aucune actualité disponible pour le moment.</p>
+            <p className="mt-2 text-sm text-gray-400">Vérifie ton fichier <code className="rounded bg-gray-800 px-2 py-1">public/news.json</code> ou la source de données.</p>
           </div>
-        ) : articles.length === 0 ? (
-          <div className="text-center text-gray-400 py-20">
-            Aucune actualité disponible pour le moment.
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {articles.slice(0, 6).map((article, idx) => (
-              <a
-                key={idx}
-                href={article.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:border-red-500/30 transition-all duration-300 hover:scale-[1.02] flex flex-col"
-              >
-                <div className="relative h-48 overflow-hidden">
-                  <img
-                    src={article.image}
-                    alt={article.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src =
-                        'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&q=80';
-                    }}
-                  />
-                <div className="absolute top-3 left-3">
-                  <span className="px-2 py-1 bg-red-600 rounded text-[10px] font-bold text-white uppercase tracking-tighter">
-                      {article.topic}
-                  </span>
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent" />
+        ) : null}
+
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
+          {articles.map((article) => (
+            <a
+              key={article.url}
+              href={article.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group overflow-hidden rounded-3xl border border-gray-800 bg-gray-900 transition duration-300 hover:-translate-y-1 hover:border-red-500/30"
+            >
+              <div className="relative h-56 overflow-hidden bg-gray-800">
+                <img
+                  src={article.image}
+                  alt={article.title}
+                  className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                />
               </div>
-                <div className="p-5 flex flex-col flex-1">
-                  <h3 className="text-white font-bold text-lg mb-2 line-clamp-2 group-hover:text-red-400 transition-colors">
-                    {article.title}
-                  </h3>
-                  <p className="text-gray-400 text-sm line-clamp-3 mb-4 flex-grow">
-                    {article.body}
-                  </p>
-                  <div className="mt-auto flex items-center justify-between text-[10px] text-gray-500 uppercase font-bold border-t border-gray-800 pt-4">
-                   <span className="flex items-center gap-1">
-                     <Clock className="w-3 h-3" />
-                      {new Date(article.dateTimePub).toLocaleDateString('fr-FR')}
-                   </span>
-                   <span className="text-gray-400">{article.source}</span>
-                 </div>
-               </div>
-              </a>
-            ))}
-          </div>
-        )}
+              <div className="space-y-4 p-6">
+                <div className="flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.3em] text-red-400">
+                  <span>{article.topic}</span>
+                  <span className="text-gray-500">•</span>
+                  <span>{formatDate(article.dateTimePub)}</span>
+                </div>
+                <h3 className="text-xl font-bold text-white">{article.title}</h3>
+                <p className="text-gray-400 line-clamp-3">{article.body}</p>
+                <div className="flex items-center justify-between text-sm text-gray-500">
+                  <span>{article.source}</span>
+                  <span className="font-semibold text-red-400">Lire</span>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
       </div>
     </section>
   );

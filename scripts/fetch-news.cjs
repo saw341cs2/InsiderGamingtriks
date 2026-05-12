@@ -5,14 +5,14 @@ const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
 
 const TOPICS = {
   fps: ['fps', 'shooter', 'call of duty', 'valorant', 'counter-strike', 'battlefield', 'halo'],
-  competition: ['esport', 'tournoi', 'competition', 'league of legends', 'csgo', 'dota'],
-  jeux: ['jeu vidéo', 'game', 'sortie', 'release', 'test', 'review', 'gaming', 'video']
+  competition: ['esport', 'tournoi', 'competition', 'league of legends', 'csgo', 'dota', 'joueur', 'joueurs', 'équipe', 'equipe', 'team', 'teams'],
+  jeux: ['jeu vidéo', 'jeu', 'game', 'sortie', 'release', 'test', 'review', 'gaming', 'video', 'actualites', 'actualité']
 };
 
 const IMAGE_KEYWORDS = {
   fps: ['video game shooter', 'gaming controller', 'esports arena'],
-  competition: ['esports tournament', 'gaming competition', 'prize cup'],
-  jeux: ['video game', 'gaming', 'playstation', 'xbox', 'pc gaming']
+  competition: ['esports tournament', 'gaming competition', 'prize cup', 'player team', 'gaming stadium'],
+  jeux: ['video game', 'gaming', 'playstation', 'xbox', 'pc gaming', 'controller']
 };
 
 function categorizeArticle(title, description) {
@@ -262,6 +262,20 @@ function getFallbackArticles() {
       topic: 'competition'
     },
     {
+      title: "Joueurs à suivre dans les prochains tournois",
+      description: "Focus sur les joueurs les plus prometteurs de la scène compétitive et leurs performances récentes. #Joueur #Equipe #Esport",
+      url: `https://insidergamingtriks.com/news/joueurs-${today.toISOString().split('T')[0]}`,
+      image: "https://images.unsplash.com/photo-1516382799247-4ca8e1eeabf3?w=800&h=450&fit=crop",
+      topic: 'competition'
+    },
+    {
+      title: "Les équipes favorites du championnat gaming",
+      description: "Retour sur les équipes qui dominent les ligues esports et celles à surveiller cette saison. #Equipe #Esport",
+      url: `https://insidergamingtriks.com/news/equipes-${today.toISOString().split('T')[0]}`,
+      image: "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?w=800&h=450&fit=crop",
+      topic: 'competition'
+    },
+    {
       title: "Sortie gaming : les dates à retenir ce mois-ci",
       description: "Voici tous les jeux vidéo qui sortiront ce mois-ci. Il y en a pour tous les goûts ! #JeuxVideo #Gaming",
       url: `https://insidergamingtriks.com/news/sorties-${today.toISOString().split('T')[0]}`,
@@ -306,38 +320,8 @@ function isArticleFromTodayOrRecent(article) {
   return diffDays <= 2; // Articles from last 2 days are considered fresh
 }
 
-function mergeArticles(existingArticles, newArticles, maxTotal = 6) {
-  const freshArticles = newArticles.filter(a => a.url);
-  
-  let merged = [...freshArticles];
-  const seenUrls = new Set(freshArticles.map(a => a.url));
-  
-  for (const old of existingArticles) {
-    if (merged.length >= maxTotal) break;
-    if (!old.url) continue;
-    if (!seenUrls.has(old.url)) {
-      merged.push(old);
-      seenUrls.add(old.url);
-    }
-  }
-  
-  return merged;
-}
-
 async function main() {
   console.log('=== Fetching Gaming News ===');
-   
-  const existingPath = path.join(__dirname, '..', 'public', 'news.json');
-  let existingArticles = [];
-  if (fs.existsSync(existingPath)) {
-    try {
-      const existingData = JSON.parse(fs.readFileSync(existingPath, 'utf8'));
-      existingArticles = existingData.articles || [];
-      console.log(`Loaded ${existingArticles.length} existing articles`);
-    } catch (e) {
-      console.log('No existing news found');
-    }
-  }
    
   let allArticles = [];
    
@@ -385,78 +369,54 @@ async function main() {
     competition: categorized.competition.length,
     jeux: categorized.jeux.length
   });
-  
-    const finalArticles = [];
-    
-    // Generate up to 6 articles: aim for 2 from each category (FPS, Competition, Jeux)
-    // First, try to get up to 2 FPS articles
-    if (categorized.fps.length > 0) {
-      const fpsCount = Math.min(2, categorized.fps.length);
-      const usedIndices = new Set();
-      for (let i = 0; i < fpsCount; i++) {
-        let randomIndex;
-        do {
-          randomIndex = Math.floor(Math.random() * categorized.fps.length);
-        } while (usedIndices.has(randomIndex));
-        usedIndices.add(randomIndex);
-        const article = categorized.fps[randomIndex];
-        finalArticles.push(transformContent(article, 'fps'));
-      }
-    }
-    
-    // Second, try to get up to 2 Competition articles
-    if (categorized.competition.length > 0) {
-      const competitionCount = Math.min(2, categorized.competition.length);
-      const usedIndices = new Set();
-      for (let i = 0; i < competitionCount; i++) {
-        let randomIndex;
-        do {
-          randomIndex = Math.floor(Math.random() * categorized.competition.length);
-        } while (usedIndices.has(randomIndex) || 
-                 finalArticles.some(f => f.url === categorized.competition[randomIndex].url));
-        usedIndices.add(randomIndex);
-        const article = categorized.competition[randomIndex];
-        finalArticles.push(transformContent(article, 'competition'));
-      }
-    }
-    
-    // Third, try to get up to 2 Jeux articles
-    if (categorized.jeux.length > 0) {
-      const jeuxCount = Math.min(2, categorized.jeux.length);
-      const usedIndices = new Set();
-      for (let i = 0; i < jeuxCount; i++) {
-        let randomIndex;
-        do {
-          randomIndex = Math.floor(Math.random() * categorized.jeux.length);
-        } while (usedIndices.has(randomIndex) || 
-                 finalArticles.some(f => f.url === categorized.jeux[randomIndex].url));
-        usedIndices.add(randomIndex);
-        const article = categorized.jeux[randomIndex];
-        finalArticles.push(transformContent(article, 'jeux'));
-      }
-    }
-    
-    // Final fallback: if we still have less than 6 articles, use fallback articles
-    if (finalArticles.length < 6) {
-      const fallback = getFallbackArticles();
-      let needed = 6 - finalArticles.length;
-      const usedUrls = new Set(finalArticles.map(a => a.url));
-      for (let i = 0; i < Math.min(needed, fallback.length); i++) {
-        // Avoid duplicates by checking URL
-        const fallbackArticle = fallback[i];
-        if (!usedUrls.has(fallbackArticle.url) && 
-            !finalArticles.some(f => f.url === fallbackArticle.url)) {
-          const topic = fallbackArticle.topic || 'jeux';
-          finalArticles.push(transformContent(fallbackArticle, topic));
-          usedUrls.add(fallbackArticle.url);
-        }
-      }
-    }
 
-  const mergedArticles = mergeArticles(existingArticles, finalArticles, 6);
+  const finalArticles = [];
+  const selectedUrls = new Set();
+
+  const rotateIndex = (list) => {
+    if (!list.length) return 0;
+    return (new Date().getDate() - 1) % list.length;
+  };
+
+  const addArticleIfValid = (article, topic) => {
+    if (!article || !article.url || selectedUrls.has(article.url)) return false;
+    finalArticles.push(transformContent(article, topic));
+    selectedUrls.add(article.url);
+    return true;
+  };
+
+  const selectFromCategory = (category) => {
+    const list = categorized[category] || [];
+    if (list.length === 0) return false;
+    const article = list[rotateIndex(list)];
+    return addArticleIfValid(article, category);
+  };
+
+  // Select up to 2 articles, prioritizing FPS, competition and jeux topics.
+  const categoryOrder = ['fps', 'competition', 'jeux'];
+  for (const category of categoryOrder) {
+    if (finalArticles.length >= 2) break;
+    selectFromCategory(category);
+  }
+
+  if (finalArticles.length < 2) {
+    const fallback = getFallbackArticles();
+    for (const fallbackArticle of fallback) {
+      if (finalArticles.length >= 2) break;
+      addArticleIfValid(fallbackArticle, fallbackArticle.topic || 'jeux');
+    }
+  }
+
+  if (finalArticles.length < 2) {
+    for (const article of articlesToProcess) {
+      if (finalArticles.length >= 2) break;
+      const topic = categorizeArticle(article.title, article.description || article.content) || 'jeux';
+      addArticleIfValid(article, topic);
+    }
+  }
 
   const output = {
-    articles: mergedArticles,
+    articles: finalArticles.slice(0, 2),
     generatedAt: new Date().toISOString()
   };
   
