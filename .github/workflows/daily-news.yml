@@ -26,16 +26,33 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Fetch and transform gaming news
+      - name: Fetch news
         env:
           GNEWS_API_KEY: ${{ secrets.GNEWS_API_KEY }}
           NEWSDATA_API_KEY: ${{ secrets.NEWS_API_KEY }}
         run: node scripts/fetch-news.cjs
 
-      - name: Commit and push changes
+      - name: Build site
+        run: |
+          npm install
+          npm run build
+
+      - name: Copy news.json to dist
+        run: cp public/news.json dist/news.json
+
+      - name: Deploy to gh-pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist
+          branch: gh-pages
+          clean: true
+          force: true
+          single-commit: true
+
+      - name: Commit news to main
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add public/news.json docs/news.json || true
           git diff --staged --quiet || git commit -m "Daily gaming news - $(date '+%Y-%m-%d %H:%M UTC')"
-          git push
+          git push || true
