@@ -1,59 +1,23 @@
 {
   "articles": [
     {
-      "title": "ðŸŽ¯ Guide complet : améliorer son aim en FPS",
-      "body": "Nos conseils et astuces pour progresser rapidement dans tous les jeux de tir. Entraînement, paramètres, matériel. #FPS #Gaming",
-      "url": "https://insidergamingtriks.com/news/aim-guide-2026-05-01",
-      "image": "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&h=450&fit=crop",
-      "dateTimePub": "2026-05-01T15:42:51.479Z",
-      "source": "InsiderGamingtriks",
-      "topic": "FPS"
-    },
-    {
-      "title": "ðŸŽ¯ Nouveau jeu FPS annoncé pour 2026",
-      "body": "Un nouveau jeu FPS arrive sur PC et console. Les joueurs attendent avec impatience ce titre prometteur. #FPS #Gaming",
-      "url": "https://insidergamingtriks.com/news/fps-2026-05-01",
-      "image": "https://images.unsplash.com/photo-1552820728-8b83bb6b2b0f?w=800&h=450&fit=crop",
-      "dateTimePub": "2026-05-01T15:42:51.479Z",
-      "source": "InsiderGamingtriks",
-      "topic": "FPS"
-    },
-    {
-      "title": "âš¡ Mise à jour majeure pour ce jeu compétitif",
-      "body": "Les développeurs ont dévoilé une mise à jour importante avec de nouveaux contenus et équilibrages. #Esport #Competition #Tournoi",
-      "url": "https://insidergamingtriks.com/news/update-2026-05-01",
-      "image": "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&h=450&fit=crop",
-      "dateTimePub": "2026-05-01T15:42:51.479Z",
+      "title": "🏆 Après les leaks, Xbox menace les joueurs de bannissements définitifs de Forza Horizon",
+      "body": "Que risquent vraiment les joueurs qui accèdent à Forza Horizon 6 grâce aux copies leakées ? #Competition",
+      "url": "https://www.journaldugeek.com/2026/05/12/apres-les-leaks-xbox-menace-les-joueurs-de-bannissements-definitifs-de-forza-horizon/",
+      "image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=800&auto=format&fit=crop&sig=0.6022311126517949",
+      "dateTimePub": "2026-05-12T13:25:49.423Z",
       "source": "InsiderGamingtriks",
       "topic": "COMPETITION"
     },
     {
-      "title": "âš¡ Tournoi esport: les équipes favorites",
-      "body": "Analyse des équipes favorites pour les prochains tournois majeurs. Qui va remporter le titre ? #Esport #Competition #Esport",
-      "url": "https://insidergamingtriks.com/news/esport-2026-05-01",
-      "image": "https://images.unsplash.com/photo-1542751110-97427bbecf20?w=800&h=450&fit=crop",
-      "dateTimePub": "2026-05-01T15:42:51.479Z",
-      "source": "InsiderGamingtriks",
-      "topic": "COMPETITION"
-    },
-    {
-      "title": "ðŸ“¢ Sortie gaming : les dates à retenir ce mois-ci",
-      "body": "Voici tous les jeux vidéo qui sortiront ce mois-ci. Il y en a pour tous les goûts ! #JeuxVideo #Gaming #Actualites",
-      "url": "https://insidergamingtriks.com/news/sorties-2026-05-01",
-      "image": "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=800&h=450&fit=crop",
-      "dateTimePub": "2026-05-01T15:42:51.479Z",
-      "source": "InsiderGamingtriks",
-      "topic": "JEUX"
-    },
-    {
-      "title": "ðŸŽ® Les meilleures configurations PC gaming en 2026",
-      "body": "Notre sélection des meilleurs PC gaming selon votre budget. De lentrée de gamme au haut de gamme. #Gaming #PC #Actualites",
-      "url": "https://insidergamingtriks.com/news/pc-gaming-2026-05-01",
-      "image": "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=800&h=450&fit=crop",
-      "dateTimePub": "2026-05-01T15:42:51.479Z",
+      "title": "✨ “Ni crédible ni attrayante” : eBay rejette la folle proposition de rachat à 55,5 milliards de dollars de GameStop",
+      "body": "Début mai, GameStop a surpris tout le monde en proposant de racheter eBay pour 55,5 milliards de dollars. Aujourd’hui, eBay annonce qu’il refuse l’offre, estimant que celle-ci n’est “ni crédible ni...",
+      "url": "https://www.presse-citron.net/ni-credible-ni-attrayante-ebay-rejette-la-folle-proposition-de-rachat-a-555-milliards-de-dollars-de-gamestop/",
+      "image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=800&auto=format&fit=crop&sig=0.8922801453326735",
+      "dateTimePub": "2026-05-12T13:25:49.423Z",
       "source": "InsiderGamingtriks",
       "topic": "JEUX"
     }
   ],
-  "generatedAt": "2026-05-01T15:42:51.479Z"
+  "generatedAt": "2026-05-12T13:25:49.423Z"
 }
