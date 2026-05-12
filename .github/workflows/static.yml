@@ -22,8 +22,8 @@ jobs:
         run: |
           rm -f package-lock.json
           rm -rf node_modules
-          npm install --legacy-peer-deps
-          npm rebuild
+          npm install
+          npm install @tailwindcss/postcss --save-exact
 
       - name: Build
         run: npm run build
