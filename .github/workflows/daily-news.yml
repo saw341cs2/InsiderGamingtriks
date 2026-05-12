@@ -1,9 +1,19 @@
+<<<<<<< HEAD
 ﻿﻿name: Daily Gaming News & Deploy
 
 on:
   schedule:
     - cron: '30 3 * * *' # S'exécute à 5h30 heure de Paris (UTC+2) chaque jour
   workflow_dispatch:      # Permet de le lancer manuellement
+=======
+name: Daily Gaming News
+
+on:
+  schedule:
+    - cron: '30 4 * * *'
+    - cron: '30 16 * * *'
+  workflow_dispatch:
+>>>>>>> 4746d2f96fdbab128230cd78b9c7702968e74f82
 
 permissions:
   contents: write
@@ -16,6 +26,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+<<<<<<< HEAD
+=======
+        with:
+          ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+          submodules: false
+          fetch-depth: 1
+>>>>>>> 4746d2f96fdbab128230cd78b9c7702968e74f82
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -23,6 +41,7 @@ jobs:
           node-version: 20
           cache: 'npm'
 
+<<<<<<< HEAD
       - name: Install dependencies
         run: npm install
 
@@ -59,3 +78,35 @@ jobs:
           git diff --quiet && git diff --staged --quiet || (git commit -m "chore: daily news update [skip ci]" && git push)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+=======
+      - name: Fetch news
+        env:
+          GNEWS_API_KEY: ${{ secrets.GNEWS_API_KEY }}
+          NEWSDATA_API_KEY: ${{ secrets.NEWS_API_KEY }}
+        run: node scripts/fetch-news.cjs
+
+      - name: Build site
+        run: |
+          npm install
+          npm run build
+
+      - name: Copy news.json to dist
+        run: cp public/news.json dist/news.json
+
+      - name: Deploy to gh-pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist
+          branch: gh-pages
+          clean: true
+          force: true
+          single-commit: true
+
+      - name: Commit news to main
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add public/news.json docs/news.json || true
+          git diff --staged --quiet || git commit -m "Daily gaming news - $(date '+%Y-%m-%d %H:%M UTC')"
+          git push || true
+>>>>>>> 4746d2f96fdbab128230cd78b9c7702968e74f82
