@@ -34,3 +34,5 @@ jobs:
           folder: dist
           branch: gh-pages
           clean: true
+          force: true
+          single-commit: true
