@@ -20,9 +20,28 @@ const NewsSection: React.FC = () => {
     setLoading(true);
     setError(null); // Réinitialiser l'erreur à chaque nouvelle tentative
     try {
-      // IMPORTANT: Remplacez 'YOUR_NEWS_API_KEY' par votre clé API NewsAPI réelle.
-      // Pour la production, stockez cette clé de manière sécurisée (par exemple, dans des variables d'environnement).
-      const NEWS_API_KEY = 'YOUR_NEWS_API_KEY'; // <-- REMPLACEZ CECI
+      // Étape 1 : Tenter de charger les news locales (générées à 5h30)
+      // On ajoute un paramètre t=... pour éviter que le navigateur ne serve une version cachée
+      try {
+        const timestamp = new Date().getTime();
+        // Utilisation d'un chemin relatif pour être compatible avec les sous-dossiers GitHub Pages
+        const fallbackLocal = await fetch(`./news.json?t=${timestamp}`);
+        if (fallbackLocal.ok && fallbackLocal.headers.get('content-type')?.includes('application/json')) {
+          const localData = await fallbackLocal.json();
+          if (localData.articles && localData.articles.length > 0) {
+            setArticles(localData.articles);
+            setLoading(false);
+            return;
+          }
+        }
+      } catch (e) {
+        console.log("News locales non trouvées, tentative via API...");
+      }
+
+      // Étape 2 : Fallback sur NewsAPI si le fichier local n'est pas disponible
+      const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
+      if (!API_KEY) throw new Error("Clé API manquante");
+
       // Utilisez un proxy CORS pour contourner les restrictions de domaine.
       // Pour la production, envisagez une solution de proxy plus robuste ou auto-hébergée.
       const CORS_PROXY_URL = 'https://cors-anywhere.herokuapp.com/'; // Exemple de proxy CORS
@@ -30,7 +49,7 @@ const NewsSection: React.FC = () => {
       const gamingTopics = ['gaming', 'esports', 'videogames', 'hardware'];
       const randomTopic = gamingTopics[Math.floor(Math.random() * gamingTopics.length)];
 
-      const newsApiUrl = `https://newsapi.org/v2/everything?q=${randomTopic}&language=fr&sortBy=publishedAt&pageSize=6&apiKey=${NEWS_API_KEY}`;
+      const newsApiUrl = `https://newsapi.org/v2/everything?q=${randomTopic}&language=fr&sortBy=publishedAt&pageSize=6&apiKey=${API_KEY}`;
       const response = await fetch(CORS_PROXY_URL + newsApiUrl);
 
       if (!response.ok) {
@@ -39,19 +58,21 @@ const NewsSection: React.FC = () => {
       }
 
       const data = await response.json();
-      const formattedArticles: NewsArticle[] = data.articles.map((article: any) => ({
-        title: article.title,
-        body: article.description || '', // NewsAPI utilise 'description' pour le corps
-        url: article.url,
-        image: article.urlToImage || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&q=80', // Image par défaut si non disponible
-        source: article.source.name,
-        dateTimePub: article.publishedAt,
-        topic: randomTopic, // Assigner le sujet utilisé pour la requête
+      if (!data || !data.articles) throw new Error("Format de réponse API invalide");
+
+      const formattedArticles: NewsArticle[] = (data.articles || []).map((article: any) => ({
+        title: article.title || 'Sans titre',
+        body: article.description || article.content || '',
+        url: article.url || '#',
+        image: article.urlToImage || 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&q=80',
+        source: article.source?.name || 'Source inconnue',
+        dateTimePub: article.publishedAt || new Date().toISOString(),
+        topic: randomTopic,
       }));
       setArticles(formattedArticles);
     } catch (error) {
       console.error('Erreur News:', error);
-      setArticles([]);
+      setError("Impossible de charger les actualités. Vérifiez votre connexion ou la configuration de l'API.");
     } finally {
       setLoading(false);
     }
