@@ -41,7 +41,7 @@ const NewsPage: React.FC = () => {
           onClick={() => navigate('/')}
           className="mb-8 inline-flex items-center gap-2 text-sm text-gray-400 hover:text-red-400 transition"
         >
-          ← Retour
+          Retour
         </button>
         <div className="rounded-2xl overflow-hidden border border-gray-800 bg-gray-900">
           <img
@@ -59,12 +59,7 @@ const NewsPage: React.FC = () => {
             </div>
             <h1 className="text-2xl md:text-3xl font-black text-white">{article.title}</h1>
             <p className="text-gray-300 leading-relaxed">{article.body}</p>
-            
-              href={article.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 mt-4 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition"
-            >
+            <a href={article.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mt-4 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition">
               Lire l'article complet
             </a>
           </div>
