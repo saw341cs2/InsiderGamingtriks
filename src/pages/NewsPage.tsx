@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/gaming/Navbar';
 
 type NewsArticle = {
@@ -20,7 +20,6 @@ const formatDate = (dateString: string) => {
 
 const NewsPage: React.FC = () => {
   const navigate = useNavigate();
-  const { id } = useParams();
   const [article, setArticle] = useState<NewsArticle | null>(null);
 
   useEffect(() => {
@@ -30,7 +29,7 @@ const NewsPage: React.FC = () => {
     } else {
       navigate('/');
     }
-  }, [id]);
+  }, []);
 
   if (!article) return null;
 
@@ -42,7 +41,7 @@ const NewsPage: React.FC = () => {
           onClick={() => navigate('/')}
           className="mb-8 inline-flex items-center gap-2 text-sm text-gray-400 hover:text-red-400 transition"
         >
-          Retour
+          ← Retour
         </button>
         <div className="rounded-2xl overflow-hidden border border-gray-800 bg-gray-900">
           <img
@@ -64,4 +63,15 @@ const NewsPage: React.FC = () => {
               href={article.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 mt-4 px-6 py-3 bg-red-600 hover:bg-red-700 text-w
+              className="inline-flex items-center gap-2 mt-4 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition"
+            >
+              Lire l'article complet →
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default NewsPage;
