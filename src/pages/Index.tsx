@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { AppProvider } from '@/contexts/AppContext';
@@ -10,87 +9,24 @@ import VideosSection from '@/components/gaming/VideosSection';
 import CommunitySection from '@/components/gaming/CommunitySection';
 import PremiumSection from '@/components/gaming/PremiumSection';
 import TestimonialsSection from '@/components/gaming/TestimonialsSection';
-import WeaponGuidesSection from '@/components/gaming/WeaponGuidesSection';
-import MembersSection from '@/components/gaming/MembersSection';
-import Footer from '@/components/gaming/Footer';
-import ProfilePage from '@/pages/Profile';
-import ForumPage from '@/pages/Forum';
 
-const Index: React.FC = () => {
+export default function Index() {
   const [searchParams] = useSearchParams();
-  const [activeSection, setActiveSection] = useState('accueil');
-  const [showProfile, setShowProfile] = useState(false);
-  const [showForum, setShowForum] = useState(false);
-  
-  useEffect(() => {
-    if (searchParams.get('view') === 'profile') {
-      setShowProfile(true);
-    }
-  }, [searchParams]);
-  
-  const handleNavigate = (section: string) => {
-    if (section === 'profile') {
-      setShowProfile(true);
-      setShowForum(false);
-      return;
-    }
-    if (section === 'forum') {
-      setShowForum(true);
-      setShowProfile(false);
-      return;
-    }
-    setActiveSection(section);
-    setShowProfile(false);
-    setShowForum(false);
-    const element = document.getElementById(section);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    } else if (section === 'accueil') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  };
-
-  const handleSelectGame = (gameId: string) => {
-    console.log('Game selected:', gameId);
-  };
 
   return (
     <AppProvider>
-      <Navbar activeSection={activeSection} onNavigate={handleNavigate} onOpenProfile={() => setShowProfile(true)} />
-      <main className="min-h-screen bg-black pt-16">
-        {showProfile ? (
-          <ProfilePage />
-        ) : showForum ? (
-          <ForumPage />
-        ) : (
-          <div className="space-y-12 md:space-y-16 pb-20">
-            <div id="news">
-              <NewsSection />
-            </div>
-            <div id="astuces">
-              <AstucesSection onNavigate={handleNavigate} />
-            </div>
-            <div id="videos">
-              <VideosSection />
-            </div>
-            <div id="communaute">
-              <CommunitySection />
-            </div>
-            <div id="premium">
-              <PremiumSection />
-            </div>
-            <TestimonialsSection />
-            <WeaponGuidesSection />
-            <GamesSection onSelectGame={handleSelectGame} />
-            <div id="membres">
-              <MembersSection />
-            </div>
-          </div>
-        )}
-      </main>
-      <Footer onNavigate={handleNavigate} />
+      <div className="min-h-screen bg-black text-white">
+        <Navbar />
+        <main>
+          <NewsSection />
+          <GamesSection />
+          <AstucesSection />
+          <VideosSection />
+          <CommunitySection />
+          <TestimonialsSection />
+          <PremiumSection />
+        </main>
+      </div>
     </AppProvider>
   );
-};
-
-export default Index;
+}
