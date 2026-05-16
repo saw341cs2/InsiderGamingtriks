@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import Index from "@/pages/Index";
+import NewsPage from "@/pages/NewsPage";
 import { useState, useEffect } from "react";
 
 function SplashScreen() {
@@ -84,6 +85,7 @@ function App() {
       <Toaster />
       <Routes>
         <Route path="/" element={<Index />} />
+        <Route path="/news/:id" element={<NewsPage />} />
       </Routes>
     </>
   );
