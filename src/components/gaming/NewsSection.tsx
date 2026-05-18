@@ -60,7 +60,7 @@ const NewsSection: React.FC = () => {
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
           <div>
             <span className="inline-flex items-center gap-2 px-3 py-1 bg-red-600/10 border border-red-600/20 rounded-full text-red-400 text-xs font-semibold uppercase tracking-widest">
-              Actualités
+              News
             </span>
             <h2 className="mt-3 text-2xl md:text-3xl font-black text-white">
               Actualités <span className="text-red-500">Gaming</span>
