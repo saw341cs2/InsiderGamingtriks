@@ -18,10 +18,10 @@ jobs:
           ref: main
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup Node
+      - name: Setup Node.js 24
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: '24'
 
       - name: Generate daily news
         run: node scripts/generate-news.js
@@ -30,11 +30,10 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add news.json docs/news.json 2>/dev/null || true
-          git diff --staged --quiet || git commit -m "📰 Daily news - $(date '+%Y-%m-%d %H:%M UTC')"
-          git push || true
-
-      - name: Deploy to GitHub Pages
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: '.'
+          git add news.json public/news.json docs/news.json 2>/dev/null || true
+          if ! git diff --staged --quiet; then
+            git commit -m "📰 Daily news - $(date '+%Y-%m-%d %H:%M UTC')"
+            git push
+          else
+            echo "No changes to commit"
+          fi
