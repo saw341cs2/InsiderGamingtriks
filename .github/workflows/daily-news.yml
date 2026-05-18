@@ -12,28 +12,46 @@ jobs:
   publish-news:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           ref: main
+          fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup Node.js 24
+      - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install 2>/dev/null || true
 
       - name: Generate daily news
-        run: node scripts/generate-news.js
+        run: |
+          echo "📰 Generating news..."
+          node scripts/generate-news.js
+          echo "✅ News generated successfully"
+
+      - name: Show generated files
+        run: |
+          echo "=== Files generated ==="
+          ls -la news.json || echo "news.json not found"
+          ls -la public/news.json 2>/dev/null || echo "public/news.json not found"
+          ls -la docs/news.json 2>/dev/null || echo "docs/news.json not found"
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
 
       - name: Commit and push
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
           git add news.json public/news.json docs/news.json 2>/dev/null || true
-          if ! git diff --staged --quiet; then
-            git commit -m "📰 Daily news - $(date '+%Y-%m-%d %H:%M UTC')"
-            git push
-          else
-            echo "No changes to commit"
+          if git diff --cached --quiet; then
+            echo "⚠️  No changes to commit"
+            exit 0
           fi
+          git commit -m "📰 Daily Gaming News - $(date '+%Y-%m-%d %H:%M UTC')" || exit 0
+          git push origin main || echo "⚠️  Push failed, but continuing..."
