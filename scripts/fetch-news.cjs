@@ -1,12 +1,12 @@
-ÔªøÔªøconst fs = require('fs');
+?const fs = require('fs');
 const path = require('path');
 
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
 const TOPICS = {
   fps: ['fps', 'shooter', 'call of duty', 'valorant', 'counter-strike', 'battlefield', 'halo'],
-  competition: ['esport', 'tournoi', 'competition', 'league of legends', 'csgo', 'dota', 'joueur', 'joueurs', '√©quipe', 'equipe', 'team', 'teams'],
-  jeux: ['jeu vid√©o', 'jeu', 'game', 'sortie', 'release', 'test', 'review', 'gaming', 'video', 'actualites', 'actualit√©']
+  competition: ['esport', 'tournoi', 'competition', 'league of legends', 'csgo', 'dota', 'joueur', 'joueurs', 'Èquipe', 'equipe', 'team', 'teams'],
+  jeux: ['jeu vidÈo', 'jeu', 'game', 'sortie', 'release', 'test', 'review', 'gaming', 'video', 'actualites', 'actualitÈ']
 };
 
 const IMAGE_KEYWORDS = {
@@ -33,15 +33,15 @@ function categorizeArticle(title, description) {
 function transformContent(article, topic) {
   const transformations = {
     fps: {
-      prefixes: ['üî• ', 'üí• ', 'üéØ ', '‚öîÔ∏è '],
+      prefixes: ['?? ', '?? ', '?? ', '?? '],
       suffixes: [' #FPS #Gaming', ' #Shooter', ' #JeuxVideo']
     },
     competition: {
-      prefixes: ['üèÜ ', 'üéÆ ', '‚ö° ', 'ü•á '],
+      prefixes: ['?? ', '?? ', '? ', '?? '],
       suffixes: [' #Esport', ' #Competition', ' #Tournoi']
     },
     jeux: {
-      prefixes: ['üéÆ ', '‚ú® ', 'üïπÔ∏è ', 'üì¢ '],
+      prefixes: ['?? ', '? ', '??? ', '?? '],
       suffixes: [' #JeuxVideo', ' #Gaming', ' #Actualites']
     }
   };
@@ -57,13 +57,13 @@ function transformContent(article, topic) {
   }
   
   const suffix = transform.suffixes[Math.floor(Math.random() * transform.suffixes.length)];
-  // V√©rifier si le suffixe n'est pas d√©j√† pr√©sent
+  // VÈrifier si le suffixe n'est pas dÈj‡ prÈsent
   if (newDesc && !newDesc.includes(suffix.trim())) {
     newDesc = newDesc + suffix;
   }
   
   newDesc = newDesc
-    .replace(/[¬´¬ª""'']/g, '')
+    .replace(/[´ª""'']/g, '')
     .replace(/\s+/g, ' ')
     .trim();
   
@@ -73,7 +73,7 @@ function transformContent(article, topic) {
   
   const images = IMAGE_KEYWORDS[topic] || IMAGE_KEYWORDS.jeux;
   const imageKeyword = images[Math.floor(Math.random() * images.length)];
-  // Utilisation d'une image plus pertinente bas√©e sur le sujet si l'article n'en a pas
+  // Utilisation d'une image plus pertinente basÈe sur le sujet si l'article n'en a pas
   const customImage = `https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=800&auto=format&fit=crop&sig=${Math.random()}`;
   
   return {
@@ -172,7 +172,7 @@ async function fetchFromRSS() {
     let allArticles = [];
     
     for (const rssUrl of rssUrls) {
-      console.log(`üì° R√©cup√©ration RSS : ${rssUrl}`);
+      console.log(`?? RÈcupÈration RSS : ${rssUrl}`);
       const response = await fetch(rssUrl, { 
         headers: { 'User-Agent': USER_AGENT },
         signal: AbortSignal.timeout(8000)
@@ -182,7 +182,7 @@ async function fetchFromRSS() {
       
       const text = await response.text();
       const items = text.match(/<item[\s\S]*?>[\s\S]*?<\/item>/g) || [];
-      console.log(`‚úÖ ${items.length} articles trouv√©s sur ${rssUrl}`);
+      console.log(`? ${items.length} articles trouvÈs sur ${rssUrl}`);
       
       for (const item of items.slice(0, 10)) {
         const titleMatch = item.match(/<title>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/title>/i);
@@ -220,71 +220,71 @@ function getFallbackArticles() {
   
   const articlesPool = [
     {
-      title: "Les meilleures ventes de jeux vid√©o cette semaine",
-      description: "D√©couvrez le classement des jeux les plus vendus sur toutes les plateformes. PS5, Xbox, PC : les chiffres sont tomb√©s ! #JeuxVideo",
+      title: "Les meilleures ventes de jeux vidÈo cette semaine",
+      description: "DÈcouvrez le classement des jeux les plus vendus sur toutes les plateformes. PS5, Xbox, PC : les chiffres sont tombÈs ! #JeuxVideo",
       url: `https://insidergamingtriks.com/news/ventes-${today.toISOString().split('T')[0]}`,
       image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop",
       topic: 'jeux'
     },
     {
-      title: "Nouveau jeu FPS annonc√© pour 2026",
+      title: "Nouveau jeu FPS annoncÈ pour 2026",
       description: "Un nouveau jeu FPS arrive sur PC et console. Les joueurs attendent avec impatience ce titre prometteur. #FPS #Gaming",
       url: `https://insidergamingtriks.com/news/fps-${today.toISOString().split('T')[0]}`,
       image: "https://images.unsplash.com/photo-1552820728-8b83bb6b2b0f?w=800&h=450&fit=crop",
       topic: 'fps'
     },
     {
-      title: "Tournoi esport: les √©quipes favorites",
-      description: "Analyse des √©quipes favorites pour les prochains tournois majeurs. Qui va remporter le titre ? #Esport #Competition",
+      title: "Tournoi esport: les Èquipes favorites",
+      description: "Analyse des Èquipes favorites pour les prochains tournois majeurs. Qui va remporter le titre ? #Esport #Competition",
       url: `https://insidergamingtriks.com/news/esport-${today.toISOString().split('T')[0]}`,
       image: "https://images.unsplash.com/photo-1542751110-97427bbecf20?w=800&h=450&fit=crop",
       topic: 'competition'
     },
     {
-      title: "Guide complet : am√©liorer son aim en FPS",
-      description: "Nos conseils et astuces pour progresser rapidement dans tous les jeux de tir. Entra√Ænement, param√®tres, mat√©riel. #FPS #Gaming",
+      title: "Guide complet : amÈliorer son aim en FPS",
+      description: "Nos conseils et astuces pour progresser rapidement dans tous les jeux de tir. EntraÓnement, paramËtres, matÈriel. #FPS #Gaming",
       url: `https://insidergamingtriks.com/news/aim-guide-${today.toISOString().split('T')[0]}`,
       image: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&h=450&fit=crop",
       topic: 'fps'
     },
     {
       title: "Les meilleures configurations PC gaming en 2026",
-      description: "Notre s√©lection des meilleurs PC gaming selon votre budget. De l'entr√©e de gamme au haut de gamme. #Gaming #PC",
+      description: "Notre sÈlection des meilleurs PC gaming selon votre budget. De l'entrÈe de gamme au haut de gamme. #Gaming #PC",
       url: `https://insidergamingtriks.com/news/pc-gaming-${today.toISOString().split('T')[0]}`,
       image: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=800&h=450&fit=crop",
       topic: 'jeux'
     },
     {
-      title: "Mise √† jour majeure pour ce jeu comp√©titif",
-      description: "Les d√©veloppeurs ont d√©voil√© une mise √† jour importante avec de nouveaux contenus et √©quilibrages. #Esport #Competition",
+      title: "Mise ‡ jour majeure pour ce jeu compÈtitif",
+      description: "Les dÈveloppeurs ont dÈvoilÈ une mise ‡ jour importante avec de nouveaux contenus et Èquilibrages. #Esport #Competition",
       url: `https://insidergamingtriks.com/news/update-${today.toISOString().split('T')[0]}`,
       image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&h=450&fit=crop",
       topic: 'competition'
     },
     {
-      title: "Joueurs √† suivre dans les prochains tournois",
-      description: "Focus sur les joueurs les plus prometteurs de la sc√®ne comp√©titive et leurs performances r√©centes. #Joueur #Equipe #Esport",
+      title: "Joueurs ‡ suivre dans les prochains tournois",
+      description: "Focus sur les joueurs les plus prometteurs de la scËne compÈtitive et leurs performances rÈcentes. #Joueur #Equipe #Esport",
       url: `https://insidergamingtriks.com/news/joueurs-${today.toISOString().split('T')[0]}`,
       image: "https://images.unsplash.com/photo-1516382799247-4ca8e1eeabf3?w=800&h=450&fit=crop",
       topic: 'competition'
     },
     {
-      title: "Les √©quipes favorites du championnat gaming",
-      description: "Retour sur les √©quipes qui dominent les ligues esports et celles √† surveiller cette saison. #Equipe #Esport",
+      title: "Les Èquipes favorites du championnat gaming",
+      description: "Retour sur les Èquipes qui dominent les ligues esports et celles ‡ surveiller cette saison. #Equipe #Esport",
       url: `https://insidergamingtriks.com/news/equipes-${today.toISOString().split('T')[0]}`,
       image: "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?w=800&h=450&fit=crop",
       topic: 'competition'
     },
     {
-      title: "Sortie gaming : les dates √† retenir ce mois-ci",
-      description: "Voici tous les jeux vid√©o qui sortiront ce mois-ci. Il y en a pour tous les go√ªts ! #JeuxVideo #Gaming",
+      title: "Sortie gaming : les dates ‡ retenir ce mois-ci",
+      description: "Voici tous les jeux vidÈo qui sortiront ce mois-ci. Il y en a pour tous les go˚ts ! #JeuxVideo #Gaming",
       url: `https://insidergamingtriks.com/news/sorties-${today.toISOString().split('T')[0]}`,
       image: "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=800&h=450&fit=crop",
       topic: 'jeux'
     },
     {
       title: "Clavier gaming : notre top 5 du moment",
-      description: "M√©canique, membrane, sans fil : nous avons test√© les meilleurs claviers gaming pour vous aider √† choisir. #Gaming #Setup",
+      description: "MÈcanique, membrane, sans fil : nous avons testÈ les meilleurs claviers gaming pour vous aider ‡ choisir. #Gaming #Setup",
       url: `https://insidergamingtriks.com/news/clavier-${today.toISOString().split('T')[0]}`,
       image: "https://images.unsplash.com/photo-1595225476474-87563907a212?w=800&h=450&fit=crop",
       topic: 'jeux'
@@ -395,28 +395,28 @@ async function main() {
   // Select up to 2 articles, prioritizing FPS, competition and jeux topics.
   const categoryOrder = ['fps', 'competition', 'jeux'];
   for (const category of categoryOrder) {
-    if (finalArticles.length >= 2) break;
+    if (finalArticles.length >= 6) break;
     selectFromCategory(category);
   }
 
-  if (finalArticles.length < 2) {
+  if (finalArticles.length < 6) {
     const fallback = getFallbackArticles();
     for (const fallbackArticle of fallback) {
-      if (finalArticles.length >= 2) break;
+      if (finalArticles.length >= 6) break;
       addArticleIfValid(fallbackArticle, fallbackArticle.topic || 'jeux');
     }
   }
 
-  if (finalArticles.length < 2) {
+  if (finalArticles.length < 6) {
     for (const article of articlesToProcess) {
-      if (finalArticles.length >= 2) break;
+      if (finalArticles.length >= 6) break;
       const topic = categorizeArticle(article.title, article.description || article.content) || 'jeux';
       addArticleIfValid(article, topic);
     }
   }
 
   const output = {
-    articles: finalArticles.slice(0, 2),
+    articles: finalArticles.slice(0, 6),
     generatedAt: new Date().toISOString()
   };
   
@@ -425,7 +425,7 @@ async function main() {
   
   fs.writeFileSync(outputPath, JSON.stringify(output, null, 2), 'utf8');
   
-  // √âgalement √©crire dans docs/ si le dossier existe (pour GitHub Pages)
+  // …galement Ècrire dans docs/ si le dossier existe (pour GitHub Pages)
   if (fs.existsSync(path.join(__dirname, '..', 'docs'))) {
     fs.writeFileSync(docsPath, JSON.stringify(output, null, 2), 'utf8');
     console.log(`Copied to: ${docsPath}`);
