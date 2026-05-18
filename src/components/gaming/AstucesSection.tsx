@@ -99,11 +99,12 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
   });
 
   const openModal = (astuce: Astuce) => {
-    if (!astuce.isPremium) {
+    if (astuce.isPremium) {
+      const el = document.getElementById('premium-section');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    } else {
       setSelectedAstuce(astuce);
       document.body.style.overflow = 'hidden';
-    } else {
-      onNavigate('premium');
     }
   };
 
