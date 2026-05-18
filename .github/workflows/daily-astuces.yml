@@ -1,0 +1,32 @@
+name: Daily Astuces Update
+
+on:
+  schedule:
+    - cron: '0 4 */2 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-astuces:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Update astuces du jour
+        run: node scripts/update-astuces.cjs
+
+      - name: Commit & Push
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add public/astuces.json
+          git diff --staged --quiet || git commit -m "Daily astuces update - $(date '+%Y-%m-%d %H:%M UTC')"
+          git push || true
