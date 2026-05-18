@@ -3,7 +3,6 @@ import { useSearchParams } from 'react-router-dom';
 import { AppProvider } from '@/contexts/AppContext';
 import Navbar from '@/components/gaming/Navbar';
 import AstucesSection from '@/components/gaming/AstucesSection';
-import GamesSection from '@/components/gaming/GamesSection';
 import NewsSection from '@/components/gaming/NewsSection';
 import VideosSection from '@/components/gaming/VideosSection';
 import CommunitySection from '@/components/gaming/CommunitySection';
@@ -19,7 +18,6 @@ export default function Index() {
         <Navbar />
         <main>
           <NewsSection />
-          <GamesSection />
           <AstucesSection />
           <VideosSection />
           <CommunitySection />
