@@ -204,7 +204,7 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {filtered.map((astuce) => {
+            {filtered.slice(0, 6).map((astuce) => {
               const GameIcon = gameIcons[astuce.game] || Crosshair;
               const imgSrc = astuce.image || defaultImages[astuce.game];
               const isDownloaded = downloadedIds.has(astuce.id);
@@ -299,6 +299,17 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
             >
               Réinitialiser les filtres
             </button>
+          </div>
+        )}
+
+        {!loading && filtered.length > 0 && (
+          <div className="text-center mt-10">
+            <a
+              href="/InsiderGamingtriks/archives"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white font-bold rounded-xl transition-all"
+            >
+              Voir toutes les astuces & anciennes news →
+            </a>
           </div>
         )}
       </div>
