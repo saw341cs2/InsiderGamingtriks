@@ -39,11 +39,11 @@ jobs:
       - name: Build site
         run: npm run build
 
-      - name: Copy news.json to dist
-        run: cp public/news.json dist/news.json || true
-
-      - name: Copy astuces.json to dist
-        run: cp public/astuces.json dist/astuces.json || true
+      - name: Copy JSON files to dist
+        run: |
+          cp public/news.json dist/news.json || true
+          cp public/astuces.json dist/astuces.json || true
+          cp public/news-archives.json dist/news-archives.json || true
 
       - name: Deploy to gh-pages
         uses: JamesIves/github-pages-deploy-action@v4

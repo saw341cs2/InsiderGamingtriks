@@ -11,6 +11,7 @@ type NewsArticle = {
   dateTimePub: string;
   source: string;
   topic: string;
+  originalSource?: string;
 };
 
 interface Astuce {
@@ -57,14 +58,23 @@ const ArchivesPage: React.FC = () => {
     const loadAll = async () => {
       setLoading(true);
       try {
-        const [newsRes, astucesRes] = await Promise.all([
+        const [newsRes, archivesRes, astucesRes] = await Promise.all([
           fetch(new URL('news.json', document.baseURI).href),
+          fetch(new URL('news-archives.json', document.baseURI).href),
           fetch(new URL('astuces.json', document.baseURI).href),
         ]);
+        let allNews: NewsArticle[] = [];
         if (newsRes.ok) {
           const data = await newsRes.json();
-          setArticles(Array.isArray(data.articles) ? data.articles : []);
+          allNews = Array.isArray(data.articles) ? data.articles : [];
         }
+        if (archivesRes.ok) {
+          const data = await archivesRes.json();
+          const archived: NewsArticle[] = Array.isArray(data.articles) ? data.articles : [];
+          const existingUrls = new Set(allNews.map(a => a.url));
+          allNews = [...allNews, ...archived.filter(a => !existingUrls.has(a.url))];
+        }
+        setArticles(allNews);
         if (astucesRes.ok) {
           const data = await astucesRes.json();
           setAstuces(Array.isArray(data.astuces) ? data.astuces : []);
@@ -135,7 +145,10 @@ const ArchivesPage: React.FC = () => {
                   </div>
                   <h3 className="text-sm font-bold text-white line-clamp-2">{article.title}</h3>
                   <p className="text-gray-400 text-xs line-clamp-2">{article.body}</p>
-                  <span className="text-xs font-semibold text-red-400">Lire →</span>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-red-400">Lire →</span>
+                    {article.originalSource && <span className="text-xs text-gray-600">via {article.originalSource}</span>}
+                  </div>
                 </div>
               </div>
             ))}

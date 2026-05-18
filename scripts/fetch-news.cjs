@@ -1,442 +1,187 @@
-?const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
 
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
-const TOPICS = {
-  fps: ['fps', 'shooter', 'call of duty', 'valorant', 'counter-strike', 'battlefield', 'halo'],
-  competition: ['esport', 'tournoi', 'competition', 'league of legends', 'csgo', 'dota', 'joueur', 'joueurs', 'équipe', 'equipe', 'team', 'teams'],
-  jeux: ['jeu vidéo', 'jeu', 'game', 'sortie', 'release', 'test', 'review', 'gaming', 'video', 'actualites', 'actualité']
+const FALLBACK_IMAGES = {
+  fps: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop',
+  competition: 'https://images.unsplash.com/photo-1542751110-97427bbecf20?w=800&h=450&fit=crop',
+  jeux: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=800&h=450&fit=crop',
 };
 
-const IMAGE_KEYWORDS = {
-  fps: ['video game shooter', 'gaming controller', 'esports arena'],
-  competition: ['esports tournament', 'gaming competition', 'prize cup', 'player team', 'gaming stadium'],
-  jeux: ['video game', 'gaming', 'playstation', 'xbox', 'pc gaming', 'controller']
+const TOPICS = {
+  fps: ['fps', 'shooter', 'call of duty', 'valorant', 'counter-strike', 'battlefield', 'halo', 'warzone', 'apex'],
+  competition: ['esport', 'tournoi', 'competition', 'league of legends', 'csgo', 'dota', 'equipe', 'team', 'championnat'],
+  jeux: ['jeu video', 'jeu', 'game', 'sortie', 'release', 'test', 'review', 'gaming', 'playstation', 'xbox', 'nintendo'],
 };
 
 function categorizeArticle(title, description) {
   const text = `${title} ${description}`.toLowerCase();
-  
-  for (const topic of TOPICS.fps) {
-    if (text.includes(topic)) return 'fps';
-  }
-  for (const topic of TOPICS.competition) {
-    if (text.includes(topic)) return 'competition';
-  }
-  for (const topic of TOPICS.jeux) {
-    if (text.includes(topic)) return 'jeux';
-  }
-  return null;
-}
-
-function transformContent(article, topic) {
-  const transformations = {
-    fps: {
-      prefixes: ['?? ', '?? ', '?? ', '?? '],
-      suffixes: [' #FPS #Gaming', ' #Shooter', ' #JeuxVideo']
-    },
-    competition: {
-      prefixes: ['?? ', '?? ', '? ', '?? '],
-      suffixes: [' #Esport', ' #Competition', ' #Tournoi']
-    },
-    jeux: {
-      prefixes: ['?? ', '? ', '??? ', '?? '],
-      suffixes: [' #JeuxVideo', ' #Gaming', ' #Actualites']
-    }
-  };
-  
-  const transform = transformations[topic] || transformations.jeux;
-  
-  let newTitle = article.title;
-  let newDesc = article.description || article.content?.substring(0, 150) || '';
-  
-  const prefix = transform.prefixes[Math.floor(Math.random() * transform.prefixes.length)];
-  if (!newTitle.startsWith(prefix)) {
-    newTitle = prefix + newTitle;
-  }
-  
-  const suffix = transform.suffixes[Math.floor(Math.random() * transform.suffixes.length)];
-  // Vérifier si le suffixe n'est pas déjà présent
-  if (newDesc && !newDesc.includes(suffix.trim())) {
-    newDesc = newDesc + suffix;
-  }
-  
-  newDesc = newDesc
-    .replace(/[«»""'']/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
-  
-  if (newDesc.length > 200) {
-    newDesc = newDesc.substring(0, 197) + '...';
-  }
-  
-  const images = IMAGE_KEYWORDS[topic] || IMAGE_KEYWORDS.jeux;
-  const imageKeyword = images[Math.floor(Math.random() * images.length)];
-  // Utilisation d'une image plus pertinente basée sur le sujet si l'article n'en a pas
-  const customImage = `https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=800&auto=format&fit=crop&sig=${Math.random()}`;
-  
-  return {
-    title: newTitle,
-    body: newDesc,
-    url: article.url,
-    image: article.image || customImage,
-    dateTimePub: new Date().toISOString(),
-    source: 'InsiderGamingtriks',
-    topic: topic.toUpperCase()
-  };
-}
-
-async function fetchFromGNews() {
-  const apiKey = process.env.GNEWS_API_KEY;
-  if (!apiKey) {
-    console.log('No GNews API key, skipping...');
-    return [];
-  }
-  
-  try {
-    const queries = ['gaming', 'esport', 'video game'];
-    let allArticles = [];
-    
-    for (const query of queries) {
-      const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(query)}&lang=fr&max=15&apikey=${apiKey}`;
-      const response = await fetch(url, { 
-        headers: { 'User-Agent': USER_AGENT },
-        signal: AbortSignal.timeout(5000)
-      });
-      const data = await response.json();
-      
-      if (data.articles) {
-        allArticles = [...allArticles, ...data.articles];
-      }
-    }
-    
-    return allArticles;
-  } catch (error) {
-    console.log('GNews error:', error.message);
-    return [];
-  }
-}
-
-async function fetchFromNewsDataIO() {
-  const apiKey = process.env.NEWSDATA_API_KEY;
-  if (!apiKey) {
-    console.log('No NewsData API key, skipping...');
-    return [];
-  }
-  
-  try {
-    const url = `https://newsdata.io/api/1/news?apikey=${apiKey}&q=gaming&language=fr&category=technology`;
-    const response = await fetch(url, { 
-      headers: { 'User-Agent': USER_AGENT },
-      signal: AbortSignal.timeout(10000)
-    });
-    const data = await response.json();
-    
-    if (data.results) {
-      return data.results.map(article => ({
-        title: article.title,
-        description: article.description,
-        content: article.content,
-        url: article.link,
-        image: article.image_url,
-        publishedAt: article.pubDate
-      }));
-    }
-    return [];
-  } catch (error) {
-    console.log('NewsData error:', error.message);
-    return [];
-  }
+  for (const topic of TOPICS.fps) { if (text.includes(topic)) return 'fps'; }
+  for (const topic of TOPICS.competition) { if (text.includes(topic)) return 'competition'; }
+  for (const topic of TOPICS.jeux) { if (text.includes(topic)) return 'jeux'; }
+  return 'jeux';
 }
 
 function decodeHTMLEntities(text) {
   if (!text) return '';
   return text
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&nbsp;/g, ' ');
+    .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, ' ');
+}
+
+function transformArticle(article, topic) {
+  const title = decodeHTMLEntities(article.title || '').trim();
+  let body = decodeHTMLEntities((article.description || article.content || '').replace(/<[^>]*>/g, '').trim());
+  if (body.length > 250) body = body.substring(0, 247) + '...';
+
+  // Garder la vraie image de l'article, sinon fallback par topic
+  const image = (article.image && article.image.startsWith('http')) 
+    ? article.image 
+    : FALLBACK_IMAGES[topic] || FALLBACK_IMAGES.jeux;
+
+  return {
+    title,
+    body,
+    url: article.url || article.link || '#',
+    image,
+    dateTimePub: article.publishedAt || article.dateTimePub || new Date().toISOString(),
+    source: 'InsiderGamingtriks',
+    originalSource: article.source || '',
+    topic: topic.toUpperCase(),
+  };
+}
+
+async function fetchFromGNews() {
+  const apiKey = process.env.GNEWS_API_KEY;
+  if (!apiKey) { console.log('GNews: pas de clÃ© API'); return []; }
+  try {
+    const queries = ['gaming fps', 'esport', 'jeu video'];
+    let all = [];
+    for (const q of queries) {
+      const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(q)}&lang=fr&max=10&apikey=${apiKey}`;
+      const res = await fetch(url, { headers: { 'User-Agent': USER_AGENT }, signal: AbortSignal.timeout(8000) });
+      const data = await res.json();
+      if (data.articles) all = [...all, ...data.articles.map(a => ({ ...a, image: a.image }))];
+    }
+    console.log(`GNews: ${all.length} articles`);
+    return all;
+  } catch (e) { console.log('GNews erreur:', e.message); return []; }
+}
+
+async function fetchFromNewsDataIO() {
+  const apiKey = process.env.NEWSDATA_API_KEY;
+  if (!apiKey) { console.log('NewsData: pas de clÃ© API'); return []; }
+  try {
+    const url = `https://newsdata.io/api/1/news?apikey=${apiKey}&q=gaming&language=fr&category=technology`;
+    const res = await fetch(url, { headers: { 'User-Agent': USER_AGENT }, signal: AbortSignal.timeout(10000) });
+    const data = await res.json();
+    if (data.results) {
+      return data.results.map(a => ({
+        title: a.title, description: a.description, content: a.content,
+        url: a.link, image: a.image_url, publishedAt: a.pubDate, source: a.source_id,
+      }));
+    }
+    return [];
+  } catch (e) { console.log('NewsData erreur:', e.message); return []; }
 }
 
 async function fetchFromRSS() {
-  try {
-    const rssUrls = [
-      'https://www.journaldugeek.com/feed/',
-      'https://www.frandroid.com/feed',
-      'https://www.presse-citron.net/feed/'
-    ];
-    
-    let allArticles = [];
-    
-    for (const rssUrl of rssUrls) {
-      console.log(`?? Récupération RSS : ${rssUrl}`);
-      const response = await fetch(rssUrl, { 
-        headers: { 'User-Agent': USER_AGENT },
-        signal: AbortSignal.timeout(8000)
-      });
-      
-      if (!response.ok) continue;
-      
-      const text = await response.text();
+  const rssUrls = [
+    'https://www.journaldugeek.com/feed/',
+    'https://www.frandroid.com/feed',
+    'https://www.jeuxvideo.com/rss/rss.xml',
+  ];
+  let all = [];
+  for (const rssUrl of rssUrls) {
+    try {
+      const res = await fetch(rssUrl, { headers: { 'User-Agent': USER_AGENT }, signal: AbortSignal.timeout(8000) });
+      if (!res.ok) continue;
+      const text = await res.text();
       const items = text.match(/<item[\s\S]*?>[\s\S]*?<\/item>/g) || [];
-      console.log(`? ${items.length} articles trouvés sur ${rssUrl}`);
-      
-      for (const item of items.slice(0, 10)) {
+      for (const item of items.slice(0, 8)) {
         const titleMatch = item.match(/<title>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/title>/i);
         const descMatch = item.match(/<description>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/description>/i);
         const linkMatch = item.match(/<link>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/link>/i);
-        const imageMatch = item.match(/<media:content[^>]+url="'["']|<enclosure[^>]+url="'["']/i);
         const dateMatch = item.match(/<pubDate>(.*?)<\/pubDate>/i);
-        
+        // Chercher l'image dans media:content, enclosure ou og:image
+        const imgMatch = item.match(/url="(https?:\/\/[^"]+\.(?:jpg|jpeg|png|webp)[^"]*)"/i) ||
+                         item.match(/<enclosure[^>]+url="(https?:\/\/[^"]+)"/i);
         if (titleMatch && linkMatch) {
-          const title = decodeHTMLEntities(titleMatch[1].trim());
-          const rawDesc = descMatch ? descMatch[1] : '';
-          const description = decodeHTMLEntities(rawDesc.replace(/<[^>]*>/g, '').trim()).substring(0, 200);
-
-          allArticles.push({
-            title,
-            description,
+          all.push({
+            title: decodeHTMLEntities(titleMatch[1].trim()),
+            description: decodeHTMLEntities((descMatch ? descMatch[1] : '').replace(/<[^>]*>/g, '').trim()),
             url: linkMatch[1].trim(),
-            image: imageMatch ? (imageMatch[1] || imageMatch[2]) : null,
-            publishedAt: dateMatch ? new Date(dateMatch[1]).toISOString() : new Date().toISOString()
+            image: imgMatch ? imgMatch[1] : null,
+            publishedAt: dateMatch ? new Date(dateMatch[1]).toISOString() : new Date().toISOString(),
+            source: new URL(rssUrl).hostname.replace('www.', ''),
           });
         }
       }
-    }
-    
-    return allArticles;
-  } catch (error) {
-    console.log('RSS fetch error:', error.message);
-    return [];
+      console.log(`RSS ${rssUrl}: ${items.length} articles`);
+    } catch (e) { console.log(`RSS erreur ${rssUrl}:`, e.message); }
   }
+  return all;
 }
 
-function getFallbackArticles() {
-  const today = new Date();
-  const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
-  
-  const articlesPool = [
-    {
-      title: "Les meilleures ventes de jeux vidéo cette semaine",
-      description: "Découvrez le classement des jeux les plus vendus sur toutes les plateformes. PS5, Xbox, PC : les chiffres sont tombés ! #JeuxVideo",
-      url: `https://insidergamingtriks.com/news/ventes-${today.toISOString().split('T')[0]}`,
-      image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop",
-      topic: 'jeux'
-    },
-    {
-      title: "Nouveau jeu FPS annoncé pour 2026",
-      description: "Un nouveau jeu FPS arrive sur PC et console. Les joueurs attendent avec impatience ce titre prometteur. #FPS #Gaming",
-      url: `https://insidergamingtriks.com/news/fps-${today.toISOString().split('T')[0]}`,
-      image: "https://images.unsplash.com/photo-1552820728-8b83bb6b2b0f?w=800&h=450&fit=crop",
-      topic: 'fps'
-    },
-    {
-      title: "Tournoi esport: les équipes favorites",
-      description: "Analyse des équipes favorites pour les prochains tournois majeurs. Qui va remporter le titre ? #Esport #Competition",
-      url: `https://insidergamingtriks.com/news/esport-${today.toISOString().split('T')[0]}`,
-      image: "https://images.unsplash.com/photo-1542751110-97427bbecf20?w=800&h=450&fit=crop",
-      topic: 'competition'
-    },
-    {
-      title: "Guide complet : améliorer son aim en FPS",
-      description: "Nos conseils et astuces pour progresser rapidement dans tous les jeux de tir. Entraînement, paramètres, matériel. #FPS #Gaming",
-      url: `https://insidergamingtriks.com/news/aim-guide-${today.toISOString().split('T')[0]}`,
-      image: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&h=450&fit=crop",
-      topic: 'fps'
-    },
-    {
-      title: "Les meilleures configurations PC gaming en 2026",
-      description: "Notre sélection des meilleurs PC gaming selon votre budget. De l'entrée de gamme au haut de gamme. #Gaming #PC",
-      url: `https://insidergamingtriks.com/news/pc-gaming-${today.toISOString().split('T')[0]}`,
-      image: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=800&h=450&fit=crop",
-      topic: 'jeux'
-    },
-    {
-      title: "Mise à jour majeure pour ce jeu compétitif",
-      description: "Les développeurs ont dévoilé une mise à jour importante avec de nouveaux contenus et équilibrages. #Esport #Competition",
-      url: `https://insidergamingtriks.com/news/update-${today.toISOString().split('T')[0]}`,
-      image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&h=450&fit=crop",
-      topic: 'competition'
-    },
-    {
-      title: "Joueurs à suivre dans les prochains tournois",
-      description: "Focus sur les joueurs les plus prometteurs de la scène compétitive et leurs performances récentes. #Joueur #Equipe #Esport",
-      url: `https://insidergamingtriks.com/news/joueurs-${today.toISOString().split('T')[0]}`,
-      image: "https://images.unsplash.com/photo-1516382799247-4ca8e1eeabf3?w=800&h=450&fit=crop",
-      topic: 'competition'
-    },
-    {
-      title: "Les équipes favorites du championnat gaming",
-      description: "Retour sur les équipes qui dominent les ligues esports et celles à surveiller cette saison. #Equipe #Esport",
-      url: `https://insidergamingtriks.com/news/equipes-${today.toISOString().split('T')[0]}`,
-      image: "https://images.unsplash.com/photo-1518779578993-ec3579fee39f?w=800&h=450&fit=crop",
-      topic: 'competition'
-    },
-    {
-      title: "Sortie gaming : les dates à retenir ce mois-ci",
-      description: "Voici tous les jeux vidéo qui sortiront ce mois-ci. Il y en a pour tous les goûts ! #JeuxVideo #Gaming",
-      url: `https://insidergamingtriks.com/news/sorties-${today.toISOString().split('T')[0]}`,
-      image: "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=800&h=450&fit=crop",
-      topic: 'jeux'
-    },
-    {
-      title: "Clavier gaming : notre top 5 du moment",
-      description: "Mécanique, membrane, sans fil : nous avons testé les meilleurs claviers gaming pour vous aider à choisir. #Gaming #Setup",
-      url: `https://insidergamingtriks.com/news/clavier-${today.toISOString().split('T')[0]}`,
-      image: "https://images.unsplash.com/photo-1595225476474-87563907a212?w=800&h=450&fit=crop",
-      topic: 'jeux'
-    }
-  ];
-  
-// Rotate articles based on day of year to ensure variety
-const startIndex = dayOfYear % articlesPool.length;
-const selectedArticles = [];
+function archiveOldNews(publicPath) {
+  const newsPath = path.join(publicPath, 'news.json');
+  const archivePath = path.join(publicPath, 'news-archives.json');
+  if (!fs.existsSync(newsPath)) return;
 
-// Select up to 6 articles for variety
-const articlesToSelect = Math.min(6, articlesPool.length);
-for (let i = 0; i < articlesToSelect; i++) {
-  selectedArticles.push(articlesPool[(startIndex + i) % articlesPool.length]);
-}
-  
-  return selectedArticles.map(a => ({
-    ...a,
-    publishedAt: new Date().toISOString()
-  }));
-}
+  const current = JSON.parse(fs.readFileSync(newsPath, 'utf-8'));
+  let archives = { articles: [] };
+  if (fs.existsSync(archivePath)) {
+    archives = JSON.parse(fs.readFileSync(archivePath, 'utf-8'));
+  }
 
-function getTodayDateString() {
-  return new Date().toISOString().split('T')[0];
-}
-
-function isArticleFromTodayOrRecent(article) {
-  if (!article.dateTimePub && !article.publishedAt) return true;
-  const dateStr = article.dateTimePub || article.publishedAt;
-  const articleDate = new Date(dateStr);
-  const today = new Date();
-  const diffDays = Math.floor((today - articleDate) / 86400000);
-  return diffDays <= 2; // Articles from last 2 days are considered fresh
+  const existingUrls = new Set(archives.articles.map(a => a.url));
+  const toArchive = (current.articles || []).filter(a => !existingUrls.has(a.url));
+  archives.articles = [...toArchive, ...archives.articles].slice(0, 100); // garder max 100 anciennes news
+  fs.writeFileSync(archivePath, JSON.stringify(archives, null, 2), 'utf-8');
+  console.log(`ArchivÃ© ${toArchive.length} news (total: ${archives.articles.length})`);
 }
 
 async function main() {
-  console.log('=== Fetching Gaming News ===');
-   
-  let allArticles = [];
-   
-  // Try RSS feeds first (free, no API key needed)
-  console.log('Trying RSS feeds...');
-  allArticles = await fetchFromRSS();
-  console.log(`RSS articles: ${allArticles.length}`);
-   
-  // Try GNews if API key available
-  const gnews = await fetchFromGNews();
-  allArticles = [...allArticles, ...gnews];
-   
-  // Try NewsData if API key available
-  const newsdata = await fetchFromNewsDataIO();
-  allArticles = [...allArticles, ...newsdata];
-   
-  if (allArticles.length === 0) {
-    console.log('No articles from APIs, using fallback...');
-    allArticles = getFallbackArticles();
-  }
-   
-  // Filter to recent articles
-  const recentArticles = allArticles.filter(isArticleFromTodayOrRecent);
-  console.log(`Recent articles: ${recentArticles.length} out of ${allArticles.length}`);
-   
-  const articlesToProcess = recentArticles.length > 0 ? recentArticles : allArticles;
-   
-  console.log(`Processing ${articlesToProcess.length} articles`);
-   
-  const categorized = {
-    fps: [],
-    competition: [],
-    jeux: []
-  };
-   
-  for (const article of articlesToProcess) {
-    const topic = categorizeArticle(article.title, article.description || article.content);
-    if (topic && categorized[topic]) {
-      categorized[topic].push(article);
-    }
-  }
-  
-  console.log('Categorized:', {
-    fps: categorized.fps.length,
-    competition: categorized.competition.length,
-    jeux: categorized.jeux.length
-  });
+  console.log('=== RÃ©cupÃ©ration des news gaming ===');
 
-  const finalArticles = [];
-  const selectedUrls = new Set();
+  let all = [];
+  all = [...all, ...(await fetchFromRSS())];
+  all = [...all, ...(await fetchFromGNews())];
+  all = [...all, ...(await fetchFromNewsDataIO())];
 
-  const rotateIndex = (list) => {
-    if (!list.length) return 0;
-    return (new Date().getDate() - 1) % list.length;
-  };
+  console.log(`Total brut: ${all.length} articles`);
 
-  const addArticleIfValid = (article, topic) => {
-    if (!article || !article.url || selectedUrls.has(article.url)) return false;
-    finalArticles.push(transformContent(article, topic));
-    selectedUrls.add(article.url);
+  // DÃ©doublonner par URL
+  const seen = new Set();
+  const unique = all.filter(a => {
+    const url = a.url || a.link;
+    if (!url || seen.has(url)) return false;
+    seen.add(url);
     return true;
-  };
-
-  const selectFromCategory = (category) => {
-    const list = categorized[category] || [];
-    if (list.length === 0) return false;
-    const article = list[rotateIndex(list)];
-    return addArticleIfValid(article, category);
-  };
-
-  // Select up to 2 articles, prioritizing FPS, competition and jeux topics.
-  const categoryOrder = ['fps', 'competition', 'jeux'];
-  for (const category of categoryOrder) {
-    if (finalArticles.length >= 6) break;
-    selectFromCategory(category);
-  }
-
-  if (finalArticles.length < 6) {
-    const fallback = getFallbackArticles();
-    for (const fallbackArticle of fallback) {
-      if (finalArticles.length >= 6) break;
-      addArticleIfValid(fallbackArticle, fallbackArticle.topic || 'jeux');
-    }
-  }
-
-  if (finalArticles.length < 6) {
-    for (const article of articlesToProcess) {
-      if (finalArticles.length >= 6) break;
-      const topic = categorizeArticle(article.title, article.description || article.content) || 'jeux';
-      addArticleIfValid(article, topic);
-    }
-  }
-
-  const output = {
-    articles: finalArticles.slice(0, 6),
-    generatedAt: new Date().toISOString()
-  };
-  
-  const outputPath = path.join(__dirname, '..', 'public', 'news.json');
-  const docsPath = path.join(__dirname, '..', 'docs', 'news.json');
-  
-  fs.writeFileSync(outputPath, JSON.stringify(output, null, 2), 'utf8');
-  
-  // Également écrire dans docs/ si le dossier existe (pour GitHub Pages)
-  if (fs.existsSync(path.join(__dirname, '..', 'docs'))) {
-    fs.writeFileSync(docsPath, JSON.stringify(output, null, 2), 'utf8');
-    console.log(`Copied to: ${docsPath}`);
-  }
-  
-  console.log(`\n=== Generated ${finalArticles.length} new articles ===`);
-  finalArticles.forEach((a, i) => {
-    console.log(`${i + 1}. [${a.topic}] ${a.title.substring(0, 50)}...`);
   });
-  
-  console.log(`\nSaved to: ${outputPath}`);
+
+  // Transformer et catÃ©goriser
+  const articles = unique.slice(0, 6).map(a => {
+    const topic = categorizeArticle(a.title, a.description || a.content || '');
+    return transformArticle(a, topic);
+  });
+
+  const publicPath = path.join(__dirname, '..', 'public');
+
+  // Archiver les anciennes news avant d'Ã©craser
+  archiveOldNews(publicPath);
+
+  const output = { articles, generatedAt: new Date().toISOString() };
+  fs.writeFileSync(path.join(publicPath, 'news.json'), JSON.stringify(output, null, 2), 'utf-8');
+
+  const docsPath = path.join(__dirname, '..', 'docs');
+  if (fs.existsSync(docsPath)) {
+    fs.writeFileSync(path.join(docsPath, 'news.json'), JSON.stringify(output, null, 2), 'utf-8');
+  }
+
+  console.log(`\n=== ${articles.length} news gÃ©nÃ©rÃ©es ===`);
+  articles.forEach((a, i) => console.log(`${i + 1}. [${a.topic}] ${a.title.substring(0, 60)}`));
 }
 
 main().catch(console.error);
