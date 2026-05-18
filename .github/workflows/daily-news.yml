@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  build-and-deploy:
+  publish-news:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -17,46 +17,24 @@ jobs:
         with:
           ref: main
           token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 1
-          submodules: false
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '22'
 
-      - name: Install dependencies
-        run: |
-          rm -f package-lock.json
-          rm -rf node_modules
-          npm install
+      - name: Generate daily news
+        run: node scripts/generate-news.js
 
-      - name: Fetch gaming news
-        run: node scripts/fetch-news.cjs
-        env:
-          GNEWS_API_KEY: ${{ secrets.GNEWS_API_KEY }}
-          NEWSDATA_API_KEY: ${{ secrets.NEWSDATA_API_KEY }}
-
-      - name: Build site
-        run: npm run build
-
-      - name: Copy news.json to dist
-        run: cp public/news.json dist/news.json || true
-
-      - name: Deploy to gh-pages
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: dist
-          branch: gh-pages
-          clean: true
-          force: true
-          single-commit: true
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Commit news to main
+      - name: Commit and push
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add public/news.json || true
-          git diff --staged --quiet || git commit -m "Daily news - $(date '+%Y-%m-%d %H:%M UTC')"
+          git add news.json docs/news.json 2>/dev/null || true
+          git diff --staged --quiet || git commit -m "📰 Daily news - $(date '+%Y-%m-%d %H:%M UTC')"
           git push || true
+
+      - name: Deploy to GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
