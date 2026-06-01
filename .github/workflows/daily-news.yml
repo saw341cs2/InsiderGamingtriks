@@ -28,7 +28,30 @@ jobs:
       - name: Generate news
         run: node scripts/generate-news.cjs
 
-      - name: Commit and push
+      - name: Install & Build
+        run: |
+          rm -f package-lock.json
+          rm -rf node_modules
+          npm install
+          npm run build
+
+      - name: Copy JSON to dist
+        run: |
+          cp public/news.json dist/news.json || true
+          cp public/astuces.json dist/astuces.json || true
+          cp public/news-archives.json dist/news-archives.json || true
+
+      - name: Deploy to gh-pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist
+          branch: gh-pages
+          clean: true
+          force: true
+          single-commit: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit news.json
         run: |
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
