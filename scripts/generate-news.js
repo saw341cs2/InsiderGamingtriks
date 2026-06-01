@@ -146,30 +146,17 @@ function generateNews() {
 }
 
 function saveNews(data) {
-  // Save to public/news.json
-  const publicPath = path.join(__dirname, '..', 'public', 'news.json');
-  const publicDir = path.dirname(publicPath);
-  
-  if (!fs.existsSync(publicDir)) {
-    fs.mkdirSync(publicDir, { recursive: true });
+  const targets = [
+    path.join(__dirname, '..', 'public', 'news.json'),
+    path.join(__dirname, '..', 'docs', 'news.json'),
+    path.join(__dirname, '..', 'news.json'),
+  ];
+  for (const target of targets) {
+    const dir = path.dirname(target);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(target, JSON.stringify(data, null, 2), 'utf8');
+    console.log(`✅ Saved to: ${target}`);
   }
-  fs.writeFileSync(publicPath, JSON.stringify(data, null, 2), 'utf8');
-  console.log(`✅ Saved to: ${publicPath}`);
-  
-  // Save to docs/news.json
-  const docsPath = path.join(__dirname, '..', 'docs', 'news.json');
-  const docsDir = path.dirname(docsPath);
-  
-  if (!fs.existsSync(docsDir)) {
-    fs.mkdirSync(docsDir, { recursive: true });
-  }
-  fs.writeFileSync(docsPath, JSON.stringify(data, null, 2), 'utf8');
-  console.log(`✅ Saved to: ${docsPath}`);
-  
-  // Also save to root news.json for easy access
-  const rootPath = path.join(__dirname, '..', 'news.json');
-  fs.writeFileSync(rootPath, JSON.stringify(data, null, 2), 'utf8');
-  console.log(`✅ Saved to: ${rootPath}`);
 }
 
 async function main() {

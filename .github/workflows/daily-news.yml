@@ -34,7 +34,7 @@ jobs:
           npm install
 
       - name: Fetch gaming news
-        run: node scripts/fetch-news.cjs
+        run: node scripts/generate-news.js
         env:
           GNEWS_API_KEY: ${{ secrets.GNEWS_API_KEY }}
           NEWSDATA_API_KEY: ${{ secrets.NEWSDATA_API_KEY }}
