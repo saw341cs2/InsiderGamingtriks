@@ -1,23 +1,23 @@
 {
   "articles": [
     {
-      "title": "🎯 Guide complet : améliorer son aim en FPS",
-      "body": "Conseils et astuces pour progresser en FPS. Entraînement, paramètres, matériel recommandé pour progresser rapidement. #FPS #Gaming #Tips",
-      "url": "https://insidergamingtriks.com/news/fps-aim-guide",
-      "image": "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&h=450&fit=crop",
-      "dateTimePub": "2026-06-01T04:30:00.000Z",
-      "source": "InsiderGamingtriks",
-      "topic": "FPS"
+      "title": "🎧 Le meilleur setup gaming 2026",
+      "body": "Chaise, bureau, casque : tout ce qu'il faut pour un setup gaming parfait. #Gaming #Setup #Guide",
+      "url": "https://insidergamingtriks.com/news/best-gaming-setup",
+      "image": "https://images.unsplash.com/photo-1595225476474-87563907a212?w=800&h=450&fit=crop",
+      "topic": "JEUX",
+      "dateTimePub": "2026-06-01T18:43:05.793Z",
+      "source": "InsiderGamingtriks"
     },
     {
-      "title": "💻 Les meilleures configurations PC gaming 2026",
-      "body": "Notre sélection des meilleurs PC gaming par budget. De l'entrée de gamme au haut de gamme pour jouer dans les meilleures conditions. #Gaming #PC",
-      "url": "https://insidergamingtriks.com/news/best-pc-gaming-2026",
-      "image": "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=800&h=450&fit=crop",
-      "dateTimePub": "2026-06-01T04:30:00.000Z",
-      "source": "InsiderGamingtriks",
-      "topic": "JEUX"
+      "title": "🔫 Nouvelle arme révolutionnaire en FPS",
+      "body": "Découvrez la nouvelle arme qui change le méta des jeux FPS. Analyse complète. #FPS #Gaming #Meta",
+      "url": "https://insidergamingtriks.com/news/new-fps-weapon",
+      "image": "https://images.unsplash.com/photo-1552820728-8b83bb6b2b0f?w=800&h=450&fit=crop",
+      "topic": "FPS",
+      "dateTimePub": "2026-06-01T18:43:05.793Z",
+      "source": "InsiderGamingtriks"
     }
   ],
-  "generatedAt": "2026-06-01T04:30:00.000Z"
+  "generatedAt": "2026-06-01T18:43:05.793Z"
 }
