@@ -1,23 +1,23 @@
 {
   "articles": [
     {
-      "title": "🎧 Le meilleur setup gaming 2026",
-      "body": "Chaise, bureau, casque : tout ce qu'il faut pour un setup gaming parfait. #Gaming #Setup #Guide",
-      "url": "https://insidergamingtriks.com/news/best-gaming-setup",
+      "title": "🎮 Manette vs Clavier-Souris : quel setup pour les FPS ?",
+      "body": "Le débat éternel tranché par les données. On analyse les avantages et inconvénients de chaque setup pour les jeux de tir compétitifs. #Materiel #FPS #Gaming",
+      "url": "https://insidergamingtriks.com/news/manette-vs-km-fps",
       "image": "https://images.unsplash.com/photo-1595225476474-87563907a212?w=800&h=450&fit=crop",
-      "topic": "JEUX",
-      "dateTimePub": "2026-06-01T18:43:05.793Z",
+      "topic": "MATERIEL",
+      "dateTimePub": "2026-06-01T18:57:09.917Z",
       "source": "InsiderGamingtriks"
     },
     {
-      "title": "🔫 Nouvelle arme révolutionnaire en FPS",
-      "body": "Découvrez la nouvelle arme qui change le méta des jeux FPS. Analyse complète. #FPS #Gaming #Meta",
-      "url": "https://insidergamingtriks.com/news/new-fps-weapon",
-      "image": "https://images.unsplash.com/photo-1552820728-8b83bb6b2b0f?w=800&h=450&fit=crop",
-      "topic": "FPS",
-      "dateTimePub": "2026-06-01T18:43:05.793Z",
+      "title": "🌟 Faker : le roi de LoL toujours au sommet à 30 ans",
+      "body": "Lee Faker Sang-hyeok continue de dominer la scène League of Legends mondiale. Retour sur sa carrière légendaire et ses performances actuelles. #Faker #LoL #Joueur",
+      "url": "https://insidergamingtriks.com/news/faker-roi-lol-2026",
+      "image": "https://images.unsplash.com/photo-1516382799247-4ca8e1eeabf3?w=800&h=450&fit=crop",
+      "topic": "JOUEURS",
+      "dateTimePub": "2026-06-01T18:57:09.917Z",
       "source": "InsiderGamingtriks"
     }
   ],
-  "generatedAt": "2026-06-01T18:43:05.793Z"
+  "generatedAt": "2026-06-01T18:57:09.917Z"
 }
