@@ -35,7 +35,7 @@ const NewsPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <Navbar />
+      <Navbar activeSection="" onNavigate={() => navigate('/')} />
       <div className="max-w-3xl mx-auto px-4 py-12">
         <button
           onClick={() => navigate('/')}
