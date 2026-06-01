@@ -5,6 +5,7 @@ import Navbar from '@/components/gaming/Navbar';
 type NewsArticle = {
   title: string;
   body: string;
+  content?: string;
   url: string;
   image: string;
   dateTimePub: string;
@@ -58,7 +59,7 @@ const NewsPage: React.FC = () => {
               <span>{article.source}</span>
             </div>
             <h1 className="text-2xl md:text-3xl font-black text-white">{article.title}</h1>
-            <p className="text-gray-300 leading-relaxed">{article.body}</p>
+            <p className="text-gray-300 leading-relaxed whitespace-pre-line">{article.content || article.body}</p>
             {article.url && !article.url.includes('insidergamingtriks.com/news/') && (
               <a href={article.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mt-4 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition">
                 Lire l'article complet
