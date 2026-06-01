@@ -86,11 +86,18 @@ async function fetchFromNewsDataIO() {
   } catch (e) { console.log('NewsData erreur:', e.message); return []; }
 }
 
+const GAMING_KEYWORDS = ['gaming', 'game', 'jeu', 'fps', 'esport', 'cs2', 'valorant', 'warzone', 'battlefield', 'playstation', 'xbox', 'nintendo', 'steam', 'twitch', 'streamer', 'tournoi', 'patch', 'update', 'meta', 'joueur', 'pro player'];
+
+function isGamingArticle(title, description) {
+  const text = `${title} ${description}`.toLowerCase();
+  return GAMING_KEYWORDS.some(kw => text.includes(kw));
+}
+
 async function fetchFromRSS() {
   const rssUrls = [
-    'https://www.journaldugeek.com/feed/',
-    'https://www.frandroid.com/feed',
     'https://www.jeuxvideo.com/rss/rss.xml',
+    'https://www.gamekult.com/feed.rss',
+    'https://www.millenium.org/rss.xml',
   ];
   let all = [];
   for (const rssUrl of rssUrls) {
@@ -108,9 +115,12 @@ async function fetchFromRSS() {
         const imgMatch = item.match(/url="(https?:\/\/[^"]+\.(?:jpg|jpeg|png|webp)[^"]*)"/i) ||
                          item.match(/<enclosure[^>]+url="(https?:\/\/[^"]+)"/i);
         if (titleMatch && linkMatch) {
+          const title = decodeHTMLEntities(titleMatch[1].trim());
+          const description = decodeHTMLEntities((descMatch ? descMatch[1] : '').replace(/<[^>]*>/g, '').trim());
+          if (!isGamingArticle(title, description)) continue;
           all.push({
-            title: decodeHTMLEntities(titleMatch[1].trim()),
-            description: decodeHTMLEntities((descMatch ? descMatch[1] : '').replace(/<[^>]*>/g, '').trim()),
+            title,
+            description,
             url: linkMatch[1].trim(),
             image: imgMatch ? imgMatch[1] : null,
             publishedAt: dateMatch ? new Date(dateMatch[1]).toISOString() : new Date().toISOString(),
@@ -161,8 +171,19 @@ async function main() {
     return true;
   });
 
+  // Filtrer uniquement les articles gaming
+  const gaming = unique.filter(a => isGamingArticle(a.title, a.description || a.content || ''));
+  console.log(`Articles gaming: ${gaming.length}`);
+
+  // Si pas assez d'articles gaming, utiliser generate-news comme fallback
+  if (gaming.length < 2) {
+    console.log('Pas assez de news gaming, utilisation du fallback...');
+    require('./generate-news.cjs');
+    return;
+  }
+
   // Transformer et catégoriser
-  const articles = unique.slice(0, 6).map(a => {
+  const articles = gaming.slice(0, 6).map(a => {
     const topic = categorizeArticle(a.title, a.description || a.content || '');
     return transformArticle(a, topic);
   });
