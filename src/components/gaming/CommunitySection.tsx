@@ -343,7 +343,12 @@ const CommunitySection: React.FC = () => {
                       
                       <div>
                         <h4 className="text-white font-semibold mb-1">📢 Nous suivre</h4>
-                        <a href="https://www.youtube.com/@InsiderHackGaming" target="_blank" rel="noopener noreferrer" className="text-red-400 hover:text-red-300">YouTube : @InsiderHackGaming</a>
+                        <div className="space-y-1">
+                          <a href="https://www.youtube.com/@InsiderHackGaming" target="_blank" rel="noopener noreferrer" className="block text-red-400 hover:text-red-300">▶️ YouTube : @InsiderHackGaming</a>
+                          <a href="https://discord.gg/rnh32gTDjp" target="_blank" rel="noopener noreferrer" className="block text-indigo-400 hover:text-indigo-300">💬 Discord : Rejoindre le serveur</a>
+                          <a href="https://x.com/InsiderGamingTr" target="_blank" rel="noopener noreferrer" className="block text-gray-300 hover:text-white">🐦 X (Twitter) : @InsiderGamingTr</a>
+                          <a href="https://www.tiktok.com/@insidergamingtricks2" target="_blank" rel="noopener noreferrer" className="block text-pink-400 hover:text-pink-300">🎵 TikTok : @insidergamingtricks2</a>
+                        </div>
                       </div>
                     </div>
                   </div>
