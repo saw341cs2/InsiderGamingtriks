@@ -363,9 +363,9 @@ function generateNews() {
   const today = new Date();
   const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
 
-  // Garder un historique de 10 jours (20 articles) pour la pagination
+  // Garder un historique de 3 jours (6 articles max) pour la pagination
   const allArticles = [];
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 3; i++) {
     const dayIndex = ((dayOfYear - 1 - i) % articlesPool.length + articlesPool.length) % articlesPool.length;
     const pool = articlesPool[dayIndex] || articlesPool[0];
     const date = new Date();
