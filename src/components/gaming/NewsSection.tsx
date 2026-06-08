@@ -1,5 +1,6 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 type NewsArticle = {
   title: string;
@@ -22,10 +23,13 @@ const formatDate = (dateString: string) => {
   return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 };
 
+const NEWS_PER_PAGE = 2;
+
 const NewsSection: React.FC = () => {
   const [articles, setArticles] = useState<NewsArticle[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
   const navigate = useNavigate();
 
   const loadNews = async () => {
@@ -38,7 +42,7 @@ const NewsSection: React.FC = () => {
       if (!response.ok) throw new Error(`Impossible de charger les news (${response.status}).`);
       const data = (await response.json()) as NewsResponse;
       if (!Array.isArray(data.articles)) throw new Error('Format de données invalide.');
-      setArticles(data.articles.slice(0, 6));
+      setArticles(data.articles);
     } catch (catchError) {
       setError(catchError instanceof Error ? catchError.message : 'Erreur inconnue');
       setArticles([]);
@@ -48,6 +52,9 @@ const NewsSection: React.FC = () => {
   };
 
   useEffect(() => { loadNews(); }, []);
+
+  const totalPages = Math.ceil(articles.length / NEWS_PER_PAGE);
+  const currentArticles = articles.slice((page - 1) * NEWS_PER_PAGE, page * NEWS_PER_PAGE);
 
   const handleArticleClick = (article: NewsArticle, index: number) => {
     localStorage.setItem('selectedNews', JSON.stringify(article));
@@ -83,33 +90,68 @@ const NewsSection: React.FC = () => {
           </div>
         )}
 
-        <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
-          {articles.map((article, index) => (
+        <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
+          {currentArticles.map((article, index) => (
             <div
-              key={article.url}
-              onClick={() => handleArticleClick(article, index)}
+              key={article.url + index}
+              onClick={() => handleArticleClick(article, (page - 1) * NEWS_PER_PAGE + index)}
               className="group overflow-hidden rounded-2xl border border-gray-800 bg-gray-900 transition duration-300 hover:-translate-y-1 hover:border-red-500/30 cursor-pointer"
             >
-              <div className="relative h-36 overflow-hidden bg-gray-800">
+              <div className="relative h-48 overflow-hidden bg-gray-800">
                 <img
                   src={article.image}
                   alt={article.title}
                   className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
                 />
               </div>
-              <div className="space-y-2 p-4">
+              <div className="space-y-2 p-5">
                 <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-widest text-red-400">
                   <span>{article.topic}</span>
                   <span className="text-gray-500">•</span>
                   <span>{formatDate(article.dateTimePub)}</span>
                 </div>
-                <h3 className="text-sm font-bold text-white line-clamp-2">{article.title}</h3>
-                <p className="text-gray-400 text-xs line-clamp-2">{article.body}</p>
-                <span className="text-xs font-semibold text-red-400">Lire →</span>
+                <h3 className="text-base font-bold text-white line-clamp-2">{article.title}</h3>
+                <p className="text-gray-400 text-sm line-clamp-3">{article.body}</p>
+                <span className="text-xs font-semibold text-red-400">Lire l'article →</span>
               </div>
             </div>
           ))}
         </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-3 mt-8">
+            <button
+              onClick={() => setPage(p => Math.max(1, p - 1))}
+              disabled={page === 1}
+              className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700 disabled:opacity-30 transition-all"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+              <button
+                key={p}
+                onClick={() => setPage(p)}
+                className={`w-9 h-9 rounded-lg text-sm font-bold transition-all ${
+                  page === p
+                    ? 'bg-red-600 text-white'
+                    : 'bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700'
+                }`}
+              >
+                {p}
+              </button>
+            ))}
+
+            <button
+              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+              className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700 disabled:opacity-30 transition-all"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );

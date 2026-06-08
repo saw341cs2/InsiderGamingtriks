@@ -362,21 +362,23 @@ Ce mode sera disponible gratuitement pour tous les possesseurs de Battlefield 20
 function generateNews() {
   const today = new Date();
   const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
-  
-  // Prendre les articles du jour + 2 jours précédents pour avoir 6 articles
-  const articles = [];
-  for (let i = 0; i < 3; i++) {
+
+  // Garder un historique de 10 jours (20 articles) pour la pagination
+  const allArticles = [];
+  for (let i = 0; i < 10; i++) {
     const dayIndex = ((dayOfYear - 1 - i) % articlesPool.length + articlesPool.length) % articlesPool.length;
     const pool = articlesPool[dayIndex] || articlesPool[0];
-    articles.push(...pool);
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    allArticles.push(...pool.map(article => ({
+      ...article,
+      dateTimePub: date.toISOString(),
+      source: 'InsiderGamingtriks',
+    })));
   }
 
   return {
-    articles: articles.slice(0, 6).map(article => ({
-      ...article,
-      dateTimePub: new Date().toISOString(),
-      source: 'InsiderGamingtriks',
-    })),
+    articles: allArticles,
     generatedAt: new Date().toISOString(),
   };
 }
