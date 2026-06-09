@@ -7,13 +7,13 @@ const path = require('path');
 const videosPool = [
   // Jour 1
   [
-    { title: "CS2 - Guide complet des smokes sur Mirage", game: "CS2", topic: "FPS", duration: "16:42", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=640&h=360&fit=crop", views: "245K", likes: "12K" },
-    { title: "Warzone - Top 5 loadouts saison actuelle", game: "CoD", topic: "FPS", duration: "11:30", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?w=640&h=360&fit=crop", views: "189K", likes: "9K" },
+    { title: "CS2 - Guide complet des smokes sur Mirage", game: "CS2", topic: "FPS", duration: "16:42", youtubeId: "V-_O7nl0Ii0", thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=640&h=360&fit=crop", views: "245K", likes: "12K" },
+    { title: "Warzone - Top 5 loadouts saison actuelle", game: "CoD", topic: "FPS", duration: "11:30", youtubeId: "9nL_FhWE7SQ", thumbnail: "https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?w=640&h=360&fit=crop", views: "189K", likes: "9K" },
   ],
   // Jour 2
   [
-    { title: "Valorant - Comment rank up rapidement en 2026", game: "Valorant", topic: "FPS", duration: "14:20", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=640&h=360&fit=crop", views: "320K", likes: "18K" },
-    { title: "Major CS2 - Les meilleures actions du tournoi", game: "CS2", topic: "COMPETITION", duration: "22:15", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1542751110-97427bbecf20?w=640&h=360&fit=crop", views: "412K", likes: "24K" },
+    { title: "Valorant - Comment rank up rapidement en 2026", game: "Valorant", topic: "FPS", duration: "14:20", youtubeId: "pSBMRJuWBsc", thumbnail: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=640&h=360&fit=crop", views: "320K", likes: "18K" },
+    { title: "Major CS2 - Les meilleures actions du tournoi", game: "CS2", topic: "COMPETITION", duration: "22:15", youtubeId: "wYPJFCQxHQE", thumbnail: "https://images.unsplash.com/photo-1542751110-97427bbecf20?w=640&h=360&fit=crop", views: "412K", likes: "24K" },
   ],
   // Jour 3
   [
