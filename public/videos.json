@@ -1,0 +1,75 @@
+{
+  "videos": [
+    {
+      "id": 1,
+      "title": "CS2 - Le guide ultime pour débuter en compétitif",
+      "thumbnail": "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=640&h=360&fit=crop",
+      "duration": "18:32",
+      "views": "245K",
+      "likes": "12K",
+      "date": "Aujourd'hui",
+      "game": "CS2",
+      "youtubeId": "dQw4w9WgXcQ",
+      "youtubeUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "featured": true,
+      "topic": "FPS"
+    },
+    {
+      "id": 2,
+      "title": "Warzone - Top 5 loadouts saison 6 pour dominer",
+      "thumbnail": "https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?w=640&h=360&fit=crop",
+      "duration": "12:15",
+      "views": "89K",
+      "likes": "5.4K",
+      "date": "Aujourd'hui",
+      "game": "CoD",
+      "youtubeId": "dQw4w9WgXcQ",
+      "youtubeUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "featured": false,
+      "topic": "FPS"
+    },
+    {
+      "id": 3,
+      "title": "Battlefield 2042 - Stratégies Engineer avancées",
+      "thumbnail": "https://images.unsplash.com/photo-1552820728-8b83bb6b2b28?w=640&h=360&fit=crop",
+      "duration": "09:47",
+      "views": "34K",
+      "likes": "2.1K",
+      "date": "Hier",
+      "game": "BF",
+      "youtubeId": "dQw4w9WgXcQ",
+      "youtubeUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "featured": false,
+      "topic": "FPS"
+    },
+    {
+      "id": 4,
+      "title": "Valorant - Comment améliorer son aim rapidement",
+      "thumbnail": "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=640&h=360&fit=crop",
+      "duration": "15:20",
+      "views": "156K",
+      "likes": "9.8K",
+      "date": "Hier",
+      "game": "Valorant",
+      "youtubeId": "dQw4w9WgXcQ",
+      "youtubeUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "featured": false,
+      "topic": "FPS"
+    },
+    {
+      "id": 5,
+      "title": "Major CS2 - Analyse des meilleures actions",
+      "thumbnail": "https://images.unsplash.com/photo-1542751110-97427bbecf20?w=640&h=360&fit=crop",
+      "duration": "22:08",
+      "views": "312K",
+      "likes": "18K",
+      "date": "Il y a 2 jours",
+      "game": "CS2",
+      "youtubeId": "dQw4w9WgXcQ",
+      "youtubeUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "featured": false,
+      "topic": "COMPETITION"
+    }
+  ],
+  "generatedAt": "2026-06-08T05:00:00.000Z"
+}

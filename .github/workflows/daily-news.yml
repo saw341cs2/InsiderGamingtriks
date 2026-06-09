@@ -28,6 +28,9 @@ jobs:
       - name: Generate news
         run: node scripts/generate-news.cjs
 
+      - name: Generate videos
+        run: node scripts/generate-videos.cjs
+
       - name: Install & Build
         run: |
           rm -f package-lock.json
@@ -39,6 +42,7 @@ jobs:
         run: |
           cp public/news.json dist/news.json || true
           cp public/astuces.json dist/astuces.json || true
+          cp public/videos.json dist/videos.json || true
           cp public/news-archives.json dist/news-archives.json || true
 
       - name: Deploy to gh-pages
