@@ -29,7 +29,7 @@ Les équipes pro vont devoir retravailler leurs stratégies. Le buff du M4A4 pou
 
 Ce patch va dans le bon sens. Valve écoute la communauté et équilibre progressivement les armes. À toi d'adapter ton jeu !`,
       url: "https://insidergamingtriks.com/news/cs2-patch-meta",
-      image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop",
+      image: "https://images.unsplash.com/photo-1591370874773-6702e8f12fd8?w=800&h=450&fit=crop",
       topic: "FPS"
     },
     {
@@ -71,7 +71,7 @@ La plus légère du classement. Capteur PixArt 3395 de référence. Idéale pour
 
 Pour débuter : Zowie EC2-C. Pour progresser : SteelSeries Aerox 5. Pour les pros : Logitech G Pro X Superlight 2.`,
       url: "https://insidergamingtriks.com/news/top-souris-fps-2026",
-      image: "https://images.unsplash.com/photo-1595225476474-87563907a212?w=800&h=450&fit=crop",
+      image: "https://images.unsplash.com/photo-1527814050087-3793815479db?w=800&h=450&fit=crop",
       topic: "MATERIEL"
     }
   ],
@@ -106,7 +106,7 @@ Quarts de finale :
 
 Finale : Vitality vs NaVi. Vainqueur : Vitality. ZywOo est tout simplement inarrêtable en ce moment.`,
       url: "https://insidergamingtriks.com/news/major-cs2-playoffs",
-      image: "https://images.unsplash.com/photo-1542751110-97427bbecf20?w=800&h=450&fit=crop",
+      image: "https://images.unsplash.com/photo-1633545495735-25df17fb9f31?w=800&h=450&fit=crop",
       topic: "COMPETITION"
     },
     {
@@ -134,7 +134,7 @@ S1mple reste le joueur avec le plus haut pic de performance de l'histoire. Son r
 
 Un retour de s1mple serait le meilleur événement possible pour la scène CS2. Le jeu a besoin de sa superstar. On croise les doigts !`,
       url: "https://insidergamingtriks.com/news/s1mple-retour",
-      image: "https://images.unsplash.com/photo-1516382799247-4ca8e1eeabf3?w=800&h=450&fit=crop",
+      image: "https://images.unsplash.com/photo-1586182987320-4f376d39d787?w=800&h=450&fit=crop",
       topic: "JOUEURS"
     }
   ],
@@ -169,7 +169,7 @@ Sortie prévue : novembre 2027. Prix : 69,99€ sur PC, 79,99€ sur console. Un
 
 Ça s'annonce prometteur. Si Activision tient ses promesses sur l'anti-cheat, CoD 2027 pourrait être le meilleur opus depuis des années.`,
       url: "https://insidergamingtriks.com/news/cod-2027-infos",
-      image: "https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?w=800&h=450&fit=crop",
+      image: "https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=800&h=450&fit=crop",
       topic: "JEUX"
     },
     {
@@ -204,7 +204,7 @@ La plupart des pistolets et les LMG trop lents pour le rythme actuel du jeu.
 Arme principale : MTZ-556 avec canon Bruen Venom, chargeur 60 balles, crosse FTAC Ripper.
 Arme secondaire : WSP Swarm avec canon WSanti, chargeur 50 balles.`,
       url: "https://insidergamingtriks.com/news/warzone-armes-s6",
-      image: "https://images.unsplash.com/photo-1552820728-8b83bb6b2b28?w=800&h=450&fit=crop",
+      image: "https://images.unsplash.com/photo-1598550476439-6847785fcea6?w=800&h=450&fit=crop",
       topic: "FPS"
     }
   ],
@@ -241,7 +241,7 @@ Prix : 99€. Pour ce prix, c'est excellent. Meilleur rapport qualité/prix de s
 
 Note : 9/10 - Recommandé chaudement pour tous les gamers.`,
       url: "https://insidergamingtriks.com/news/test-hyperx-cloud-2026",
-      image: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=800&h=450&fit=crop",
+      image: "https://images.unsplash.com/photo-1599669454699-248893623440?w=800&h=450&fit=crop",
       topic: "MATERIEL"
     },
     {
@@ -353,7 +353,7 @@ Ce mode sera disponible gratuitement pour tous les possesseurs de Battlefield 20
 
 Ça ressemble exactement à ce que les fans demandaient depuis des années. DICE semble avoir écouté la communauté. On a hâte de tester !`,
       url: "https://insidergamingtriks.com/news/battlefield-nouveau-mode",
-      image: "https://images.unsplash.com/photo-1609220136736-443140cffec6?w=800&h=450&fit=crop",
+      image: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&h=450&fit=crop",
       topic: "FPS"
     }
   ],
@@ -383,13 +383,56 @@ function generateNews() {
   };
 }
 
+const NEWS_TARGETS = [
+  path.join(__dirname, '..', 'public', 'news.json'),
+  path.join(__dirname, '..', 'docs', 'news.json'),
+  path.join(__dirname, '..', 'news.json'),
+];
+
+const ARCHIVE_TARGETS = [
+  path.join(__dirname, '..', 'public', 'news-archives.json'),
+  path.join(__dirname, '..', 'docs', 'news-archives.json'),
+  path.join(__dirname, '..', 'news-archives.json'),
+];
+
+function readJson(file, fallback) {
+  try {
+    if (fs.existsSync(file)) return JSON.parse(fs.readFileSync(file, 'utf8'));
+  } catch (error) {
+    console.warn(`⚠️  Lecture impossible de ${file}: ${error.message}`);
+  }
+  return fallback;
+}
+
+// Avant d'écraser news.json avec les news du jour, on déplace les news qui
+// sortent de la page d'accueil vers les archives (page 2) pour qu'elles
+// restent consultables au lieu d'être perdues.
+function archiveOldNews(freshArticles) {
+  const previous = readJson(NEWS_TARGETS[0], { articles: [] });
+  const previousArticles = Array.isArray(previous.articles) ? previous.articles : [];
+
+  const freshUrls = new Set(freshArticles.map(article => article.url));
+  const droppedFromHome = previousArticles.filter(article => !freshUrls.has(article.url));
+  if (droppedFromHome.length === 0) return;
+
+  const archive = readJson(ARCHIVE_TARGETS[0], { articles: [] });
+  const archiveArticles = Array.isArray(archive.articles) ? archive.articles : [];
+  const existingUrls = new Set(archiveArticles.map(article => article.url));
+  const newlyArchived = droppedFromHome.filter(article => !existingUrls.has(article.url));
+
+  const merged = [...newlyArchived, ...archiveArticles].slice(0, 100); // max 100 anciennes news
+  const output = { articles: merged, generatedAt: new Date().toISOString() };
+  for (const target of ARCHIVE_TARGETS) {
+    const dir = path.dirname(target);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(target, JSON.stringify(output, null, 2), 'utf8');
+    console.log(`🗄️  Archivé: ${target}`);
+  }
+  console.log(`🗄️  ${newlyArchived.length} news archivée(s) (total: ${merged.length})`);
+}
+
 function saveNews(data) {
-  const targets = [
-    path.join(__dirname, '..', 'public', 'news.json'),
-    path.join(__dirname, '..', 'docs', 'news.json'),
-    path.join(__dirname, '..', 'news.json'),
-  ];
-  for (const target of targets) {
+  for (const target of NEWS_TARGETS) {
     const dir = path.dirname(target);
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     fs.writeFileSync(target, JSON.stringify(data, null, 2), 'utf8');
@@ -401,6 +444,7 @@ async function main() {
   console.log('📰 Generating daily gaming news...');
   try {
     const newsData = generateNews();
+    archiveOldNews(newsData.articles);
     saveNews(newsData);
     console.log(`\n✅ ${newsData.articles.length} articles générés:`);
     newsData.articles.forEach((a, i) => console.log(`  ${i + 1}. [${a.topic}] ${a.title}`));
@@ -411,4 +455,8 @@ async function main() {
   }
 }
 
-main();
+if (require.main === module) {
+  main();
+}
+
+module.exports = { articlesPool, generateNews };

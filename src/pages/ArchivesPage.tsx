@@ -42,8 +42,8 @@ const gameColors: Record<string, string> = {
 };
 const defaultImages: Record<string, string> = {
   'CS2': 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&q=80',
-  'BF': 'https://images.unsplash.com/photo-1609220136736-443140cffec6?w=400&q=80',
-  'CoD': 'https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?w=400&q=80',
+  'BF': 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=400&q=80',
+  'CoD': 'https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=400&q=80',
   'FPS': 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&q=80',
 };
 
