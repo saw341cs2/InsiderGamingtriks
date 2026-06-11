@@ -23,7 +23,7 @@ const formatDate = (dateString: string) => {
   return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 };
 
-const NEWS_PER_PAGE = 2;
+const NEWS_PER_PAGE = 3;
 
 const NewsSection: React.FC = () => {
   const [articles, setArticles] = useState<NewsArticle[]>([]);
