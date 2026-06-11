@@ -5,7 +5,7 @@ const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
 
 const FALLBACK_IMAGES = {
   fps: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop',
-  competition: 'https://images.unsplash.com/photo-1542751110-97427bbecf20?w=800&h=450&fit=crop',
+  competition: 'https://images.unsplash.com/photo-1633545495735-25df17fb9f31?w=800&h=450&fit=crop',
   jeux: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=800&h=450&fit=crop',
 };
 
