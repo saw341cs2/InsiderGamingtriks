@@ -1,8 +1,4 @@
 {
-  "articles": [
-    { ...article 1... },
-    { ...article 2... },
-    ...
-  ],
+  "articles": [],
   "generatedAt": "2026-06-11T13:55:44.508Z"
 }
