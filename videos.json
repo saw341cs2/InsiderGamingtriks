@@ -1,0 +1,89 @@
+{
+  "videos": [
+    {
+      "id": 1,
+      "title": "ZywOo - Les meilleures actions de la semaine",
+      "game": "CS2",
+      "topic": "JOUEURS",
+      "duration": "08:30",
+      "youtubeId": "ScNTWbKMZX4",
+      "thumbnail": "https://images.unsplash.com/photo-1516382799247-4ca8e1eeabf3?w=640&h=360&fit=crop",
+      "views": "534K",
+      "likes": "32K",
+      "date": "Aujourd'hui",
+      "youtubeUrl": "https://www.youtube.com/watch?v=ScNTWbKMZX4",
+      "featured": true
+    },
+    {
+      "id": 2,
+      "title": "PC Gaming 2026 - Quelle config choisir ?",
+      "game": "PC",
+      "topic": "MATERIEL",
+      "duration": "20:10",
+      "youtubeId": "ScNTWbKMZX4",
+      "thumbnail": "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=640&h=360&fit=crop",
+      "views": "145K",
+      "likes": "8K",
+      "date": "Aujourd'hui",
+      "youtubeUrl": "https://www.youtube.com/watch?v=ScNTWbKMZX4",
+      "featured": false
+    },
+    {
+      "id": 11,
+      "title": "Battlefield 2042 - Maîtriser les véhicules",
+      "game": "BF",
+      "topic": "FPS",
+      "duration": "13:55",
+      "youtubeId": "ScNTWbKMZX4",
+      "thumbnail": "https://images.unsplash.com/photo-1552820728-8b83bb6b2b28?w=640&h=360&fit=crop",
+      "views": "78K",
+      "likes": "4.2K",
+      "date": "Hier",
+      "youtubeUrl": "https://www.youtube.com/watch?v=ScNTWbKMZX4",
+      "featured": false
+    },
+    {
+      "id": 12,
+      "title": "Apex Legends - La nouvelle légende est OP ?",
+      "game": "Apex",
+      "topic": "FPS",
+      "duration": "18:40",
+      "youtubeId": "ScNTWbKMZX4",
+      "thumbnail": "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=640&h=360&fit=crop",
+      "views": "256K",
+      "likes": "14K",
+      "date": "Hier",
+      "youtubeUrl": "https://www.youtube.com/watch?v=ScNTWbKMZX4",
+      "featured": false
+    },
+    {
+      "id": 21,
+      "title": "Valorant - Comment rank up rapidement en 2026",
+      "game": "Valorant",
+      "topic": "FPS",
+      "duration": "14:20",
+      "youtubeId": "pSBMRJuWBsc",
+      "thumbnail": "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=640&h=360&fit=crop",
+      "views": "320K",
+      "likes": "18K",
+      "date": "Il y a 2 jours",
+      "youtubeUrl": "https://www.youtube.com/watch?v=pSBMRJuWBsc",
+      "featured": false
+    },
+    {
+      "id": 22,
+      "title": "Major CS2 - Les meilleures actions du tournoi",
+      "game": "CS2",
+      "topic": "COMPETITION",
+      "duration": "22:15",
+      "youtubeId": "wYPJFCQxHQE",
+      "thumbnail": "https://images.unsplash.com/photo-1542751110-97427bbecf20?w=640&h=360&fit=crop",
+      "views": "412K",
+      "likes": "24K",
+      "date": "Il y a 2 jours",
+      "youtubeUrl": "https://www.youtube.com/watch?v=wYPJFCQxHQE",
+      "featured": false
+    }
+  ],
+  "generatedAt": "2026-06-14T08:01:33.498Z"
+}
