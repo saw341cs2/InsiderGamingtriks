@@ -37,13 +37,17 @@ function Video() {
       <div className="video-container">
         {videos.map((video) => (
           <div className="video-card" key={video.id}>
-            <iframe
-              src={`https://www.youtube.com/embed/${video.youtubeId}`}
-              title={video.title}
-              allowFullScreen
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            />
+            
+              href={`https://www.youtube.com/watch?v=${video.youtubeId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src={`https://img.youtube.com/vi/${video.youtubeId}/hqdefault.jpg`}
+                alt={video.title}
+                style={{ width: '100%', borderRadius: '8px' }}
+              />
+            </a>
             <p>{video.title}</p>
             <span>{video.duration} · {video.views} vues · {video.date}</span>
           </div>
