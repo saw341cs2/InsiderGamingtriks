@@ -1,33 +1,13 @@
 {
   "articles": [
     {
-      "title": "🏆 Major CS2 : Les équipes qualifiées pour les playoffs",
-      "body": "Le Major CS2 bat son plein. NaVi, Vitality, FaZe Clan et G2 Esports sont en lice pour le titre.",
-      "content": "Le Major CS2 entre dans sa phase la plus intense avec les playoffs. Voici l'analyse complète des équipes encore en lice.\n\n**Les favoris**\n\nTeam Vitality avec ZywOo reste la grande favorite. Le Français est en forme exceptionnelle avec un rating de 1.38 sur le tournoi. L'équipe affiche une cohésion tactique impressionnante.\n\nNaVi sans s1mple doit prouver qu'elle peut gagner un Major. electronic et b1t portent l'équipe avec brio. Leur jeu collectif est leur plus grande force.\n\n**Les outsiders**\n\nFaZe Clan avec karrigan en IGL reste dangereuse. NiKo est capable de performances individuelles qui changent une partie à lui seul. Leur style agressif peut surprendre n'importe quelle équipe.\n\nG2 Esports avec HooXi et NiKo forme un duo redoutable. L'équipe a montré des progrès tactiques importants ces derniers mois.\n\n**Le bracket des playoffs**\n\nQuarts de finale :\n- Vitality vs MOUZ\n- NaVi vs Heroic  \n- FaZe vs Spirit\n- G2 vs Liquid\n\n**Notre pronostic**\n\nFinale : Vitality vs NaVi. Vainqueur : Vitality. ZywOo est tout simplement inarrêtable en ce moment.",
-      "url": "https://insidergamingtriks.com/news/major-cs2-playoffs",
-      "image": "https://images.unsplash.com/photo-1633545495735-25df17fb9f31?w=800&h=450&fit=crop",
-      "topic": "COMPETITION",
-      "dateTimePub": "2026-06-11T10:20:44.549Z",
-      "source": "InsiderGamingtriks"
-    },
-    {
-      "title": "⭐ s1mple revient en compétition : ce qu'on sait",
-      "body": "Le légendaire joueur ukrainien s1mple serait en discussions avec plusieurs équipes top tier.",
-      "content": "Le retour de s1mple agite toute la scène CS2. Voici tout ce qu'on sait sur le come-back du meilleur joueur de l'histoire de CS.\n\n**Pourquoi il est parti**\n\nOleksandr s1mple Kostyliev avait annoncé une pause indéfinie en septembre 2023, évoquant la fatigue mentale et le besoin de se ressourcer. Après des années au sommet avec NaVi, le joueur ukrainien avait besoin de souffler.\n\n**Les rumeurs de retour**\n\nPlusieurs sources proches de la scène indiquent que s1mple s'entraîne à nouveau sérieusement depuis 3 mois. Son niveau serait déjà proche de son meilleur niveau selon des joueurs qui ont scrimé contre lui.\n\n**Les équipes intéressées**\n\nTeam Vitality serait la principale candidate. Remplacer un joueur de l'effectif par s1mple créerait l'équipe la plus forte de l'histoire du CS. NaVi serait également intéressée par un retour de leur légende.\n\n**Ce que ça changerait**\n\nS1mple reste le joueur avec le plus haut pic de performance de l'histoire. Son retour redéfinirait complètement la hiérarchie mondiale. Les bookmakers le placent déjà favori pour le prochain Major s'il revient.\n\n**Notre avis**\n\nUn retour de s1mple serait le meilleur événement possible pour la scène CS2. Le jeu a besoin de sa superstar. On croise les doigts !",
-      "url": "https://insidergamingtriks.com/news/s1mple-retour",
-      "image": "https://images.unsplash.com/photo-1586182987320-4f376d39d787?w=800&h=450&fit=crop",
-      "topic": "JOUEURS",
-      "dateTimePub": "2026-06-11T10:20:44.549Z",
-      "source": "InsiderGamingtriks"
-    },
-    {
       "title": "🔫 CS2 : Le nouveau patch change complètement le méta",
       "body": "Valve vient de déployer une mise à jour majeure sur CS2. Nouvelles smokes, équilibrage des armes et corrections de bugs.",
       "content": "Valve a déployé une mise à jour majeure sur Counter-Strike 2 qui bouleverse complètement le méta compétitif. Voici tout ce que tu dois savoir.\n\n**Les changements d'armes**\n\nL'AK-47 voit sa précision légèrement réduite en mouvement, ce qui favorise les joueurs qui maîtrisent le counter-strafing. Le M4A4 reçoit un buff sur sa cadence de tir, le rendant plus compétitif face à l'AK en side CT.\n\nLe Desert Eagle subit un nerf sur sa précision après le premier tir, ce qui pénalise les joueurs qui spamment. Les AWPers seront contents : le sniper gagne en vitesse de déplacement avec l'arme dégainée.\n\n**Les nouvelles smokes**\n\nLe système de smokes volumétriques reçoit plusieurs corrections. Les smokes sur Mirage mid sont maintenant plus cohérentes, et certains bugs permettant de voir à travers les smokes ont été corrigés.\n\n**Impact sur le méta**\n\nLes équipes pro vont devoir retravailler leurs stratégies. Le buff du M4A4 pourrait relancer le débat M4A4 vs M4A1-S en side CT. Côté T, l'AK reste dominant mais demande plus de précision.\n\n**Notre verdict**\n\nCe patch va dans le bon sens. Valve écoute la communauté et équilibre progressivement les armes. À toi d'adapter ton jeu !",
       "url": "https://insidergamingtriks.com/news/cs2-patch-meta",
       "image": "https://images.unsplash.com/photo-1591370874773-6702e8f12fd8?w=800&h=450&fit=crop",
       "topic": "FPS",
-      "dateTimePub": "2026-06-10T10:20:44.549Z",
+      "dateTimePub": "2026-06-15T09:42:57.462Z",
       "source": "InsiderGamingtriks"
     },
     {
@@ -37,7 +17,7 @@
       "url": "https://insidergamingtriks.com/news/top-souris-fps-2026",
       "image": "https://images.unsplash.com/photo-1527814050087-3793815479db?w=800&h=450&fit=crop",
       "topic": "MATERIEL",
-      "dateTimePub": "2026-06-10T10:20:44.549Z",
+      "dateTimePub": "2026-06-15T09:42:57.462Z",
       "source": "InsiderGamingtriks"
     },
     {
@@ -47,7 +27,7 @@
       "url": "https://insidergamingtriks.com/news/zywoo-meilleur-2026",
       "image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop",
       "topic": "JOUEURS",
-      "dateTimePub": "2026-06-09T10:20:44.549Z",
+      "dateTimePub": "2026-06-14T09:42:57.462Z",
       "source": "InsiderGamingtriks"
     },
     {
@@ -57,9 +37,29 @@
       "url": "https://insidergamingtriks.com/news/battlefield-nouveau-mode",
       "image": "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&h=450&fit=crop",
       "topic": "FPS",
-      "dateTimePub": "2026-06-09T10:20:44.549Z",
+      "dateTimePub": "2026-06-14T09:42:57.462Z",
+      "source": "InsiderGamingtriks"
+    },
+    {
+      "title": "🎧 Test : le casque HyperX Cloud Alpha 2026 vaut-il son prix ?",
+      "body": "On a testé le nouveau casque HyperX Cloud Alpha pendant 2 semaines. Son de qualité, micro précis.",
+      "content": "Après 2 semaines d'utilisation intensive sur CS2, Warzone et Battlefield, voici notre test complet du HyperX Cloud Alpha 2026.\n\n**Design et confort**\n\nLe Cloud Alpha 2026 reprend le design iconique de la gamme avec des améliorations notables. Les coussinets en mousse à mémoire de forme sont plus épais et respirants. Après 4 heures de jeu, aucune douleur aux oreilles. Le serre-tête en aluminium est solide et ajustable facilement.\n\nPoids : 298g - léger pour un casque filaire de cette qualité.\n\n**Qualité audio**\n\nHyperX a intégré de nouveaux drivers 53mm qui font une vraie différence. Les basses sont profondes sans être envahissantes, les médiums clairs pour entendre les pas ennemis, et les aigus précis pour les coups de feu.\n\nEn CS2, on entend parfaitement la direction des pas et des grenades. En Warzone, les sons d'ambiance sont immersifs. Le son surround virtuel 7.1 est convaincant.\n\n**Le microphone**\n\nMicro détachable avec réduction de bruit améliorée. La voix est claire et naturelle selon nos coéquipiers Discord. Le bruit de fond est bien filtré même dans un environnement bruyant.\n\n**Compatibilité**\n\nCompatible PC, PS5, Xbox Series X, Switch. Connexion jack 3.5mm + adaptateur USB inclus.\n\n**Prix et verdict**\n\nPrix : 99€. Pour ce prix, c'est excellent. Meilleur rapport qualité/prix de sa catégorie.\n\nNote : 9/10 - Recommandé chaudement pour tous les gamers.",
+      "url": "https://insidergamingtriks.com/news/test-hyperx-cloud-2026",
+      "image": "https://images.unsplash.com/photo-1599669454699-248893623440?w=800&h=450&fit=crop",
+      "topic": "MATERIEL",
+      "dateTimePub": "2026-06-13T09:42:57.462Z",
+      "source": "InsiderGamingtriks"
+    },
+    {
+      "title": "🏅 Valorant Champions 2026 : le programme complet",
+      "body": "Le tournoi Valorant Champions 2026 se déroulera à Paris. 16 équipes mondiales s'affrontent.",
+      "content": "Valorant Champions 2026 arrive à Paris ! C'est le tournoi le plus prestigieux du circuit Valorant. Voici tout ce qu'il faut savoir.\n\n**Le lieu et les dates**\n\nL'Accor Arena de Paris accueillera l'événement du 15 au 30 août 2026. C'est la première fois que le Champions se déroule en France. Les billets sont déjà en vente sur le site officiel de Riot Games.\n\n**Les équipes qualifiées**\n\n16 équipes du monde entier :\n- Europe : Team Vitality, Fnatic, G2 Esports, Team Heretics\n- Amérique du Nord : Sentinels, NRG, Cloud9, 100 Thieves\n- Asie-Pacifique : Paper Rex, DRX, ZETA Division, T1\n- Amérique Latine : LOUD, KRÜ Esports\n- Moyen-Orient : Bleed Esports, Team Falcons\n\n**Le format**\n\nPhase de groupes : 4 groupes de 4 équipes, les 2 premiers qualifiés pour les playoffs.\nPlayoffs : Format double élimination jusqu'à la grande finale.\n\n**Les favoris**\n\nLOUD reste la grande favorite après leur victoire l'an dernier. Paper Rex avec leur style agressif unique est l'outsider le plus dangereux. Côté Europe, Fnatic avec leur roster remanié veut prouver sa valeur.\n\n**Comment regarder**\n\nDiffusion en direct sur Twitch et YouTube sur la chaîne officielle Valorant. Commentaires disponibles en français sur la chaîne VCT France.\n\n**Notre pronostic**\n\nFinale : LOUD vs Paper Rex. Vainqueur : Paper Rex. Leur méta agressive est parfaite pour ce type de tournoi.",
+      "url": "https://insidergamingtriks.com/news/valorant-champions-2026",
+      "image": "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&h=450&fit=crop",
+      "topic": "COMPETITION",
+      "dateTimePub": "2026-06-13T09:42:57.462Z",
       "source": "InsiderGamingtriks"
     }
   ],
-  "generatedAt": "2026-06-11T10:20:44.549Z"
+  "generatedAt": "2026-06-15T09:42:57.462Z"
 }

@@ -1,5 +1,32 @@
 import React from 'react';
 
+const videos = [
+  {
+    id: 1,
+    title: "CS2 - Guide complet pour débuter en compétitif",
+    youtubeId: "V-_O7nl0Ii0",
+    duration: "18:32",
+    views: "245K",
+    date: "Aujourd'hui"
+  },
+  {
+    id: 2,
+    title: "Warzone - Top loadouts et stratégies saison actuelle",
+    youtubeId: "9nL_FhWE7SQ",
+    duration: "12:15",
+    views: "89K",
+    date: "Aujourd'hui"
+  },
+  {
+    id: 3,
+    title: "Valorant - Améliorer son aim et sa précision",
+    youtubeId: "pSBMRJuWBsc",
+    duration: "15:20",
+    views: "156K",
+    date: "Hier"
+  }
+];
+
 function Video() {
   return (
     <div className="video-section">
@@ -8,37 +35,19 @@ function Video() {
       <p>Une nouvelle vidéo chaque jour. Abonne-toi pour ne rien manquer.</p>
 
       <div className="video-container">
-        
-        {/* Vidéo 1 : FPS */}
-        <div className="video-card">
-          <iframe 
-            src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
-            title="Vidéo FPS" 
-            allowFullScreen>
-          </iframe>
-          <p>🎮 Gameplay FPS</p>
-        </div>
-
-        {/* Vidéo 2 : Team / Joueur Pro */}
-        <div className="video-card">
-          <iframe 
-            src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
-            title="Vidéo Joueur Pro" 
-            allowFullScreen>
-          </iframe>
-          <p>🏆 Team & Joueur Pro</p>
-        </div>
-
-        {/* Vidéo 3 : Optimisation PC */}
-        <div className="video-card">
-          <iframe 
-            src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
-            title="Vidéo Optimisation" 
-            allowFullScreen>
-          </iframe>
-          <p>💻 Optimisation PC</p>
-        </div>
-
+        {videos.map((video) => (
+          <div className="video-card" key={video.id}>
+            <iframe
+              src={`https://www.youtube.com/embed/${video.youtubeId}`}
+              title={video.title}
+              allowFullScreen
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            />
+            <p>{video.title}</p>
+            <span>{video.duration} · {video.views} vues · {video.date}</span>
+          </div>
+        ))}
       </div>
     </div>
   );
