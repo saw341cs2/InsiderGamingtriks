@@ -27,7 +27,7 @@ jobs:
           node-version: '20'
 
       - name: Generate news
-        run: node scripts/generate-news.cjs
+        run: node scripts/fetch-news.cjs || node scripts/generate-news.cjs
 
       - name: Generate videos
         run: node scripts/generate-videos.cjs

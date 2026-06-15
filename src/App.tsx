@@ -3,6 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import Index from "@/pages/Index";
 import NewsPage from "@/pages/NewsPage";
 import ArchivesPage from "@/pages/ArchivesPage";
+import Video from "@/pages/Video"; // NOUVEAU : On importe la page Vidéo
 import { useState, useEffect } from "react";
 
 function SplashScreen() {
@@ -88,6 +89,8 @@ function App() {
         <Route path="/" element={<Index />} />
         <Route path="/news/:id" element={<NewsPage />} />
         <Route path="/archives" element={<ArchivesPage />} />
+        {/* NOUVEAU : Le panneau de direction pour la page Vidéo */}
+        <Route path="/video" element={<Video />} />
       </Routes>
     </>
   );
