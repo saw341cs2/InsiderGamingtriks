@@ -119,6 +119,8 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
     document.body.style.overflow = '';
   };
 
+  const selectedGameKey = selectedAstuce && (selectedAstuce.game === 'CS2' || selectedAstuce.game === 'BF' || selectedAstuce.game === 'CoD' ? selectedAstuce.game : 'FPS');
+
   return (
     <section id="astuces-section" className="bg-gray-950 py-20 md:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -206,8 +208,9 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {filtered.slice(0, 6).map((astuce) => {
-              const GameIcon = gameIcons[astuce.game] || Crosshair;
-              const imgSrc = astuce.image || defaultImages[astuce.game];
+              const gameKey = astuce.game === 'CS2' || astuce.game === 'BF' || astuce.game === 'CoD' ? astuce.game : 'FPS';
+              const GameIcon = gameIcons[gameKey] || Crosshair;
+              const imgSrc = astuce.image || defaultImages[gameKey];
               const isDownloaded = downloadedIds.has(astuce.id);
               return (
                 <div
@@ -240,8 +243,8 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
 
                   <div className="p-5 flex flex-col flex-1">
                     <div className="flex items-center gap-2 mb-3">
-                      <GameIcon className={`w-4 h-4 ${gameColors[astuce.game] || 'text-gray-400'}`} />
-                      <span className={`text-xs font-semibold ${gameColors[astuce.game] || 'text-gray-400'}`}>{astuce.game}</span>
+                      <GameIcon className={`w-4 h-4 ${gameColors[gameKey] || 'text-gray-400'}`} />
+                      <span className={`text-xs font-semibold ${gameColors[gameKey] || 'text-gray-400'}`}>{astuce.game}</span>
                       <span className="text-gray-600">·</span>
                       <span className="text-xs text-gray-500">{astuce.category}</span>
                     </div>
@@ -320,10 +323,10 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
           <div className="relative bg-gray-900 border border-gray-700 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="relative h-64 overflow-hidden rounded-t-2xl">
               <img
-                src={selectedAstuce.image || defaultImages[selectedAstuce.game]}
+                src={selectedAstuce.image || defaultImages[selectedGameKey || 'CS2']}
                 alt={selectedAstuce.title}
                 className="w-full h-full object-cover"
-                onError={(e) => { (e.target as HTMLImageElement).src = defaultImages[selectedAstuce.game] || defaultImages['CS2']; }}
+                onError={(e) => { (e.target as HTMLImageElement).src = defaultImages[selectedGameKey || 'CS2'] || defaultImages['CS2']; }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent" />
               <button onClick={closeModal} className="absolute top-4 right-4 p-2 bg-gray-900/80 border border-gray-700 rounded-xl text-gray-400 hover:text-white transition-all">
@@ -331,8 +334,8 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
               </button>
               <div className="absolute bottom-6 left-8 right-16">
                 <div className="flex items-center gap-2 mb-2">
-                  {React.createElement(gameIcons[selectedAstuce.game] || Crosshair, { className: `w-5 h-5 ${gameColors[selectedAstuce.game]}` })}
-                  <span className={`text-sm font-semibold ${gameColors[selectedAstuce.game]}`}>{selectedAstuce.game}</span>
+                  {React.createElement(gameIcons[selectedGameKey || 'CS2'] || Crosshair, { className: `w-5 h-5 ${gameColors[selectedGameKey || 'CS2'] || 'text-gray-400'}` })}
+                  <span className={`text-sm font-semibold ${gameColors[selectedGameKey || 'CS2'] || 'text-gray-400'}`}>{selectedAstuce.game}</span>
                   <span className="text-gray-500">·</span>
                   <span className="text-sm text-gray-400">{selectedAstuce.category}</span>
                 </div>

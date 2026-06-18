@@ -1,8 +1,11 @@
 import { Routes, Route } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "@/pages/Index";
 import NewsPage from "@/pages/NewsPage";
 import ArchivesPage from "@/pages/ArchivesPage";
+import ForumPage from "@/pages/Forum";
+import ProfilePage from "@/pages/Profile";
 import Video from "./Video";
 import { useState, useEffect } from "react";
 
@@ -89,7 +92,8 @@ function App() {
         <Route path="/" element={<Index />} />
         <Route path="/news/:id" element={<NewsPage />} />
         <Route path="/archives" element={<ArchivesPage />} />
-        {/* NOUVEAU : Le panneau de direction pour la page Vidéo */}
+        <Route path="/forum" element={<ForumPage />} />
+        <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
         <Route path="/video" element={<Video />} />
       </Routes>
     </>
