@@ -4,9 +4,7 @@ import { AppProvider } from '@/contexts/AppContext';
 import Navbar from '@/components/gaming/Navbar';
 import HeroSection from '@/components/gaming/HeroSection';
 import LatestTipsBar from '@/components/gaming/LatestTipsBar';
-import NewsSection from '@/components/gaming/NewsSection';
 import AstucesSection from '@/components/gaming/AstucesSection';
-import GamesSection from '@/components/gaming/GamesSection';
 import VideosSection from '@/components/gaming/VideosSection';
 import CommunitySection from '@/components/gaming/CommunitySection';
 import MembersSection from '@/components/gaming/MembersSection';
@@ -48,18 +46,6 @@ export default function Index() {
     }
   };
 
-  const handleSelectGame = (game: string) => {
-    handleNavigate('astuces');
-    window.setTimeout(() => {
-      const search = document.querySelector('input[placeholder="Rechercher une astuce..."]') as HTMLInputElement | null;
-      if (search) {
-        search.focus();
-        search.value = game === 'counter-strike' ? 'CS2' : game === 'battlefield' ? 'Battlefield' : 'CoD';
-        search.dispatchEvent(new Event('input', { bubbles: true }));
-      }
-    }, 250);
-  };
-
   useEffect(() => {
     const ids = Object.values(sectionIds);
     const observer = new IntersectionObserver(
@@ -95,9 +81,7 @@ export default function Index() {
         <main>
           <HeroSection />
           <LatestTipsBar />
-          <NewsSection />
           <AstucesSection onNavigate={handleNavigate} />
-          <GamesSection onSelectGame={handleSelectGame} />
           <VideosSection />
           <CommunitySection />
           <MembersSection />
