@@ -27,6 +27,79 @@ const gameTagColors: Record<string, string> = {
 
 const VIDEOS_PER_PAGE = 2;
 
+const fallbackVideos: Video[] = [
+  {
+    id: 1,
+    title: "CS2 - Guide complet pour débuter en compétitif",
+    thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=640&h=360&fit=crop",
+    duration: "18:32",
+    views: "245K",
+    likes: "12K",
+    date: "Aujourd'hui",
+    game: "CS2",
+    youtubeId: "V-_O7nl0Ii0",
+    youtubeUrl: "https://www.youtube.com/watch?v=V-_O7nl0Ii0",
+    featured: true,
+    topic: "FPS"
+  },
+  {
+    id: 2,
+    title: "Warzone - Top loadouts et stratégies saison actuelle",
+    thumbnail: "https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?w=640&h=360&fit=crop",
+    duration: "12:15",
+    views: "89K",
+    likes: "5.4K",
+    date: "Aujourd'hui",
+    game: "CoD",
+    youtubeId: "9nL_FhWE7SQ",
+    youtubeUrl: "https://www.youtube.com/watch?v=9nL_FhWE7SQ",
+    featured: false,
+    topic: "FPS"
+  },
+  {
+    id: 3,
+    title: "Valorant - Améliorer son aim et sa précision",
+    thumbnail: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=640&h=360&fit=crop",
+    duration: "15:20",
+    views: "156K",
+    likes: "9.8K",
+    date: "Hier",
+    game: "Valorant",
+    youtubeId: "pSBMRJuWBsc",
+    youtubeUrl: "https://www.youtube.com/watch?v=pSBMRJuWBsc",
+    featured: false,
+    topic: "FPS"
+  },
+  {
+    id: 4,
+    title: "Battlefield 2042 - Maîtriser les véhicules et classes",
+    thumbnail: "https://images.unsplash.com/photo-1547394765-185e1e68f34e?w=640&h=360&fit=crop",
+    duration: "09:47",
+    views: "34K",
+    likes: "2.1K",
+    date: "Hier",
+    game: "BF",
+    youtubeId: "wYPJFCQxHQE",
+    youtubeUrl: "https://www.youtube.com/watch?v=wYPJFCQxHQE",
+    featured: false,
+    topic: "FPS"
+  },
+  {
+    id: 5,
+    title: "CS2 - Les meilleures smokes et flashs sur Mirage",
+    thumbnail: "https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=640&h=360&fit=crop",
+    duration: "22:08",
+    views: "312K",
+    likes: "18K",
+    date: "Il y a 2 jours",
+    game: "CS2",
+    youtubeId: "ScNTWbKMZX4",
+    youtubeUrl: "https://www.youtube.com/watch?v=ScNTWbKMZX4",
+    featured: false,
+    topic: "FPS"
+  }
+];
+
 const VideosSection: React.FC = () => {
   const [videos, setVideos] = useState<Video[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,9 +111,11 @@ const VideosSection: React.FC = () => {
         const url = new URL('videos.json', document.baseURI);
         url.searchParams.set('t', Date.now().toString());
         const res = await fetch(url.href);
-        if (!res.ok) return;
+        if (!res.ok) throw new Error('videos.json unavailable');
         const data = await res.json();
-        setVideos(Array.isArray(data.videos) ? data.videos : []);
+        setVideos(Array.isArray(data.videos) && data.videos.length ? data.videos : fallbackVideos);
+      } catch {
+        setVideos(fallbackVideos);
       } finally {
         setLoading(false);
       }
@@ -94,30 +169,27 @@ const VideosSection: React.FC = () => {
         {/* Featured Video */}
         {featuredVideo && (
           <div className="mb-12">
-            <a href={featuredVideo.youtubeUrl} target="_blank" rel="noopener noreferrer" className="block">
-              <div className="relative aspect-video rounded-2xl overflow-hidden bg-gray-900 group shadow-2xl cursor-pointer">
-                <img src={featuredVideo.thumbnail} alt={featuredVideo.title} className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-red-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg shadow-red-600/30">
-                  <Play className="w-8 h-8 text-white ml-1" fill="white" />
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className={`px-2 py-1 rounded text-xs font-bold ${gameTagColors[featuredVideo.game] || 'bg-gray-500/20 text-gray-400'}`}>
-                      {featuredVideo.game}
-                    </span>
-                    <span className="inline-block w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                    <span className="text-gray-300 text-sm">Vidéo du jour</span>
-                  </div>
-                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">{featuredVideo.title}</h3>
-                  <div className="flex items-center gap-6 text-gray-300">
-                    <span className="flex items-center gap-2"><Eye className="w-4 h-4" />{featuredVideo.views} vues</span>
-                    <span className="flex items-center gap-2"><ThumbsUp className="w-4 h-4" />{featuredVideo.likes}</span>
-                    <span className="flex items-center gap-2"><Clock className="w-4 h-4" />{featuredVideo.date}</span>
-                  </div>
-                </div>
-              </div>
-            </a>
+            <div className="rounded-2xl overflow-hidden bg-gray-900 shadow-2xl border border-gray-800">
+              <iframe
+                src={`https://www.youtube.com/embed/${featuredVideo.youtubeId}`}
+                title={featuredVideo.title}
+                className="w-full aspect-video"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
+            </div>
+            <div className="mt-4 flex flex-wrap items-center gap-3 text-gray-300">
+              <span className={`px-2 py-1 rounded text-xs font-bold ${gameTagColors[featuredVideo.game] || 'bg-gray-500/20 text-gray-400'}`}>
+                {featuredVideo.game}
+              </span>
+              <span className="inline-block w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+              <span className="text-sm">Vidéo du jour</span>
+              <span className="text-gray-500">•</span>
+              <span className="flex items-center gap-2"><Eye className="w-4 h-4" />{featuredVideo.views} vues</span>
+              <span className="flex items-center gap-2"><ThumbsUp className="w-4 h-4" />{featuredVideo.likes}</span>
+              <span className="flex items-center gap-2"><Clock className="w-4 h-4" />{featuredVideo.date}</span>
+            </div>
+            <h3 className="text-2xl md:text-3xl font-bold text-white mt-3">{featuredVideo.title}</h3>
           </div>
         )}
 
