@@ -40,7 +40,7 @@ function Video() {
       <div className="video-container">
         {videos.map((video) => (
           <div className="video-card" key={video.id}>
-            
+            <a
               href={`https://www.youtube.com/watch?v=${video.youtubeId}`}
               target="_blank"
               rel="noopener noreferrer"

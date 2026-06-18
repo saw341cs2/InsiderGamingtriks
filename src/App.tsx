@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import Index from "@/pages/Index";
 import NewsPage from "@/pages/NewsPage";
 import ArchivesPage from "@/pages/ArchivesPage";
-import Video from "../Video";
+import Video from "./Video";
 import { useState, useEffect } from "react";
 
 function SplashScreen() {
