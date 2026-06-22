@@ -126,10 +126,10 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-600/10 border border-red-600/20 rounded-full text-red-400 text-xs font-semibold uppercase tracking-widest mb-4">
-            News
+            Bibliothèque
           </div>
           <h2 className="text-3xl md:text-5xl font-black text-white mb-4">
-            Astuces & <span className="text-red-500">Guides</span>
+            <span className="text-red-500">News</span>, Astuces & <span className="text-red-500">Guides</span>
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto">
             Astuces FPS, tutos, guides et configs. Mis à jour chaque matin.
