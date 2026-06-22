@@ -1,0 +1,67 @@
+name: Daily Gaming News
+
+on:
+  schedule:
+    # 03:30 UTC = 05:30 heure de Paris (CEST, heure d'été)
+    - cron: '30 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish-news:
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          submodules: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Generate news
+        run: node scripts/fetch-news.cjs || node scripts/generate-news.cjs
+
+      - name: Generate videos
+        run: node scripts/generate-videos.cjs
+
+      - name: Install & Build
+        run: |
+          rm -f package-lock.json
+          rm -rf node_modules
+          npm install
+          npm run build
+
+      - name: Copy JSON to dist
+        run: |
+          cp public/news.json dist/news.json || true
+          cp public/astuces.json dist/astuces.json || true
+          cp public/videos.json dist/videos.json || true
+          cp public/news-archives.json dist/news-archives.json || true
+
+      - name: Deploy to gh-pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist
+          branch: gh-pages
+          clean: true
+          force: true
+          single-commit: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit news.json
+        run: |
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git add public/news.json docs/news.json news.json public/news-archives.json docs/news-archives.json news-archives.json || true
+          git diff --staged --quiet && echo "Rien a commiter" && exit 0
+          git commit -m "Daily news - $(date '+%Y-%m-%d')"
+          git push origin main
