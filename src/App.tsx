@@ -6,7 +6,6 @@ import NewsPage from "@/pages/NewsPage";
 import ArchivesPage from "@/pages/ArchivesPage";
 import ForumPage from "@/pages/Forum";
 import ProfilePage from "@/pages/Profile";
-import Video from "./Video";
 import { useState, useEffect } from "react";
 
 function SplashScreen() {
@@ -94,7 +93,6 @@ function App() {
         <Route path="/archives" element={<ArchivesPage />} />
         <Route path="/forum" element={<ForumPage />} />
         <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-        <Route path="/video" element={<Video />} />
       </Routes>
     </>
   );
