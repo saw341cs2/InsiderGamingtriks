@@ -126,7 +126,7 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-600/10 border border-red-600/20 rounded-full text-red-400 text-xs font-semibold uppercase tracking-widest mb-4">
-            Bibliothèque
+            News
           </div>
           <h2 className="text-3xl md:text-5xl font-black text-white mb-4">
             Astuces & <span className="text-red-500">Guides</span>
@@ -172,7 +172,7 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
             </select>
             <button
               onClick={() => setShowPremiumOnly(!showPremiumOnly)}
-              className={`flex items-center gap-2 px-4 py-3 rounded-xl border font-semibold text-sm transition-all ${showPremiumOnly ? 'bg-red-600/20 border-red-500/50 text-red-400' : 'bg-gray-800/50 border-gray-700 text-gray-400 hover:text-white'}`}
+              className={`flex items-center gap-2 px-4 py-3 rounded-xl border font-semibold text-sm transition-all ${showPremiumOnly ? 'bg-red-600/20 border-red-500/50 text-red-400' : 'bg-gray-800/50 border-gray-700 text-white hover:border-red-500/50'}`}
             >
               <Filter className="w-4 h-4" /> Premium
             </button>
@@ -216,7 +216,7 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
                 <div
                   key={astuce.id}
                   onClick={() => openModal(astuce)}
-                  className={`group relative bg-gray-900/60 border rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-black/40 flex flex-col h-[420px] ${astuce.isPremium ? 'border-yellow-500/20 hover:border-yellow-500/50' : 'border-gray-800 hover:border-red-500/40'}`}
+                  className={`group relative bg-gray-900/60 border rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-black/40 flex flex-col border-gray-800/60 hover:border-red-500/30`}
                 >
                   <div className="absolute top-3 right-3 z-20">
                     {astuce.isPremium ? (
