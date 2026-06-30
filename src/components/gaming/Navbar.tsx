@@ -196,3 +196,4 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate, onOpenProfil
 };
 
 export default Navbar;
+
