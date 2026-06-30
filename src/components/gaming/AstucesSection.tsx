@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Lock, Search, Filter, Star, Eye, Crosshair, Target, Bomb, Download, Unlock, X, Clock } from 'lucide-react';
 
 interface AstucesSectionProps {
@@ -165,9 +165,9 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
               className="px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-red-500/50 cursor-pointer"
             >
               <option value="all">Toute difficulte</option>
-              <option value="Débutant">Debutant</option>
-              <option value="Intermédiaire">Intermediaire</option>
-              <option value="Avancé">Avance</option>
+              <option value="Débutant">Débutant</option>
+              <option value="Intermédiaire">Intermédiaire</option>
+              <option value="Avancé">Avancé</option>
               <option value="Expert">Expert</option>
             </select>
             <button
@@ -239,7 +239,7 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
                     <div className="flex items-center gap-2 mb-3">
                       <GameIcon className={`w-4 h-4 ${gameColors[gameKey] || 'text-gray-400'}`} />
                       <span className={`text-xs font-semibold ${gameColors[gameKey] || 'text-gray-400'}`}>{astuce.game}</span>
-                      <span className="text-gray-600">·</span>
+                      <span className="text-gray-600">Â·</span>
                       <span className="text-xs text-gray-500">{astuce.category}</span>
                     </div>
                     <h3 className="text-white font-bold text-lg mb-2 leading-tight group-hover:text-red-400 transition-colors line-clamp-2">
@@ -298,7 +298,7 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
 
         {!loading && filtered.length > 0 && (
           <div className="text-center mt-10">
-            
+            <a
               href="/archives"
               className="inline-flex items-center gap-2 px-6 py-3 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white font-bold rounded-xl transition-all"
             >
@@ -326,7 +326,7 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
                 <div className="flex items-center gap-2 mb-2">
                   {React.createElement(gameIcons[selectedGameKey || 'CS2'] || Crosshair, { className: `w-5 h-5 ${gameColors[selectedGameKey || 'CS2'] || 'text-gray-400'}` })}
                   <span className={`text-sm font-semibold ${gameColors[selectedGameKey || 'CS2'] || 'text-gray-400'}`}>{selectedAstuce.game}</span>
-                  <span className="text-gray-500">·</span>
+                  <span className="text-gray-500">Â·</span>
                   <span className="text-sm text-gray-400">{selectedAstuce.category}</span>
                 </div>
                 <h2 className="text-white font-black text-2xl md:text-3xl leading-tight">{selectedAstuce.title}</h2>
