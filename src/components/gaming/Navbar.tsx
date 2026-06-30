@@ -39,8 +39,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate, onOpenProfil
             <div className="flex items-center gap-2 cursor-pointer" onClick={() => onNavigate('accueil')}>
               <Crosshair className="w-7 h-7 text-red-500" />
               <div className="flex items-center">
-                <span className="text-white font-bold text-xl tracking-wide">#InsiderGaming</span>
-                <span className="text-red-500 font-bold text-xl tracking-wide ml-1">Tricks</span>
+<svg className="w-5 h-5 text-red-500" style={{width: '20px', height: '20px', minWidth: '20px', minHeight: '20px'}} fill="currentColor" viewBox="0 0 24 24"></svg>
               </div>
             </div>
 
@@ -68,7 +67,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate, onOpenProfil
                  className="p-2 text-red-500 hover:text-red-400 transition-colors flex-shrink-0"
                  title="YouTube"
                >
-                 <svg className="w-5 h-5" style={{width: '20px', height: '20px', minWidth: '20px', minHeight: '20px'}} fill="currentColor" viewBox="0 0 24 24">
+                 <svg className="w-5 h-5" style={{width: '20px', height: '20px', minWidth: '20px', minHeight: '20px'}} fill="#ff0000" viewBox="0 0 24 24">
                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
                  </svg>
                </a>
