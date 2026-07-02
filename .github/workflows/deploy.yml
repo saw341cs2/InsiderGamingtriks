@@ -44,6 +44,8 @@ jobs:
           cp public/news.json dist/news.json || true
           cp public/astuces.json dist/astuces.json || true
           cp public/news-archives.json dist/news-archives.json || true
+          cp public/videos.json dist/videos.json || true
+          if [ -d "public/videos" ]; then cp -r public/videos dist/videos; fi
 
       - name: Deploy to gh-pages
         uses: JamesIves/github-pages-deploy-action@v4
