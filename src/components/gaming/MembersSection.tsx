@@ -1,5 +1,5 @@
 import React from 'react';
-import { Crown, Star, Trophy, Users } from 'lucide-react';
+import { Users } from 'lucide-react';
 
 interface Member {
   id: number;
@@ -101,30 +101,6 @@ const MembersSection: React.FC = () => {
           <p className="text-gray-400 max-w-2xl mx-auto">
             Découvrez les membres de notre équipe d'experts qui vous accompagnent dans votre progression gaming.
           </p>
-        </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
-          <div className="bg-gradient-to-br from-indigo-900/40 to-purple-900/40 border border-indigo-500/20 rounded-2xl p-6 text-center">
-            <Crown className="w-8 h-8 text-indigo-400 mx-auto mb-3" />
-            <div className="text-2xl font-black text-white mb-1">7</div>
-            <div className="text-sm text-indigo-300">Experts</div>
-          </div>
-          <div className="bg-gradient-to-br from-red-900/40 to-orange-900/40 border border-red-500/20 rounded-2xl p-6 text-center">
-            <Trophy className="w-8 h-8 text-red-400 mx-auto mb-3" />
-            <div className="text-2xl font-black text-white mb-1">934</div>
-            <div className="text-sm text-red-300">Victoires</div>
-          </div>
-          <div className="bg-gradient-to-br from-green-900/40 to-emerald-900/40 border border-green-500/20 rounded-2xl p-6 text-center">
-            <Star className="w-8 h-8 text-green-400 mx-auto mb-3" />
-            <div className="text-2xl font-black text-white mb-1">4.9/5</div>
-            <div className="text-sm text-green-300">Note Moyenne</div>
-          </div>
-          <div className="bg-gradient-to-br from-yellow-900/40 to-amber-900/40 border border-yellow-500/20 rounded-2xl p-6 text-center">
-            <Users className="w-8 h-8 text-yellow-400 mx-auto mb-3" />
-            <div className="text-2xl font-black text-white mb-1">1200+</div>
-            <div className="text-sm text-yellow-300">Membres Aidés</div>
-          </div>
         </div>
 
         {/* Members Grid */}
