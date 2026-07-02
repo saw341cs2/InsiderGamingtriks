@@ -20,6 +20,11 @@ type NewsResponse = {
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
   if (Number.isNaN(date.getTime())) return dateString;
+  const now = new Date();
+  const isToday = date.toDateString() === now.toDateString();
+  const isYesterday = date.toDateString() === new Date(now.getTime() - 86400000).toDateString();
+  if (isToday) return `Aujourd'hui à ${date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`;
+  if (isYesterday) return `Hier à ${date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`;
   return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 };
 
