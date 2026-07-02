@@ -1,0 +1,89 @@
+{
+  "videos": [
+    {
+      "id": 1,
+      "title": "CS2 - Guide complet des smokes sur Mirage",
+      "game": "CS2",
+      "topic": "FPS",
+      "duration": "16:42",
+      "youtubeId": "V-_O7nl0Ii0",
+      "thumbnail": "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=640&h=360&fit=crop",
+      "views": "245K",
+      "likes": "12K",
+      "date": "Aujourd'hui",
+      "youtubeUrl": "https://www.youtube.com/watch?v=V-_O7nl0Ii0",
+      "featured": true
+    },
+    {
+      "id": 2,
+      "title": "Warzone - Top 5 loadouts saison actuelle",
+      "game": "CoD",
+      "topic": "FPS",
+      "duration": "11:30",
+      "youtubeId": "9nL_FhWE7SQ",
+      "thumbnail": "https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?w=640&h=360&fit=crop",
+      "views": "189K",
+      "likes": "9K",
+      "date": "Aujourd'hui",
+      "youtubeUrl": "https://www.youtube.com/watch?v=9nL_FhWE7SQ",
+      "featured": false
+    },
+    {
+      "id": 11,
+      "title": "CS2 - Économie et gestion des rounds",
+      "game": "CS2",
+      "topic": "FPS",
+      "duration": "10:15",
+      "youtubeId": "ScNTWbKMZX4",
+      "thumbnail": "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=640&h=360&fit=crop",
+      "views": "312K",
+      "likes": "17K",
+      "date": "Hier",
+      "youtubeUrl": "https://www.youtube.com/watch?v=ScNTWbKMZX4",
+      "featured": false
+    },
+    {
+      "id": 12,
+      "title": "ESL Pro League - Résumé et highlights",
+      "game": "CS2",
+      "topic": "COMPETITION",
+      "duration": "19:50",
+      "youtubeId": "ScNTWbKMZX4",
+      "thumbnail": "https://images.unsplash.com/photo-1516382799247-4ca8e1eeabf3?w=640&h=360&fit=crop",
+      "views": "445K",
+      "likes": "28K",
+      "date": "Hier",
+      "youtubeUrl": "https://www.youtube.com/watch?v=ScNTWbKMZX4",
+      "featured": false
+    },
+    {
+      "id": 21,
+      "title": "Warzone - Les rotations pro pour le top 1",
+      "game": "CoD",
+      "topic": "FPS",
+      "duration": "17:45",
+      "youtubeId": "ScNTWbKMZX4",
+      "thumbnail": "https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?w=640&h=360&fit=crop",
+      "views": "223K",
+      "likes": "13K",
+      "date": "Il y a 2 jours",
+      "youtubeUrl": "https://www.youtube.com/watch?v=ScNTWbKMZX4",
+      "featured": false
+    },
+    {
+      "id": 22,
+      "title": "Setup gaming 2026 - Guide d'achat complet",
+      "game": "PC",
+      "topic": "MATERIEL",
+      "duration": "28:20",
+      "youtubeId": "ScNTWbKMZX4",
+      "thumbnail": "https://images.unsplash.com/photo-1595225476474-87563907a212?w=640&h=360&fit=crop",
+      "views": "167K",
+      "likes": "9K",
+      "date": "Il y a 2 jours",
+      "youtubeUrl": "https://www.youtube.com/watch?v=ScNTWbKMZX4",
+      "featured": false
+    }
+  ],
+  "generatedAt": "2026-07-02T17:25:48.563Z"
+}
