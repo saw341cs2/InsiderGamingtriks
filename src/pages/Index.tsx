@@ -79,8 +79,11 @@ export default function Index() {
           onNavigate={handleNavigate}
           onOpenProfile={() => navigate('/profile')}
         />
+        
         <main>
-        <NewsSection />
+  <HeroSection />
+  <LatestTipsBar />
+  <NewsSection />
          <AstucesSection onNavigate={handleNavigate} />
           <VideosSection />
           <CommunitySection />

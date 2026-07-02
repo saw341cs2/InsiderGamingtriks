@@ -1,0 +1,49 @@
+{
+	"folders": [
+		{
+			"path": "../../.claude"
+		},
+		{
+			"path": "../../.github"
+		},
+		{
+			"path": "../../.kilo"
+		},
+		{
+			"path": "../../.sixth"
+		},
+		{
+			"path": "../../.vscode"
+		},
+		{
+			"path": "../../assets"
+		},
+		{
+			"path": "../../dist"
+		},
+		{
+			"path": "../../docs"
+		},
+		{
+			"path": "../../gh-pages-deploy"
+		},
+		{
+			"path": "../../node_modules"
+		},
+		{
+			"path": "../../public"
+		},
+		{
+			"path": "../../scripts"
+		},
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../supabase"
+		},
+		{
+			"path": "../../vscode-chat-customizations-evaluation"
+		}
+	]
+}
