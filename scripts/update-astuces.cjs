@@ -8,16 +8,15 @@ const total = data.astuces.length;
 
 const dayIndex = Math.floor(Date.now() / (1000 * 60 * 60 * 24 * 2));
 const pick1 = (dayIndex * 2) % total;
-const pick2 = (dayIndex * 2 + 1) % total;
 
-data.dailyPick = [data.astuces[pick1].id, data.astuces[pick2].id];
+data.dailyPick = [data.astuces[pick1].id];
 data.generatedAt = new Date().toISOString();
 
 data.astuces = data.astuces.map((a, i) => {
-  if (i === pick1 || i === pick2) return { ...a, date: "Aujourd'hui" };
+  if (i === pick1) return { ...a, date: "Aujourd'hui" };
   const diff = ((i - pick1 + total) % total);
-  if (diff === 1) return { ...a, date: 'Hier' };
-  return { ...a, date: `Il y a ${diff} jours` };
+  if (diff === 1) return { ...a, date: 'Il y a 2 jours' };
+  return { ...a, date: `Il y a ${diff * 2} jours` };
 });
 
 fs.writeFileSync(filePath, JSON.stringify(data, null, 2));

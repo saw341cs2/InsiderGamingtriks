@@ -1,91 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Users } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 interface Member {
-  id: number;
-  name: string;
-  role: string;
-  avatar: string;
-  level: number;
-  games: string[];
-  achievements: number;
-  joinedDate: string;
+  id: string;
+  username: string;
+  game: string;
+  created_at: string;
 }
 
-const members: Member[] = [
-  {
-    id: 1,
-    name: "Saw341",
-    role: "Fondateur & CEO",
-    avatar: "SA",
-    level: 100,
-    games: ["CS2", "Warzone", "BF2042", "Valorant"],
-    achievements: 500,
-    joinedDate: "2020"
-  },
-  {
-    id: 2,
-    name: "InsiderHack",
-    role: "Directeur Technique & Coach Principal",
-    avatar: "IH",
-    level: 99,
-    games: ["CS2", "Warzone", "BF2042"],
-    achievements: 247,
-    joinedDate: "2020"
-  },
-  {
-    id: 3,
-    name: "ProGamer_X",
-    role: "Coach Élite",
-    avatar: "PG",
-    level: 85,
-    games: ["CS2", "Valorant"],
-    achievements: 189,
-    joinedDate: "2021"
-  },
-  {
-    id: 4,
-    name: "FPS_Master",
-    role: "Spécialiste Wallbang",
-    avatar: "FM",
-    level: 78,
-    games: ["CS2", "Rainbow Six"],
-    achievements: 156,
-    joinedDate: "2022"
-  },
-  {
-    id: 5,
-    name: "TacticalNinja",
-    role: "Stratège Pro",
-    avatar: "TN",
-    level: 82,
-    games: ["Warzone", "Apex Legends"],
-    achievements: 134,
-    joinedDate: "2021"
-  },
-  {
-    id: 6,
-    name: "BattlefieldKing",
-    role: "Expert Battlefield",
-    avatar: "BK",
-    level: 76,
-    games: ["BF2042", "BFV"],
-    achievements: 98,
-    joinedDate: "2023"
-  },
-  {
-    id: 7,
-    name: "AimGod",
-    role: "Coach Aim",
-    avatar: "AG",
-    level: 88,
-    games: ["CS2", "Valorant", "Overwatch"],
-    achievements: 203,
-    joinedDate: "2020"
-  }
-];
-
 const MembersSection: React.FC = () => {
+  const [members, setMembers] = useState<Member[]>([]);
+
+  useEffect(() => {
+    supabase
+      .from('profiles')
+      .select('id, username, game, created_at')
+      .order('created_at', { ascending: false })
+      .then(({ data }) => { if (data) setMembers(data); });
+  }, []);
+
   return (
     <section id="membres" className="bg-gray-950 py-20 md:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -105,46 +39,21 @@ const MembersSection: React.FC = () => {
 
         {/* Members Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {members.map((member) => (
-            <div key={member.id} className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6 hover:bg-gray-900/80 transition-all duration-300 group">
-              {/* Avatar & Basic Info */}
+          {members.length === 0 ? (
+            <p className="text-gray-500 col-span-3 text-center">Aucun membre pour l'instant.</p>
+          ) : members.map((member) => (
+            <div key={member.id} className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6 hover:bg-gray-900/80 transition-all duration-300">
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">
-                  {member.avatar}
+                  {(member.username || '?')[0].toUpperCase()}
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-white font-bold text-lg">{member.name}</h3>
-                  <p className="text-indigo-400 text-sm">{member.role}</p>
+                  <h3 className="text-white font-bold text-lg">{member.username || 'Anonyme'}</h3>
+                  {member.game && <p className="text-indigo-400 text-sm">{member.game}</p>}
                 </div>
               </div>
-
-              {/* Level & Achievements */}
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div className="bg-black/30 rounded-lg p-3 text-center">
-                  <div className="text-lg font-bold text-white">Niveau {member.level}</div>
-                  <div className="text-xs text-gray-400">Expertise</div>
-                </div>
-                <div className="bg-black/30 rounded-lg p-3 text-center">
-                  <div className="text-lg font-bold text-yellow-400">{member.achievements}</div>
-                  <div className="text-xs text-gray-400">Trophées</div>
-                </div>
-              </div>
-
-              {/* Games */}
-              <div className="mb-4">
-                <p className="text-sm text-gray-400 mb-2">Spécialités :</p>
-                <div className="flex flex-wrap gap-2">
-                  {member.games.map((game) => (
-                    <span key={game} className="px-2 py-1 bg-indigo-600/20 text-indigo-300 text-xs rounded-full">
-                      {game}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {/* Joined Date */}
               <div className="text-xs text-gray-500">
-                Membre depuis {member.joinedDate}
+                Membre depuis {new Date(member.created_at).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' })}
               </div>
             </div>
           ))}
