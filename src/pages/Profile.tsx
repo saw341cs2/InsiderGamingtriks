@@ -180,6 +180,20 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
         }
       });
       if (error) throw error;
+
+      // Synchronise aussi la table publique "profiles" pour que les
+      // autres membres voient les infos à jour dans la section Membres.
+      await supabase.from('profiles').upsert({
+        id: user.id,
+        pseudo: username || user.user_metadata?.username || null,
+        avatar_url: profile.avatarUrl,
+        age: profile.age ? parseInt(profile.age, 10) : null,
+        city: profile.ville || null,
+        astro_sign: profile.signe || null,
+        favorite_games: profile.jeux && profile.jeux.length > 0 ? profile.jeux : null,
+        bio: profile.bio || null,
+      });
+
       toast({ title: "Profil mis à jour", description: "Tes informations ont été sauvegardées !" });
       setIsEditing(false);
     } catch {

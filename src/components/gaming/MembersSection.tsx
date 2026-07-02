@@ -93,10 +93,10 @@ const MembersSection: React.FC = () => {
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-600/10 border border-indigo-600/20 rounded-full text-indigo-400 text-xs font-semibold uppercase tracking-widest mb-4">
             <Users className="w-3.5 h-3.5" />
-            Équipe
+            Membres
           </div>
           <h2 className="text-3xl md:text-5xl font-black text-white mb-4">
-            Notre <span className="text-indigo-500">Équipe</span>
+            <span className="text-indigo-500">Membres</span>
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto">
             Découvrez les membres de notre équipe d'experts qui vous accompagnent dans votre progression gaming.
