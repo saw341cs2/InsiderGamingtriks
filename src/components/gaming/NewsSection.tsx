@@ -61,7 +61,7 @@ const NewsSection: React.FC = () => {
       const combined = [
         ...data.articles,
         ...archived.filter(article => !seenUrls.has(article.url)),
-      ];
+      ].sort((a, b) => new Date(b.dateTimePub).getTime() - new Date(a.dateTimePub).getTime());
       setArticles(combined);
       setPage(1);
     } catch (catchError) {
