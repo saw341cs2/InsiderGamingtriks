@@ -69,6 +69,21 @@
       "youtubeUrl": "https://www.youtube.com/watch?v=ScNTWbKMZX4",
       "featured": false,
       "topic": "FPS"
+    },
+    {
+      "id": 6,
+      "title": "Video Short",
+      "thumbnail": "",
+      "duration": "0:00",
+      "views": "0",
+      "likes": "0",
+      "date": "Aujourd'hui",
+      "game": "PC",
+      "youtubeId": "",
+      "youtubeUrl": "#",
+      "featured": false,
+      "topic": "FPS",
+      "localVideoPath": "/videos/video-short.mp4"
     }
   ],
   "generatedAt": "2026-06-09T05:00:00.000Z"

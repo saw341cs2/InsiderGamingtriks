@@ -14,6 +14,7 @@ interface Video {
   youtubeUrl: string;
   featured: boolean;
   topic: string;
+  localVideoPath?: string;
 }
 
 const gameTagColors: Record<string, string> = {
@@ -97,6 +98,21 @@ const fallbackVideos: Video[] = [
     youtubeUrl: "https://www.youtube.com/watch?v=ScNTWbKMZX4",
     featured: false,
     topic: "FPS"
+  },
+  {
+    id: 6,
+    title: "Video Short",
+    thumbnail: "",
+    duration: "0:00",
+    views: "0",
+    likes: "0",
+    date: "Aujourd'hui",
+    game: "PC",
+    youtubeId: "",
+    youtubeUrl: "#",
+    featured: false,
+    topic: "FPS",
+    localVideoPath: "/videos/video-short.mp4"
   }
 ];
 
@@ -123,8 +139,8 @@ const VideosSection: React.FC = () => {
     load();
   }, []);
 
-  const featuredVideo = videos.find(v => v.featured) || videos[0];
-  const otherVideos = videos.filter(v => !v.featured);
+  const featuredVideo = videos.find(v => v.localVideoPath) || videos.find(v => v.featured) || videos[0];
+  const otherVideos = videos.filter(v => !v.featured && !v.localVideoPath);
   const totalPages = Math.ceil(otherVideos.length / VIDEOS_PER_PAGE);
   const currentVideos = otherVideos.slice((page - 1) * VIDEOS_PER_PAGE, page * VIDEOS_PER_PAGE);
 
@@ -170,13 +186,19 @@ const VideosSection: React.FC = () => {
         {featuredVideo && (
           <div className="mb-12">
             <div className="rounded-2xl overflow-hidden bg-gray-900 shadow-2xl border border-gray-800">
-              <iframe
-                src={`https://www.youtube.com/embed/${featuredVideo.youtubeId}`}
-                title={featuredVideo.title}
-                className="w-full aspect-video"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowFullScreen
-              />
+              {featuredVideo.localVideoPath ? (
+                <video controls className="w-full aspect-video">
+                  <source src={featuredVideo.localVideoPath} type="video/mp4" />
+                </video>
+              ) : (
+                <iframe
+                  src={`https://www.youtube.com/embed/${featuredVideo.youtubeId}`}
+                  title={featuredVideo.title}
+                  className="w-full aspect-video"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              )}
             </div>
             <div className="mt-4 flex flex-wrap items-center gap-3 text-gray-300">
               <span className={`px-2 py-1 rounded text-xs font-bold ${gameTagColors[featuredVideo.game] || 'bg-gray-500/20 text-gray-400'}`}>
