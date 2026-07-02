@@ -8,6 +8,7 @@ import AstucesSection from '@/components/gaming/AstucesSection';
 import VideosSection from '@/components/gaming/VideosSection';
 import CommunitySection from '@/components/gaming/CommunitySection';
 import MembersSection from '@/components/gaming/MembersSection';
+import NewsSection from '@/components/gaming/NewsSection';
 import TestimonialsSection from '@/components/gaming/TestimonialsSection';
 import PremiumSection from '@/components/gaming/PremiumSection';
 import Footer from '@/components/gaming/Footer';
@@ -81,6 +82,7 @@ export default function Index() {
         <main>
           <HeroSection />
           <LatestTipsBar />
+          <NewsSection />
           <AstucesSection onNavigate={handleNavigate} />
           <VideosSection />
           <CommunitySection />
