@@ -129,7 +129,7 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
             Bibliothèque
           </div>
           <h2 className="text-3xl md:text-5xl font-black text-white mb-4">
-            <span className="text-red-500">News</span>, Astuces & <span className="text-red-500">Guides</span>
+            Astuces & <span className="text-red-500">Guides</span>
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto">
             Astuces FPS, tutos, guides et configs. Mis à jour chaque matin.
