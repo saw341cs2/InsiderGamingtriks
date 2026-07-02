@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, Gamepad2, Map, Crosshair, Target, Shield, Save, Edit2, X, ArrowLeft, Globe, Calendar, Camera } from 'lucide-react';
 import { useAppContext } from '@/contexts/AppContext';
 import { toast } from '@/components/ui/use-toast';
@@ -9,6 +9,8 @@ interface ProfileData {
   age: string;
   sexe: string;
   pays: string;
+  ville: string;
+  signe: string;
   game: string;
   level: string;
   jeux: string[];
@@ -62,16 +64,50 @@ const paysOptions = [
   'Espagne', 'Italie', 'Allemagne', 'Portugal', 'Royaume-Uni', 'États-Unis', 'Autre',
 ];
 
+const signeOptions = [
+  { value: 'belier', label: '♈ Bélier', dates: '21 mars - 19 avril' },
+  { value: 'taureau', label: '♉ Taureau', dates: '20 avril - 20 mai' },
+  { value: 'gemeaux', label: '♊ Gémeaux', dates: '21 mai - 20 juin' },
+  { value: 'cancer', label: '♋ Cancer', dates: '21 juin - 22 juillet' },
+  { value: 'lion', label: '♌ Lion', dates: '23 juillet - 22 août' },
+  { value: 'vierge', label: '♍ Vierge', dates: '23 août - 22 septembre' },
+  { value: 'balance', label: '♎ Balance', dates: '23 septembre - 22 octobre' },
+  { value: 'scorpion', label: '♏ Scorpion', dates: '23 octobre - 21 novembre' },
+  { value: 'sagittaire', label: '♐ Sagittaire', dates: '22 novembre - 21 décembre' },
+  { value: 'capricorne', label: '♑ Capricorne', dates: '22 décembre - 19 janvier' },
+  { value: 'verseau', label: '♒ Verseau', dates: '20 janvier - 18 février' },
+  { value: 'poissons', label: '♓ Poissons', dates: '19 février - 20 mars' },
+];
+
+const avatarPresets = [
+  'https://api.dicebear.com/7.x/bottts/svg?seed=Phoenix&backgroundColor=b91c1c',
+  'https://api.dicebear.com/7.x/bottts/svg?seed=Viper&backgroundColor=1e40af',
+  'https://api.dicebear.com/7.x/bottts/svg?seed=Shadow&backgroundColor=15803d',
+  'https://api.dicebear.com/7.x/bottts/svg?seed=Ghost&backgroundColor=6d28d9',
+  'https://api.dicebear.com/7.x/bottts/svg?seed=Reaper&backgroundColor=ea580c',
+  'https://api.dicebear.com/7.x/bottts/svg?seed=Blaze&backgroundColor=0891b2',
+  'https://api.dicebear.com/7.x/avataaars/svg?seed=Ninja&backgroundColor=b91c1c',
+  'https://api.dicebear.com/7.x/avataaars/svg?seed=Sniper&backgroundColor=1e40af',
+  'https://api.dicebear.com/7.x/avataaars/svg?seed=Rogue&backgroundColor=15803d',
+  'https://api.dicebear.com/7.x/avataaars/svg?seed=Ace&backgroundColor=6d28d9',
+  'https://api.dicebear.com/7.x/avataaars/svg?seed=Storm&backgroundColor=ea580c',
+  'https://api.dicebear.com/7.x/avataaars/svg?seed=Frost&backgroundColor=0891b2',
+];
+
 const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
   const { user, username } = useAppContext();
 
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [showAvatarPicker, setShowAvatarPicker] = useState(false);
   const [profile, setProfile] = useState<ProfileData>({
     avatarUrl: '',
     age: '',
     sexe: '',
     pays: '',
+    ville: '',
+    signe: '',
     game: '',
     level: '',
     jeux: [],
@@ -88,6 +124,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
         age: user.user_metadata.age || '',
         sexe: user.user_metadata.sexe || '',
         pays: user.user_metadata.pays || '',
+        ville: user.user_metadata.ville || '',
+        signe: user.user_metadata.signe || '',
         game: user.user_metadata.game || '',
         level: user.user_metadata.level || '',
         jeux: user.user_metadata.jeux || [],
@@ -130,6 +168,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
           age: profile.age,
           sexe: profile.sexe,
           pays: profile.pays,
+          ville: profile.ville,
+          signe: profile.signe,
           game: profile.game,
           level: profile.level,
           jeux: profile.jeux,
@@ -156,6 +196,36 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
     }));
   };
 
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    if (file.size > 3 * 1024 * 1024) {
+      toast({ title: "Fichier trop volumineux", description: "La photo doit faire moins de 3 Mo", variant: "destructive" });
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const ext = file.name.split('.').pop();
+      const path = `${user.id}/avatar.${ext}`;
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(path, file, { upsert: true, cacheControl: '3600' });
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage.from('avatars').getPublicUrl(path);
+      const publicUrl = `${data.publicUrl}?t=${Date.now()}`;
+      setProfile(prev => ({ ...prev, avatarUrl: publicUrl }));
+      setShowAvatarPicker(false);
+      toast({ title: "Photo mise à jour", description: "N'oublie pas de cliquer sur Sauvegarder !" });
+    } catch (err) {
+      toast({ title: "Erreur d'upload", description: "Impossible d'envoyer la photo. Réessaie.", variant: "destructive" });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const getLevels = () => levelOptions[profile.game] || levelOptions['other'];
   const getRoles = () => roleOptions[profile.game] || roleOptions['other'];
 
@@ -180,12 +250,49 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
                 <User className="w-10 h-10 text-white" />
               )}
               {isEditing && (
-                <label className="absolute bottom-0 right-0 w-7 h-7 bg-gray-800 rounded-full flex items-center justify-center cursor-pointer border-2 border-gray-900 hover:bg-gray-700">
+                <button
+                  type="button"
+                  onClick={() => setShowAvatarPicker(true)}
+                  className="absolute bottom-0 right-0 w-7 h-7 bg-gray-800 rounded-full flex items-center justify-center cursor-pointer border-2 border-gray-900 hover:bg-gray-700"
+                >
                   <Camera className="w-3 h-3 text-white" />
-                  <input type="text" value={profile.avatarUrl} onChange={(e) => setProfile({ ...profile, avatarUrl: e.target.value })} className="hidden" />
-                </label>
+                </button>
               )}
             </div>
+
+            {showAvatarPicker && (
+              <div className="fixed inset-0 z-[100] bg-black/80 flex items-center justify-center p-4" onClick={() => setShowAvatarPicker(false)}>
+                <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-bold text-white">Choisir un avatar</h3>
+                    <button onClick={() => setShowAvatarPicker(false)} className="text-gray-400 hover:text-white">
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  <label className={`flex items-center justify-center gap-2 w-full px-4 py-3 mb-4 rounded-lg font-semibold text-sm cursor-pointer transition-colors ${isUploading ? 'bg-gray-700 text-gray-400' : 'bg-red-600 hover:bg-red-500 text-white'}`}>
+                    <Camera className="w-4 h-4" />
+                    {isUploading ? 'Envoi en cours...' : 'Envoyer une photo depuis mon appareil'}
+                    <input type="file" accept="image/*" onChange={handleAvatarUpload} disabled={isUploading} className="hidden" />
+                  </label>
+
+                  <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider">Ou choisis un avatar gaming</p>
+                  <div className="grid grid-cols-4 gap-3">
+                    {avatarPresets.map((url) => (
+                      <button
+                        key={url}
+                        type="button"
+                        onClick={() => { setProfile(prev => ({ ...prev, avatarUrl: url })); setShowAvatarPicker(false); }}
+                        className={`w-full aspect-square rounded-full overflow-hidden border-2 transition-all hover:scale-105 ${profile.avatarUrl === url ? 'border-red-500' : 'border-gray-700'}`}
+                      >
+                        <img src={url} alt="Avatar option" className="w-full h-full object-cover" />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div>
               <h1 className="text-3xl font-black text-white">{username || user.user_metadata?.username || 'Joueur'}</h1>
               <p className="text-gray-400">{user.email}</p>
@@ -202,7 +309,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
           <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center">
             <Calendar className="w-6 h-6 text-red-500 mx-auto mb-2" />
             <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Âge</p>
@@ -223,6 +330,11 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
             <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Niveau</p>
             <p className="text-white font-bold text-sm">{profile.level || 'Non défini'}</p>
           </div>
+          <div className="bg-gray-900/50 border border-gray-800 rounded-xl p-4 text-center">
+            <span className="block text-2xl mb-1">{signeOptions.find(s => s.value === profile.signe)?.label.split(' ')[0] || '✨'}</span>
+            <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Signe</p>
+            <p className="text-white font-bold text-sm">{signeOptions.find(s => s.value === profile.signe)?.label.split(' ')[1] || 'Non défini'}</p>
+          </div>
         </div>
 
         {/* Form */}
@@ -231,13 +343,25 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-            {/* Avatar URL */}
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-300 mb-2"><Camera className="w-4 h-4 inline mr-2" />Photo de profil (URL)</label>
+            {/* Ville */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2"><Globe className="w-4 h-4 inline mr-2" />Ville</label>
               {isEditing ? (
-                <input type="text" value={profile.avatarUrl} onChange={(e) => setProfile({ ...profile, avatarUrl: e.target.value })}
-                  placeholder="https://exemple.com/ma-photo.jpg" className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-red-500" />
-              ) : <p className="text-white py-3">{profile.avatarUrl ? 'Définie' : 'Non définie'}</p>}
+                <input type="text" value={profile.ville} onChange={(e) => setProfile({ ...profile, ville: e.target.value })}
+                  placeholder="Ta ville" className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-red-500" />
+              ) : <p className="text-white py-3">{profile.ville || 'Non défini'}</p>}
+            </div>
+
+            {/* Signe astrologique */}
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2"><Calendar className="w-4 h-4 inline mr-2" />Signe astrologique</label>
+              {isEditing ? (
+                <select value={profile.signe} onChange={(e) => setProfile({ ...profile, signe: e.target.value })}
+                  className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-red-500">
+                  <option value="">Sélectionne ton signe</option>
+                  {signeOptions.map(s => <option key={s.value} value={s.value}>{s.label} ({s.dates})</option>)}
+                </select>
+              ) : <p className="text-white py-3">{signeOptions.find(s => s.value === profile.signe)?.label || 'Non défini'}</p>}
             </div>
 
             {/* Âge */}
@@ -265,7 +389,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ onNavigate }) => {
 
             {/* Pays */}
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2"><Globe className="w-4 h-4 inline mr-2" />Pays / Ville</label>
+              <label className="block text-sm font-medium text-gray-300 mb-2"><Globe className="w-4 h-4 inline mr-2" />Pays</label>
               {isEditing ? (
                 <select value={profile.pays} onChange={(e) => setProfile({ ...profile, pays: e.target.value })}
                   className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:border-red-500">
