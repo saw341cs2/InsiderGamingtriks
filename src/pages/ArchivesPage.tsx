@@ -74,6 +74,7 @@ const ArchivesPage: React.FC = () => {
           const existingUrls = new Set(allNews.map(a => a.url));
           allNews = [...allNews, ...archived.filter(a => !existingUrls.has(a.url))];
         }
+        allNews.sort((a, b) => new Date(b.dateTimePub).getTime() - new Date(a.dateTimePub).getTime());
         setArticles(allNews);
         if (astucesRes.ok) {
           const data = await astucesRes.json();
