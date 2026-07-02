@@ -12,12 +12,17 @@ const pick1 = (dayIndex * 2) % total;
 data.dailyPick = [data.astuces[pick1].id];
 data.generatedAt = new Date().toISOString();
 
-data.astuces = data.astuces.map((a, i) => {
-  if (i === pick1) return { ...a, date: "Aujourd'hui" };
-  const diff = ((i - pick1 + total) % total);
-  if (diff === 1) return { ...a, date: 'Il y a 2 jours' };
-  return { ...a, date: `Il y a ${diff * 2} jours` };
+const reordered = [
+  data.astuces[pick1],
+  ...data.astuces.slice(0, pick1),
+  ...data.astuces.slice(pick1 + 1),
+];
+
+data.astuces = reordered.map((a, i) => {
+  if (i === 0) return { ...a, date: "Aujourd'hui" };
+  if (i === 1) return { ...a, date: 'Il y a 2 jours' };
+  return { ...a, date: `Il y a ${i * 2} jours` };
 });
 
 fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-console.log(`Astuces du jour mises à jour : #${data.astuces[pick1].id} et #${data.astuces[pick2].id}`);
+console.log(`Astuce du jour mise à jour : #${data.astuces[0].id}`);
