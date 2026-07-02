@@ -182,6 +182,9 @@ async function main() {
     return;
   }
 
+  // Trier par date décroissante avant de prendre les 6 plus récents
+  gaming.sort((a, b) => new Date(b.publishedAt || b.dateTimePub || 0) - new Date(a.publishedAt || a.dateTimePub || 0));
+
   // Transformer et catégoriser
   const articles = gaming.slice(0, 6).map(a => {
     const topic = categorizeArticle(a.title, a.description || a.content || '');
