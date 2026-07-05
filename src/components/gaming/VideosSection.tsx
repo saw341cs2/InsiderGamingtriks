@@ -40,7 +40,7 @@ const fallbackVideos: Video[] = [
     game: "CS2",
     youtubeId: "V-_O7nl0Ii0",
     youtubeUrl: "https://www.youtube.com/watch?v=V-_O7nl0Ii0",
-    featured: true,
+    featured: false,
     topic: "FPS"
   },
   {
@@ -102,17 +102,16 @@ const fallbackVideos: Video[] = [
   {
     id: 6,
     title: "Video Short",
-    thumbnail: "",
-    duration: "0:00",
+    thumbnail: "https://img.youtube.com/vi/8oDFPb22ELY/maxresdefault.jpg",
+    duration: "",
     views: "0",
     likes: "0",
     date: "Aujourd'hui",
     game: "PC",
-    youtubeId: "",
-    youtubeUrl: "#",
-    featured: false,
-    topic: "FPS",
-    localVideoPath: "/videos/video-short.mp4"
+    youtubeId: "8oDFPb22ELY",
+    youtubeUrl: "https://youtu.be/8oDFPb22ELY",
+    featured: true,
+    topic: "FPS"
   }
 ];
 
