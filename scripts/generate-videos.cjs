@@ -3,71 +3,75 @@
 const fs = require('fs');
 const path = require('path');
 
-// Pool de vraies vidéos YouTube gaming
+// 2 vidéos tous les 2 jours, même thème par paire
 const videosPool = [
-  // Jour 1
+  // Paire 1 - FPS
   [
-    { title: "CS2 - Guide complet des smokes sur Mirage", game: "CS2", topic: "FPS", duration: "16:42", youtubeId: "V-_O7nl0Ii0", thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=640&h=360&fit=crop", views: "245K", likes: "12K" },
-    { title: "Warzone - Top 5 loadouts saison actuelle", game: "CoD", topic: "FPS", duration: "11:30", youtubeId: "9nL_FhWE7SQ", thumbnail: "https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?w=640&h=360&fit=crop", views: "189K", likes: "9K" },
+    { title: "CS2 : Tuto complet counter-strafing pour débutants", game: "CS2", topic: "FPS", duration: "14:20", youtubeId: "V-_O7nl0Ii0", thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=640&h=360&fit=crop", views: "245K", likes: "12K" },
+    { title: "CS2 : Guide des smokes indispensables sur Mirage", game: "CS2", topic: "FPS", duration: "16:42", youtubeId: "9nL_FhWE7SQ", thumbnail: "https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=640&h=360&fit=crop", views: "189K", likes: "9K" },
   ],
-  // Jour 2
+  // Paire 2 - Compétition
   [
-    { title: "Valorant - Comment rank up rapidement en 2026", game: "Valorant", topic: "FPS", duration: "14:20", youtubeId: "pSBMRJuWBsc", thumbnail: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=640&h=360&fit=crop", views: "320K", likes: "18K" },
-    { title: "Major CS2 - Les meilleures actions du tournoi", game: "CS2", topic: "COMPETITION", duration: "22:15", youtubeId: "wYPJFCQxHQE", thumbnail: "https://images.unsplash.com/photo-1542751110-97427bbecf20?w=640&h=360&fit=crop", views: "412K", likes: "24K" },
+    { title: "Comment se qualifier pour un tournoi CS2 amateur", game: "CS2", topic: "COMPETITION", duration: "18:30", youtubeId: "wYPJFCQxHQE", thumbnail: "https://images.unsplash.com/photo-1542751110-97427bbecf20?w=640&h=360&fit=crop", views: "312K", likes: "18K" },
+    { title: "Valorant : Tuto pour monter en rang rapidement", game: "Valorant", topic: "COMPETITION", duration: "22:15", youtubeId: "pSBMRJuWBsc", thumbnail: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=640&h=360&fit=crop", views: "412K", likes: "24K" },
   ],
-  // Jour 3
+  // Paire 3 - Jeux
   [
-    { title: "Battlefield 2042 - Maîtriser les véhicules", game: "BF", topic: "FPS", duration: "13:55", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1552820728-8b83bb6b2b28?w=640&h=360&fit=crop", views: "78K", likes: "4.2K" },
-    { title: "Apex Legends - La nouvelle légende est OP ?", game: "Apex", topic: "FPS", duration: "18:40", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=640&h=360&fit=crop", views: "256K", likes: "14K" },
+    { title: "GTA 6 : Tout ce qu'on sait sur le gameplay", game: "PC", topic: "JEUX", duration: "20:10", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=640&h=360&fit=crop", views: "890K", likes: "52K" },
+    { title: "Top 10 jeux FPS à tester absolument en 2026", game: "PC", topic: "JEUX", duration: "15:45", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=640&h=360&fit=crop", views: "445K", likes: "28K" },
   ],
-  // Jour 4
+  // Paire 4 - Matériel
   [
-    { title: "ZywOo - Les meilleures actions de la semaine", game: "CS2", topic: "JOUEURS", duration: "08:30", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1516382799247-4ca8e1eeabf3?w=640&h=360&fit=crop", views: "534K", likes: "32K" },
-    { title: "PC Gaming 2026 - Quelle config choisir ?", game: "PC", topic: "MATERIEL", duration: "20:10", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=640&h=360&fit=crop", views: "145K", likes: "8K" },
+    { title: "Tuto : Choisir sa souris gaming selon son grip", game: "PC", topic: "MATERIEL", duration: "12:00", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=640&h=360&fit=crop", views: "167K", likes: "9K" },
+    { title: "Meilleur setup gaming 2026 pour moins de 1000€", game: "PC", topic: "MATERIEL", duration: "25:30", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1595225476474-87563907a212?w=640&h=360&fit=crop", views: "298K", likes: "16K" },
   ],
-  // Jour 5
+  // Paire 5 - Gamers
   [
-    { title: "CS2 - Counter-strafing : le guide définitif", game: "CS2", topic: "FPS", duration: "12:00", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=640&h=360&fit=crop", views: "298K", likes: "16K" },
-    { title: "Valorant Champions 2026 - Preview et favoris", game: "Valorant", topic: "COMPETITION", duration: "25:30", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1542751110-97427bbecf20?w=640&h=360&fit=crop", views: "189K", likes: "11K" },
+    { title: "ZywOo : Comment il vise aussi bien ? Analyse complète", game: "CS2", topic: "GAMERS", duration: "19:50", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1516382799247-4ca8e1eeabf3?w=640&h=360&fit=crop", views: "534K", likes: "32K" },
+    { title: "s1mple : Les habitudes d'entraînement d'un pro", game: "CS2", topic: "GAMERS", duration: "17:20", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1552820728-8b83bb6b2b28?w=640&h=360&fit=crop", views: "623K", likes: "38K" },
   ],
-  // Jour 6
+  // Paire 6 - FPS
   [
-    { title: "Warzone - Les rotations pro pour le top 1", game: "CoD", topic: "FPS", duration: "17:45", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?w=640&h=360&fit=crop", views: "223K", likes: "13K" },
-    { title: "Setup gaming 2026 - Guide d'achat complet", game: "PC", topic: "MATERIEL", duration: "28:20", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1595225476474-87563907a212?w=640&h=360&fit=crop", views: "167K", likes: "9K" },
+    { title: "Warzone : Tuto rotations pro pour finir top 1", game: "CoD", topic: "FPS", duration: "17:45", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?w=640&h=360&fit=crop", views: "223K", likes: "13K" },
+    { title: "Apex Legends : Guide complet pour débuter en ranked", game: "Apex", topic: "FPS", duration: "21:10", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=640&h=360&fit=crop", views: "256K", likes: "14K" },
   ],
-  // Jour 7
+  // Paire 7 - Compétition
   [
-    { title: "CS2 - Économie et gestion des rounds", game: "CS2", topic: "FPS", duration: "10:15", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=640&h=360&fit=crop", views: "312K", likes: "17K" },
-    { title: "ESL Pro League - Résumé et highlights", game: "CS2", topic: "COMPETITION", duration: "19:50", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1516382799247-4ca8e1eeabf3?w=640&h=360&fit=crop", views: "445K", likes: "28K" },
+    { title: "ESL Pro League : Analyse tactique des meilleures équipes", game: "CS2", topic: "COMPETITION", duration: "28:00", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1633545495735-25df17fb9f31?w=640&h=360&fit=crop", views: "445K", likes: "27K" },
+    { title: "Valorant Champions 2026 : Preview et favoris", game: "Valorant", topic: "COMPETITION", duration: "24:30", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1542751110-97427bbecf20?w=640&h=360&fit=crop", views: "389K", likes: "22K" },
+  ],
+  // Paire 8 - Jeux
+  [
+    { title: "Battlefield 2042 : Tuto maîtriser les véhicules", game: "BF", topic: "JEUX", duration: "13:55", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1547394765-185e1e68f34e?w=640&h=360&fit=crop", views: "78K", likes: "4.2K" },
+    { title: "CS2 : Tuto économie et gestion des rounds", game: "CS2", topic: "JEUX", duration: "10:15", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=640&h=360&fit=crop", views: "312K", likes: "17K" },
+  ],
+  // Paire 9 - Matériel
+  [
+    { title: "Tuto : Optimiser Windows 11 pour le gaming FPS", game: "PC", topic: "MATERIEL", duration: "22:40", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=640&h=360&fit=crop", views: "534K", likes: "31K" },
+    { title: "Casque gaming : lequel choisir en 2026 ? Comparatif", game: "PC", topic: "MATERIEL", duration: "18:00", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1595225476474-87563907a212?w=640&h=360&fit=crop", views: "145K", likes: "8K" },
+  ],
+  // Paire 10 - Gamers
+  [
+    { title: "NiKo : Analyse de sa technique de visée unique", game: "CS2", topic: "GAMERS", duration: "16:30", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1516382799247-4ca8e1eeabf3?w=640&h=360&fit=crop", views: "478K", likes: "29K" },
+    { title: "Shroud : Pourquoi il reste le meilleur aim du monde", game: "PC", topic: "GAMERS", duration: "14:50", youtubeId: "ScNTWbKMZX4", thumbnail: "https://images.unsplash.com/photo-1552820728-8b83bb6b2b28?w=640&h=360&fit=crop", views: "712K", likes: "45K" },
   ],
 ];
 
 function generateVideos() {
-  const today = new Date();
-  const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
+  // Changer de paire tous les 2 jours
+  const dayIndex = Math.floor(Date.now() / (1000 * 60 * 60 * 24 * 2)) % videosPool.length;
+  const pair = videosPool[dayIndex];
 
-  // 3 jours d'historique = 6 vidéos max
-  const allVideos = [];
-  for (let i = 0; i < 3; i++) {
-    const dayIndex = ((dayOfYear - 1 - i) % videosPool.length + videosPool.length) % videosPool.length;
-    const pool = videosPool[dayIndex] || videosPool[0];
-    const date = new Date();
-    date.setDate(date.getDate() - i);
-    const dateLabel = i === 0 ? "Aujourd'hui" : i === 1 ? 'Hier' : `Il y a ${i} jours`;
-
-    pool.forEach((v, idx) => {
-      allVideos.push({
-        id: i * 10 + idx + 1,
-        ...v,
-        date: dateLabel,
-        youtubeUrl: `https://www.youtube.com/watch?v=${v.youtubeId}`,
-        featured: i === 0 && idx === 0,
-      });
-    });
-  }
+  const videos = pair.map((v, idx) => ({
+    id: idx + 1,
+    ...v,
+    date: "Aujourd'hui",
+    youtubeUrl: `https://www.youtube.com/watch?v=${v.youtubeId}`,
+    featured: idx === 0,
+  }));
 
   return {
-    videos: allVideos.slice(0, 6),
+    videos,
     generatedAt: new Date().toISOString(),
   };
 }
