@@ -102,17 +102,16 @@ const fallbackVideos: Video[] = [
   {
     id: 6,
     title: "InsiderGamingTricks - Intro",
-    thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=640&h=360&fit=crop",
+    thumbnail: "https://img.youtube.com/vi/ShXz6WTI280/maxresdefault.jpg",
     duration: "",
     views: "0",
     likes: "0",
     date: "Aujourd'hui",
     game: "PC",
-    youtubeId: "",
-    youtubeUrl: "https://www.image2url.com/r2/default/videos/1783371386580-daaea1cd-3856-4cc0-98cb-8bd7e322e648.mp4",
+    youtubeId: "ShXz6WTI280",
+    youtubeUrl: "https://youtube.com/shorts/ShXz6WTI280",
     featured: true,
-    topic: "FPS",
-    localVideoPath: "https://www.image2url.com/r2/default/videos/1783371386580-daaea1cd-3856-4cc0-98cb-8bd7e322e648.mp4"
+    topic: "FPS"
   }
 ];
 
