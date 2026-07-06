@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import Confirmation from '@/pages/Confirmation';import { Routes, Route } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "@/pages/Index";
@@ -94,7 +94,7 @@ function App() {
         <Route path="/forum" element={<ForumPage />} />
         <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
         <Route path="/confirmation" element={<Confirmation />} />
-      </Routes>
+        <Route path="/confirmation" element={<Confirmation />} />    </Routes>
     </>
   );
 }
