@@ -1,4 +1,4 @@
-import Confirmation from '@/pages/Confirmation';import { Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "@/pages/Index";
@@ -7,7 +7,6 @@ import ArchivesPage from "@/pages/ArchivesPage";
 import ForumPage from "@/pages/Forum";
 import ProfilePage from "@/pages/Profile";
 import { useState, useEffect } from "react";
-import Confirmation from "@/pages/Confirmation";
 function SplashScreen() {
   const [progress, setProgress] = useState(0);
 
@@ -93,8 +92,7 @@ function App() {
         <Route path="/archives" element={<ArchivesPage />} />
         <Route path="/forum" element={<ForumPage />} />
         <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-        <Route path="/confirmation" element={<Confirmation />} />
-        <Route path="/confirmation" element={<Confirmation />} />    </Routes>
+      </Routes>
     </>
   );
 }
