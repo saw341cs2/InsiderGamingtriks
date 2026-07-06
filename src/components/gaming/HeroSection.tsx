@@ -1,6 +1,52 @@
 import React from 'react';
 import { Crosshair, Play, Trophy, Users } from 'lucide-react';
 
+const impacts = [
+  { x: 72, y: 18, delay: 0,   size: 90  },
+  { x: 15, y: 55, delay: 1.2, size: 70  },
+  { x: 88, y: 65, delay: 2.5, size: 110 },
+  { x: 45, y: 30, delay: 3.8, size: 60  },
+  { x: 60, y: 78, delay: 5.1, size: 80  },
+  { x: 28, y: 20, delay: 6.4, size: 95  },
+];
+
+function BulletImpact({ x, y, delay, size }: { x: number; y: number; delay: number; size: number }) {
+  const cracks = [
+    'M0,0 L18,6',   'M0,0 L-16,8',  'M0,0 L4,20',
+    'M0,0 L-6,-18', 'M0,0 L20,-4',  'M0,0 L-18,-10',
+    'M0,0 L10,16',  'M0,0 L-12,14',
+  ];
+  return (
+    <svg
+      style={{
+        position: 'absolute',
+        left: `${x}%`,
+        top: `${y}%`,
+        width: size,
+        height: size,
+        transform: 'translate(-50%, -50%)',
+        animation: `bulletImpact 4s ease-out ${delay}s infinite`,
+        opacity: 0,
+        pointerEvents: 'none',
+      }}
+      viewBox="-25 -25 50 50"
+    >
+      {/* Point d'impact central */}
+      <circle cx="0" cy="0" r="2.5" fill="white" opacity="0.9" />
+      <circle cx="0" cy="0" r="5" fill="none" stroke="white" strokeWidth="0.8" opacity="0.6" />
+      {/* Fissures */}
+      {cracks.map((d, i) => (
+        <path key={i} d={d} stroke="white" strokeWidth="0.6" fill="none" opacity="0.5"
+          strokeDasharray="22" strokeDashoffset="22"
+          style={{ animation: `crackGrow 0.4s ease-out ${delay + i * 0.05}s infinite` }}
+        />
+      ))}
+      {/* Halo rouge */}
+      <circle cx="0" cy="0" r="10" fill="none" stroke="rgba(239,68,68,0.6)" strokeWidth="0.5" opacity="0.4" />
+    </svg>
+  );
+}
+
 const HeroSection: React.FC = () => {
   return (
     <section id="top" className="relative min-h-[calc(100vh-4rem)] overflow-hidden bg-gray-950 pt-24">
@@ -11,6 +57,21 @@ const HeroSection: React.FC = () => {
       />
       <div className="absolute inset-0 bg-gradient-to-b from-gray-950/85 via-gray-950/55 to-gray-950" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(239,68,68,0.32),transparent_35%),radial-gradient(circle_at_80%_20%,rgba(59,130,246,0.2),transparent_35%)]" />
+
+      {/* Impacts de balle animés */}
+      <style>{`
+        @keyframes bulletImpact {
+          0%   { opacity: 0; transform: translate(-50%,-50%) scale(0.3); }
+          8%   { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+          60%  { opacity: 0.8; }
+          100% { opacity: 0; transform: translate(-50%,-50%) scale(1.1); }
+        }
+        @keyframes crackGrow {
+          0%   { stroke-dashoffset: 22; }
+          100% { stroke-dashoffset: 0; }
+        }
+      `}</style>
+      {impacts.map((imp, i) => <BulletImpact key={i} {...imp} />)}
 
       <div className="relative mx-auto flex min-h-[calc(100vh-4rem)] max-w-7xl flex-col justify-center px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
         <div className="max-w-4xl">
