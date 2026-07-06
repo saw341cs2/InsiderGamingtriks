@@ -12,6 +12,8 @@ const FALLBACK_IMAGES = {
 const TOPICS = {
   fps: ['fps', 'shooter', 'call of duty', 'valorant', 'counter-strike', 'battlefield', 'halo', 'warzone', 'apex'],
   competition: ['esport', 'tournoi', 'competition', 'league of legends', 'csgo', 'dota', 'equipe', 'team', 'championnat'],
+  materiel: ['souris', 'clavier', 'casque', 'écran', 'moniteur', 'gpu', 'cpu', 'carte graphique', 'processeur', 'pc gamer', 'setup', 'périphérique', 'hardware'],
+  gamers: ['streamer', 'joueur', 'pro player', 'twitch', 'youtube gaming', 'gamer', 'influenceur'],
   jeux: ['jeu video', 'jeu', 'game', 'sortie', 'release', 'test', 'review', 'gaming', 'playstation', 'xbox', 'nintendo'],
 };
 
@@ -19,6 +21,8 @@ function categorizeArticle(title, description) {
   const text = `${title} ${description}`.toLowerCase();
   for (const topic of TOPICS.fps) { if (text.includes(topic)) return 'fps'; }
   for (const topic of TOPICS.competition) { if (text.includes(topic)) return 'competition'; }
+  for (const topic of TOPICS.materiel) { if (text.includes(topic)) return 'materiel'; }
+  for (const topic of TOPICS.gamers) { if (text.includes(topic)) return 'gamers'; }
   for (const topic of TOPICS.jeux) { if (text.includes(topic)) return 'jeux'; }
   return 'jeux';
 }
@@ -186,7 +190,7 @@ async function main() {
   gaming.sort((a, b) => new Date(b.publishedAt || b.dateTimePub || 0) - new Date(a.publishedAt || a.dateTimePub || 0));
 
   // Transformer et catégoriser
-  const articles = gaming.slice(0, 6).map(a => {
+  const articles = gaming.slice(0, 3).map(a => {
     const topic = categorizeArticle(a.title, a.description || a.content || '');
     return transformArticle(a, topic);
   });
