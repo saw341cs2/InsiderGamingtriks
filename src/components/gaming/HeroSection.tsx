@@ -11,10 +11,20 @@ const impacts = [
 ];
 
 function BulletImpact({ x, y, delay, size }: { x: number; y: number; delay: number; size: number }) {
+  // Fissures longues avec ramifications — style vrai impact de balle sur verre
   const cracks = [
-    'M0,0 L18,6',   'M0,0 L-16,8',  'M0,0 L4,20',
-    'M0,0 L-6,-18', 'M0,0 L20,-4',  'M0,0 L-18,-10',
-    'M0,0 L10,16',  'M0,0 L-12,14',
+    'M0,0 L24,3 L32,8 M24,3 L26,10',
+    'M0,0 L-22,6 L-30,4 M-22,6 L-20,14',
+    'M0,0 L4,26 L2,34 M4,26 L10,28',
+    'M0,0 L-6,-24 L-4,-32 M-6,-24 L-14,-22',
+    'M0,0 L26,-5 L34,-10 M26,-5 L28,4',
+    'M0,0 L-24,-6 L-32,-2 M-24,-6 L-22,-14',
+    'M0,0 L12,22 L10,30 M12,22 L20,20',
+    'M0,0 L-16,20 L-22,26 M-16,20 L-10,26',
+    'M0,0 L20,-18 L26,-24 M20,-18 L26,-12',
+    'M0,0 L-20,-16 L-28,-20 M-20,-16 L-16,-24',
+    'M0,0 L8,-26 L14,-30',
+    'M0,0 L-10,24 L-8,32',
   ];
   return (
     <svg
@@ -25,24 +35,36 @@ function BulletImpact({ x, y, delay, size }: { x: number; y: number; delay: numb
         width: size,
         height: size,
         transform: 'translate(-50%, -50%)',
-        animation: `bulletImpact 4s ease-out ${delay}s infinite`,
+        animation: `bulletImpact 5s ease-out ${delay}s infinite`,
         opacity: 0,
         pointerEvents: 'none',
       }}
-      viewBox="-25 -25 50 50"
+      viewBox="-40 -40 80 80"
     >
-      {/* Point d'impact central */}
-      <circle cx="0" cy="0" r="2.5" fill="white" opacity="0.9" />
-      <circle cx="0" cy="0" r="5" fill="none" stroke="white" strokeWidth="0.8" opacity="0.6" />
       {/* Fissures */}
       {cracks.map((d, i) => (
-        <path key={i} d={d} stroke="white" strokeWidth="0.6" fill="none" opacity="0.5"
-          strokeDasharray="22" strokeDashoffset="22"
-          style={{ animation: `crackGrow 0.4s ease-out ${delay + i * 0.05}s infinite` }}
+        <path key={i} d={d} stroke="rgba(255,255,255,0.8)" strokeWidth="0.8" fill="none"
+          strokeLinecap="round" strokeLinejoin="round"
+          strokeDasharray="70" strokeDashoffset="70"
+          style={{ animation: `crackGrow 0.6s ease-out ${delay + i * 0.05}s forwards` }}
         />
       ))}
-      {/* Halo rouge */}
-      <circle cx="0" cy="0" r="10" fill="none" stroke="rgba(239,68,68,0.6)" strokeWidth="0.5" opacity="0.4" />
+      {/* Trou central noir cerclé blanc — vrai impact de balle */}
+      <circle cx="0" cy="0" r="7" fill="black" opacity="0.9" />
+      <circle cx="0" cy="0" r="7" fill="none" stroke="white" strokeWidth="1.5" />
+      <circle cx="0" cy="0" r="4" fill="black" />
+      <circle cx="0" cy="0" r="4" fill="none" stroke="rgba(255,255,255,0.6)" strokeWidth="0.8" />
+      {/* Anneau de choc */}
+      <circle cx="0" cy="0" r="12" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="0.6" />
+      <circle cx="0" cy="0" r="18" fill="none" stroke="rgba(239,68,68,0.35)" strokeWidth="0.5" />
+      {/* Micro-éclats autour du trou */}
+      {[0,45,90,135,180,225,270,315].map((angle, i) => (
+        <circle key={i}
+          cx={Math.cos(angle * Math.PI / 180) * 9}
+          cy={Math.sin(angle * Math.PI / 180) * 9}
+          r="0.9" fill="white" opacity="0.7"
+        />
+      ))}
     </svg>
   );
 }
