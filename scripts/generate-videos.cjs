@@ -7,7 +7,7 @@ const path = require('path');
 const videosPool = [
   // Paire 1 - FPS
   [
-    { title: "CS2 : Tuto complet counter-strafing pour débutants", game: "CS2", topic: "FPS", duration: "14:20", youtubeId: "V-_O7nl0Ii0", thumbnail: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=640&h=360&fit=crop", views: "245K", likes: "12K" },
+    { title: "InsiderGamingTricks - Intro", game: "PC", topic: "FPS", duration: "", youtubeId: "ShXz6WTI280", thumbnail: "https://img.youtube.com/vi/ShXz6WTI280/maxresdefault.jpg", views: "0", likes: "0" },
     { title: "CS2 : Guide des smokes indispensables sur Mirage", game: "CS2", topic: "FPS", duration: "16:42", youtubeId: "9nL_FhWE7SQ", thumbnail: "https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=640&h=360&fit=crop", views: "189K", likes: "9K" },
   ],
   // Paire 2 - Compétition
