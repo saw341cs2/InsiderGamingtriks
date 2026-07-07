@@ -141,7 +141,7 @@
       "description": "Optimise ton PC pour avoir le maximum de FPS et le minimum de latence.\n\nWindows :\n- Mode Haute Performance dans les options d'alimentation\n- Désactiver Xbox Game Bar (Win+G)\n- Désactiver les effets visuels Windows\n- Mettre à jour les drivers GPU\n\nIn-game :\n- Résolution : native ou 1280x960 stretched pour CS2\n- V-Sync : DÉSACTIVÉ\n- Limiter les FPS à 2x ton taux de rafraîchissement\n\nRéseau :\n- Câble ethernet plutôt que WiFi\n- Fermer les applications en arrière-plan\n- DNS : 1.1.1.1 (Cloudflare)"
     }
   ],
-  "generatedAt": "2026-07-05T07:23:41.925Z",
+  "generatedAt": "2026-07-07T07:35:47.497Z",
   "dailyPick": [
     9
   ]
