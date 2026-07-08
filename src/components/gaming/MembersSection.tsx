@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Users } from 'lucide-react';
+import { Users, MessageCircle, Heart, Mail } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 interface Member {
@@ -24,17 +24,42 @@ const MembersSection: React.FC = () => {
     <section id="membres" className="bg-gray-950 py-20 md:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-600/10 border border-indigo-600/20 rounded-full text-indigo-400 text-xs font-semibold uppercase tracking-widest mb-4">
             <Users className="w-3.5 h-3.5" />
             Membres
           </div>
           <h2 className="text-3xl md:text-5xl font-black text-white mb-4">
-            <span className="text-indigo-500">Membres</span>
+            Notre <span className="text-indigo-500">Communauté</span>
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto">
-            Découvrez les membres de notre équipe d'experts qui vous accompagnent dans votre progression gaming.
+            Chaque membre inscrit fait vivre ce site. Merci à vous ! 🙏
           </p>
+        </div>
+
+        {/* Remerciement */}
+        <div className="bg-gradient-to-r from-indigo-900/30 to-purple-900/30 border border-indigo-500/20 rounded-2xl p-8 mb-12 text-center">
+          <Heart className="w-10 h-10 text-red-500 mx-auto mb-4" />
+          <h3 className="text-2xl font-bold text-white mb-3">Merci à tous nos membres ! ❤️</h3>
+          <p className="text-gray-400 max-w-2xl mx-auto mb-6">
+            C'est grâce à vous que ce site existe et grandit chaque jour. Vos retours, votre présence sur le Discord et le forum, et votre soutien font toute la différence. Vous êtes le cœur d'Insider Gaming Tricks.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a
+              href="https://discord.gg/X6D6zzrTf"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition-colors"
+            >
+              <MessageCircle className="w-5 h-5" /> Rejoindre le Discord
+            </a>
+            <a
+              href="#community-section"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white font-bold rounded-xl transition-colors"
+            >
+              <Users className="w-5 h-5" /> Accéder au Forum
+            </a>
+          </div>
         </div>
 
         {/* Members Grid */}
@@ -52,8 +77,18 @@ const MembersSection: React.FC = () => {
                   {member.game && <p className="text-indigo-400 text-sm">{member.game}</p>}
                 </div>
               </div>
-              <div className="text-xs text-gray-500">
-                Membre depuis {new Date(member.created_at).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' })}
+              <div className="flex items-center justify-between mt-2">
+                <span className="text-xs text-gray-500">
+                  Membre depuis {new Date(member.created_at).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long' })}
+                </span>
+                <a
+                  href={`https://discord.gg/X6D6zzrTf`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300 transition-colors"
+                >
+                  <Mail className="w-3.5 h-3.5" /> Contacter
+                </a>
               </div>
             </div>
           ))}
@@ -116,7 +151,7 @@ const MembersSection: React.FC = () => {
               <h4 className="text-white font-bold text-lg mb-4">Comment nous contacter ?</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <a
-                  href="https://discord.gg/rnh32gTDjp"
+                  href="https://discord.gg/X6D6zzrTf"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center gap-3 p-4 bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/30 rounded-lg transition-colors"
@@ -146,7 +181,7 @@ const MembersSection: React.FC = () => {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
-                 href="https://discord.gg/rnh32gTDjp"
+                 href="https://discord.gg/X6D6zzrTf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition-colors"
