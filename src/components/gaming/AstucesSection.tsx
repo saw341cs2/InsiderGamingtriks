@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Lock, Search, Filter, Star, Eye, Crosshair, Target, Bomb, Download, Unlock, X, Clock } from 'lucide-react';
+import { Lock, Search, Filter, Star, Eye, Crosshair, Target, Bomb, Clock } from 'lucide-react';
 
 interface AstucesSectionProps {
   onNavigate: (section: string) => void;
@@ -66,9 +66,6 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
   const [gameFilter, setGameFilter] = useState<GameFilter>('all');
   const [difficultyFilter, setDifficultyFilter] = useState<string>('all');
   const [showPremiumOnly, setShowPremiumOnly] = useState(false);
-  const [selectedAstuce, setSelectedAstuce] = useState<Astuce | null>(null);
-  const [downloadedIds, setDownloadedIds] = useState<Set<number>>(new Set());
-
   const loadAstuces = async () => {
     setLoading(true);
     setError(null);
@@ -98,28 +95,8 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
     return true;
   });
 
-  const openModal = (astuce: Astuce) => {
-    if (astuce.isPremium) {
-      const el = document.getElementById('premium-section');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      setSelectedAstuce(astuce);
-      document.body.style.overflow = 'hidden';
-    }
-  };
-
-  const handleDownload = (e: React.MouseEvent, astuce: Astuce) => {
-    e.stopPropagation();
-    if (astuce.isPremium) { onNavigate('premium'); return; }
-    setDownloadedIds((prev) => new Set(prev).add(astuce.id));
-  };
-
-  const closeModal = () => {
-    setSelectedAstuce(null);
-    document.body.style.overflow = '';
-  };
-
-  const selectedGameKey = selectedAstuce && (selectedAstuce.game === 'CS2' || selectedAstuce.game === 'BF' || selectedAstuce.game === 'CoD' ? selectedAstuce.game : 'FPS');
+  const openModal = () => { onNavigate('premium'); };
+  const handleDownload = (e: React.MouseEvent) => { e.stopPropagation(); onNavigate('premium'); };
 
   return (
     <section id="astuces-section" className="bg-gray-950 py-20 md:py-28">
@@ -211,23 +188,16 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
               const gameKey = astuce.game === 'CS2' || astuce.game === 'BF' || astuce.game === 'CoD' ? astuce.game : 'FPS';
               const GameIcon = gameIcons[gameKey] || Crosshair;
               const imgSrc = astuce.image || defaultImages[gameKey];
-              const isDownloaded = downloadedIds.has(astuce.id);
               return (
                 <div
                   key={astuce.id}
-                  onClick={() => openModal(astuce)}
+                  onClick={() => openModal()}
                   className={`group relative bg-gray-900/60 border rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-black/40 flex flex-col border-gray-800/60 hover:border-red-500/30`}
                 >
                   <div className="absolute top-3 right-3 z-20">
-                    {astuce.isPremium ? (
-                      <span className="flex items-center gap-1 px-2 py-1 bg-gray-900/90 border border-yellow-500/40 rounded-md text-xs font-bold text-yellow-400">
-                        <Lock className="w-3 h-3" />PREMIUM
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-1 px-2 py-1 bg-gray-900/90 border border-green-500/30 rounded-md text-xs font-bold text-green-400">
-                        <Unlock className="w-3 h-3" />GRATUIT
-                      </span>
-                    )}
+                    <span className="flex items-center gap-1 px-2 py-1 bg-gray-900/90 border border-yellow-500/40 rounded-md text-xs font-bold text-yellow-400">
+                      <Lock className="w-3 h-3" />PREMIUM
+                    </span>
                   </div>
 
                   <div className="relative h-40 w-full flex-shrink-0 overflow-hidden">
@@ -237,7 +207,7 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                       onError={(e) => { (e.target as HTMLImageElement).src = defaultImages[astuce.game] || defaultImages['CS2']; }}
                     />
-                    {astuce.isPremium && <div className="absolute inset-0 bg-gray-900/60 flex items-center justify-center"><Lock className="w-8 h-8 text-yellow-400" /></div>}
+                    <div className="absolute inset-0 bg-gray-900/60 flex items-center justify-center"><Lock className="w-8 h-8 text-yellow-400" /></div>
                     <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-gray-900 to-transparent" />
                   </div>
 
@@ -269,22 +239,10 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
                     </div>
 
                     <button
-                      onClick={(e) => handleDownload(e, astuce)}
-                      className={`mt-auto w-full flex items-center justify-center gap-2 py-2.5 rounded-lg font-bold text-sm transition-all ${
-                        astuce.isPremium
-                          ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 hover:bg-yellow-500/20'
-                          : isDownloaded
-                          ? 'bg-green-600/20 border border-green-500/30 text-green-400'
-                          : 'bg-red-600/10 text-red-400 border border-red-500/20 hover:bg-red-600/20'
-                      }`}
+                      onClick={(e) => handleDownload(e)}
+                      className="mt-auto w-full flex items-center justify-center gap-2 py-2.5 rounded-lg font-bold text-sm transition-all bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 hover:bg-yellow-500/20"
                     >
-                      {astuce.isPremium ? (
-                        <><Lock className="w-4 h-4" />Débloquer Premium</>
-                      ) : isDownloaded ? (
-                        <><Unlock className="w-4 h-4" />Téléchargé</>
-                      ) : (
-                        <><Download className="w-4 h-4" />Télécharger Gratuit</>
-                      )}
+                      <Lock className="w-4 h-4" />Débloquer Premium
                     </button>
                   </div>
                 </div>
@@ -318,61 +276,6 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
         )}
       </div>
 
-      {selectedAstuce && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={closeModal}>
-          <div className="relative bg-gray-900 border border-gray-700 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <div className="relative h-64 overflow-hidden rounded-t-2xl">
-              <img
-                src={selectedAstuce.image || defaultImages[selectedGameKey || 'CS2']}
-                alt={selectedAstuce.title}
-                className="w-full h-full object-cover"
-                onError={(e) => { (e.target as HTMLImageElement).src = defaultImages[selectedGameKey || 'CS2'] || defaultImages['CS2']; }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent" />
-              <button onClick={closeModal} className="absolute top-4 right-4 p-2 bg-gray-900/80 border border-gray-700 rounded-xl text-gray-400 hover:text-white transition-all">
-                <X className="w-5 h-5" />
-              </button>
-              <div className="absolute bottom-6 left-8 right-16">
-                <div className="flex items-center gap-2 mb-2">
-                  {React.createElement(gameIcons[selectedGameKey || 'CS2'] || Crosshair, { className: `w-5 h-5 ${gameColors[selectedGameKey || 'CS2'] || 'text-gray-400'}` })}
-                  <span className={`text-sm font-semibold ${gameColors[selectedGameKey || 'CS2'] || 'text-gray-400'}`}>{selectedAstuce.game}</span>
-                  <span className="text-gray-500">·</span>
-                  <span className="text-sm text-gray-400">{selectedAstuce.category}</span>
-                </div>
-                <h2 className="text-white font-black text-2xl md:text-3xl leading-tight">{selectedAstuce.title}</h2>
-              </div>
-            </div>
-
-            <div className="p-8">
-              <div className="flex flex-wrap items-center gap-4 mb-6">
-                <span className={`inline-flex px-3 py-1 text-sm font-semibold rounded-md border ${difficultyColors[selectedAstuce.difficulty]}`}>
-                  {selectedAstuce.difficulty}
-                </span>
-                <span className="flex items-center gap-1.5 text-sm text-gray-500"><Eye className="w-4 h-4" />{selectedAstuce.views.toLocaleString()} vues</span>
-                <span className="flex items-center gap-1.5 text-sm text-yellow-400"><Star className="w-4 h-4" />{selectedAstuce.rating}</span>
-              </div>
-              <div className="border-t border-gray-800 mb-6" />
-              <div className="text-gray-300 text-base leading-relaxed whitespace-pre-line">
-                {selectedAstuce.description}
-              </div>
-              <div className="mt-8 pt-6 border-t border-gray-800 flex items-center justify-between">
-                <span className="text-gray-600 text-sm font-medium">InsiderGamingTriks Guide</span>
-                <div className="flex gap-3">
-                  <button onClick={closeModal} className="px-6 py-2.5 bg-gray-800 text-white hover:bg-gray-700 rounded-xl text-sm font-bold transition-all">
-                    Fermer
-                  </button>
-                  <button
-                    onClick={(e) => { handleDownload(e, selectedAstuce); closeModal(); }}
-                    className="px-6 py-2.5 bg-red-600 text-white hover:bg-red-700 rounded-xl text-sm font-bold transition-all flex items-center gap-2"
-                  >
-                    <Download className="w-4 h-4" /> Télécharger
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   );
 };
