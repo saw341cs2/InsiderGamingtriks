@@ -1,6 +1,20 @@
 {
   "astuces": [
     {
+      "id": 7,
+      "title": "Guide Vidéo : Les meilleures positions sur Dust2",
+      "game": "CS2",
+      "gameId": "counter-strike",
+      "difficulty": "Intermédiaire",
+      "isPremium": false,
+      "category": "Guide",
+      "views": 27500,
+      "rating": 4.8,
+      "date": "Aujourd'hui",
+      "image": "https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=400&h=300&fit=crop",
+      "description": "Les positions les plus efficaces sur Dust2 pour chaque rôle.\n\nSide CT :\n- A Site : joue derrière le gros cube ou en car\n- B Site : position derrière les caisses ou en window\n- Mid : position doors ou en short\n\nSide T :\n- Long A : peek depuis le coin ou depuis les portes\n- B Rush : utilise les caisses pour te couvrir\n- Mid control : smoke CT cross puis prends short\n\nLa clé : ne reste jamais au même endroit deux rounds de suite."
+    },
+    {
       "id": 9,
       "title": "CS2 : Économie et gestion des rounds",
       "game": "CS2",
@@ -10,7 +24,7 @@
       "category": "Stratégie",
       "views": 19200,
       "rating": 4.8,
-      "date": "Aujourd'hui",
+      "date": "Il y a 2 jours",
       "image": "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop",
       "description": "Comprendre l'économie de CS2 est aussi important que viser juste.\n\nTypes de rounds :\n- Full buy : AK/M4 + armure + grenades (3800$+)\n- Force buy : Desert Eagle ou SMG avec armure\n- Eco : pistolet seulement, économise pour le prochain round\n\nRègles d'or :\n1. Ne jamais full buy seul si l'équipe eco\n2. Drop les armes aux coéquipiers pauvres\n3. Après un pistol round gagné → demi-buy\n4. Garde toujours 1000$ pour l'armure minimum\n\nUne bonne économie peut gagner des matchs entiers."
     },
@@ -24,23 +38,9 @@
       "category": "Mouvement",
       "views": 15600,
       "rating": 4.7,
-      "date": "Il y a 2 jours",
+      "date": "Il y a 4 jours",
       "image": "https://images.unsplash.com/photo-1600861194942-f883de0dfe96?w=400&h=300&fit=crop",
       "description": "Le slide cancel est une technique avancée qui te rend beaucoup plus difficile à toucher.\n\nComment faire :\n1. Sprint → Slide (touche accroupi)\n2. Immédiatement appuie sur accroupi à nouveau pour annuler\n3. Tu gardes ta vitesse sans être vulnérable\n\nVariantes :\n- Bunny hop + slide cancel pour traverser les espaces ouverts\n- Slide cancel + ADS pour peek les angles\n\nPratique en partie privée avant de l'utiliser en ranked."
-    },
-    {
-      "id": 7,
-      "title": "Guide Vidéo : Les meilleures positions sur Dust2",
-      "game": "CS2",
-      "gameId": "counter-strike",
-      "difficulty": "Intermédiaire",
-      "isPremium": false,
-      "category": "Guide",
-      "views": 27500,
-      "rating": 4.8,
-      "date": "Il y a 4 jours",
-      "image": "https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=400&h=300&fit=crop",
-      "description": "Les positions les plus efficaces sur Dust2 pour chaque rôle.\n\nSide CT :\n- A Site : joue derrière le gros cube ou en car\n- B Site : position derrière les caisses ou en window\n- Mid : position doors ou en short\n\nSide T :\n- Long A : peek depuis le coin ou depuis les portes\n- B Rush : utilise les caisses pour te couvrir\n- Mid control : smoke CT cross puis prends short\n\nLa clé : ne reste jamais au même endroit deux rounds de suite."
     },
     {
       "id": 1,
@@ -141,8 +141,8 @@
       "description": "Optimise ton PC pour avoir le maximum de FPS et le minimum de latence.\n\nWindows :\n- Mode Haute Performance dans les options d'alimentation\n- Désactiver Xbox Game Bar (Win+G)\n- Désactiver les effets visuels Windows\n- Mettre à jour les drivers GPU\n\nIn-game :\n- Résolution : native ou 1280x960 stretched pour CS2\n- V-Sync : DÉSACTIVÉ\n- Limiter les FPS à 2x ton taux de rafraîchissement\n\nRéseau :\n- Câble ethernet plutôt que WiFi\n- Fermer les applications en arrière-plan\n- DNS : 1.1.1.1 (Cloudflare)"
     }
   ],
-  "generatedAt": "2026-07-07T07:35:47.497Z",
+  "generatedAt": "2026-07-09T07:35:19.427Z",
   "dailyPick": [
-    9
+    7
   ]
 }
