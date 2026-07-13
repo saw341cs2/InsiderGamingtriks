@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { MessageSquare, Plus, Search, Pin, Clock, User, Heart, Send, ArrowLeft, Shield, X } from 'lucide-react';
+import { MessageSquare, Plus, Search, Pin, Clock, User, Heart, Send, ArrowLeft, Shield, X, Trash2 } from 'lucide-react';
 import { useAppContext } from '@/contexts/AppContext';
 import { supabase } from '@/lib/supabase';
 import { toast } from '@/components/ui/use-toast';
@@ -185,6 +185,20 @@ const ForumPage: React.FC = () => {
     loadPosts();
   };
 
+  const handleDeletePost = async (post: ForumPostRow) => {
+    if (!user || user.id !== post.author_id) return;
+    const confirmed = window.confirm('Supprimer définitivement ce sujet ?');
+    if (!confirmed) return;
+    const { error } = await supabase.from('forum_posts').delete().eq('id', post.id).eq('author_id', user.id);
+    if (error) {
+      toast({ title: 'Erreur', description: "Le sujet n'a pas pu être supprimé", variant: 'destructive' });
+      return;
+    }
+    toast({ title: 'Sujet supprimé' });
+    closePost();
+    loadPosts();
+  };
+
   const filteredPosts = posts.filter((p) => {
     const matchesFilter = filter === 'all' ? true : filter === 'pinned' ? p.pinned : p.category === filter;
     const matchesSearch = searchQuery.trim() === '' || p.title.toLowerCase().includes(searchQuery.toLowerCase());
@@ -242,10 +256,18 @@ const ForumPage: React.FC = () => {
                 </div>
               </div>
               <p className="text-gray-300 whitespace-pre-wrap leading-relaxed">{selectedPost.content}</p>
-              <button onClick={() => toggleLike(selectedPost)} className={`mt-4 flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${selectedPost.liked_by_me ? 'text-red-500 bg-red-500/10' : 'text-gray-400 bg-gray-800 hover:text-red-400'}`}>
-                <Heart className={`w-4 h-4 ${selectedPost.liked_by_me ? 'fill-red-500' : ''}`} />
-                {selectedPost.likes_count} {selectedPost.likes_count > 1 ? "j'aime" : "j'aime"}
-              </button>
+              <div className="flex items-center gap-2 mt-4">
+                <button onClick={() => toggleLike(selectedPost)} className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${selectedPost.liked_by_me ? 'text-red-500 bg-red-500/10' : 'text-gray-400 bg-gray-800 hover:text-red-400'}`}>
+                  <Heart className={`w-4 h-4 ${selectedPost.liked_by_me ? 'fill-red-500' : ''}`} />
+                  {selectedPost.likes_count} {selectedPost.likes_count > 1 ? "j'aime" : "j'aime"}
+                </button>
+                {user && user.id === selectedPost.author_id && (
+                  <button onClick={() => handleDeletePost(selectedPost)} className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-red-400 bg-red-500/10 hover:bg-red-500/20 transition-all">
+                    <Trash2 className="w-4 h-4" />
+                    Supprimer
+                  </button>
+                )}
+              </div>
             </div>
 
             <div className="p-5">
