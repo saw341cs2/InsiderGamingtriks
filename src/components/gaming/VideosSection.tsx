@@ -128,9 +128,16 @@ const VideosSection: React.FC = () => {
         const res = await fetch(url.href);
         if (!res.ok) throw new Error('videos.json unavailable');
         const data = await res.json();
-        setVideos(Array.isArray(data.videos) && data.videos.length ? data.videos : fallbackVideos);
+        const resolved = (Array.isArray(data.videos) && data.videos.length ? data.videos : fallbackVideos).map(v => ({
+          ...v,
+          localVideoPath: v.localVideoPath ? new URL(v.localVideoPath.replace(/^\//, ''), document.baseURI).href : undefined
+        }));
+        setVideos(resolved);
       } catch {
-        setVideos(fallbackVideos);
+        setVideos(fallbackVideos.map(v => ({
+          ...v,
+          localVideoPath: v.localVideoPath ? new URL(v.localVideoPath.replace(/^\//, ''), document.baseURI).href : undefined
+        })));
       } finally {
         setLoading(false);
       }

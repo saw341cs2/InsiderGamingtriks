@@ -1,33 +1,48 @@
 {
   "videos": [
     {
-      "id": 1,
-      "title": "InsiderGamingTricks - Intro",
+      "id": 0,
+      "title": "Video Short - InsiderGamingTricks",
       "game": "PC",
       "topic": "FPS",
       "duration": "",
-      "youtubeId": "ShXz6WTI280",
-      "thumbnail": "https://img.youtube.com/vi/ShXz6WTI280/maxresdefault.jpg",
+      "youtubeId": "",
+      "thumbnail": "",
       "views": "0",
       "likes": "0",
       "date": "Aujourd'hui",
-      "youtubeUrl": "https://www.youtube.com/watch?v=ShXz6WTI280",
+      "youtubeUrl": "",
+      "featured": false,
+      "localVideoPath": "videos/video-short.mp4"
+    },
+    {
+      "id": 1,
+      "title": "ZywOo : Comment il vise aussi bien ? Analyse complète",
+      "game": "CS2",
+      "topic": "GAMERS",
+      "duration": "19:50",
+      "youtubeId": "ScNTWbKMZX4",
+      "thumbnail": "https://images.unsplash.com/photo-1516382799247-4ca8e1eeabf3?w=640&h=360&fit=crop",
+      "views": "534K",
+      "likes": "32K",
+      "date": "Aujourd'hui",
+      "youtubeUrl": "https://www.youtube.com/watch?v=ScNTWbKMZX4",
       "featured": true
     },
     {
       "id": 2,
-      "title": "CS2 : Guide des smokes indispensables sur Mirage",
+      "title": "s1mple : Les habitudes d'entraînement d'un pro",
       "game": "CS2",
-      "topic": "FPS",
-      "duration": "16:42",
-      "youtubeId": "9nL_FhWE7SQ",
-      "thumbnail": "https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=640&h=360&fit=crop",
-      "views": "189K",
-      "likes": "9K",
+      "topic": "GAMERS",
+      "duration": "17:20",
+      "youtubeId": "ScNTWbKMZX4",
+      "thumbnail": "https://images.unsplash.com/photo-1552820728-8b83bb6b2b28?w=640&h=360&fit=crop",
+      "views": "623K",
+      "likes": "38K",
       "date": "Aujourd'hui",
-      "youtubeUrl": "https://www.youtube.com/watch?v=9nL_FhWE7SQ",
+      "youtubeUrl": "https://www.youtube.com/watch?v=ScNTWbKMZX4",
       "featured": false
     }
   ],
-  "generatedAt": "2026-07-06T21:08:51.385Z"
+  "generatedAt": "2026-07-14T02:42:26.093Z"
 }

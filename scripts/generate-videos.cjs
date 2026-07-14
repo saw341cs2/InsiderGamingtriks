@@ -57,18 +57,38 @@ const videosPool = [
   ],
 ];
 
+// Toujours présent : vidéo locale (lecteur HTML5)
+const localVideo = {
+  id: 0,
+  title: "Video Short - InsiderGamingTricks",
+  game: "PC",
+  topic: "FPS",
+  duration: "",
+  youtubeId: "",
+  thumbnail: "",
+  views: "0",
+  likes: "0",
+  date: "Aujourd'hui",
+  youtubeUrl: "",
+  featured: false,
+  localVideoPath: "videos/video-short.mp4",
+};
+
 function generateVideos() {
   // Changer de paire tous les 2 jours
   const dayIndex = Math.floor(Date.now() / (1000 * 60 * 60 * 24 * 2)) % videosPool.length;
   const pair = videosPool[dayIndex];
 
-  const videos = pair.map((v, idx) => ({
+  const youtubeVideos = pair.map((v, idx) => ({
     id: idx + 1,
     ...v,
     date: "Aujourd'hui",
     youtubeUrl: `https://www.youtube.com/watch?v=${v.youtubeId}`,
     featured: idx === 0,
   }));
+
+  // La vidéo locale est toujours en premier
+  const videos = [localVideo, ...youtubeVideos];
 
   return {
     videos,
