@@ -22,7 +22,6 @@ const plans = [
       { text: 'Guides vidéo exclusifs', included: false },
       { text: 'Support prioritaire', included: false },
       { text: 'Accès anticipé contenu', included: false },
-      { text: 'Sessions coaching', included: false },
     ],
   },
   {
@@ -45,7 +44,6 @@ const plans = [
       { text: 'Guides vidéo exclusifs', included: true },
       { text: 'Support prioritaire', included: true },
       { text: 'Accès anticipé contenu', included: false },
-      { text: 'Sessions coaching', included: false },
     ],
   },
   {
@@ -53,7 +51,7 @@ const plans = [
     name: 'Élite',
     price: '9.99',
     period: '/mois sans engagement',
-    description: 'L\'expérience ultime avec coaching personnalisé.',
+    description: 'L\'expérience ultime pour dominer tes adversaires.',
     icon: Crown,
     color: 'from-yellow-500 to-amber-600',
     borderColor: 'border-yellow-500/30',
@@ -89,7 +87,6 @@ const PremiumSection: React.FC = () => {
   const faqs = [
     { q: 'Puis-je annuler à tout moment ?', a: 'Oui, vous pouvez annuler votre abonnement à tout moment. Vous garderez l\'accès jusqu\'à la fin de votre période de facturation.' },
     { q: 'Les astuces sont-elles mises à jour ?', a: 'Oui, nous mettons à jour nos guides après chaque patch majeur des jeux. Les membres Premium reçoivent les mises à jour en priorité.' },
-    { q: 'Comment fonctionnent les sessions coaching ?', a: 'Les sessions coaching Élite sont des sessions 1-on-1 de 45 minutes via Discord avec un de nos coachs expérimentés.' },
     { q: 'Y a-t-il une garantie satisfait ou remboursé ?', a: 'Oui, nous offrons une garantie de 7 jours. Si vous n\'êtes pas satisfait, nous vous remboursons intégralement.' },
   ];
 
@@ -110,7 +107,7 @@ const PremiumSection: React.FC = () => {
             Passe au Niveau <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">Supérieur</span>
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto mb-8">
-            Débloques toutes les astuces, guides exclusifs et sessions coaching pour dominer tes adversaires.
+            Débloques toutes les astuces et guides exclusifs pour dominer tes adversaires.
           </p>
 
           {/* Billing Toggle */}
