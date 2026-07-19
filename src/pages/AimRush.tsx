@@ -22,6 +22,8 @@ export default function AimRush() {
   const [targets, setTargets] = useState<Target[]>([]);
   const areaRef = useRef<HTMLDivElement>(null);
   const targetIdRef = useRef(0);
+  const scoreRef = useRef(0);
+  const missesRef = useRef(0);
 
   const spawnTarget = useCallback(() => {
     if (!areaRef.current) return;
@@ -51,38 +53,48 @@ export default function AimRush() {
   useEffect(() => {
     if (gameState !== 'playing') return;
     if (timeLeft <= 0) {
+      // Save final score from refs before clearing state
+      const finalScore = scoreRef.current;
+      const finalMisses = missesRef.current;
+      const finalAccuracy = finalScore + finalMisses > 0
+        ? Math.round((finalScore / (finalScore + finalMisses)) * 100)
+        : 0;
+
+      if (user && finalScore > 0) {
+        supabase.from('aimrush_scores').insert({
+          user_id: user.id,
+          score: finalScore,
+          accuracy: finalAccuracy,
+        }).then(({ error }) => {
+          if (error) {
+            console.error('Erreur sauvegarde score (détail):', JSON.stringify(error));
+          } else {
+            console.log('Score sauvegardé:', finalScore, 'Précision:', finalAccuracy);
+          }
+        }).catch((err) => {
+          console.error('Exception sauvegarde score:', err);
+        });
+      }
+
       setGameState('finished');
       setTargets([]);
       return;
     }
     const timer = setTimeout(() => setTimeLeft((t) => t - 1), 1000);
     return () => clearTimeout(timer);
-  }, [gameState, timeLeft]);
-
-  useEffect(() => {
-    if (gameState !== 'finished' || !user) return;
-    const finalScore = score;
-    const finalAccuracy = accuracy;
-    supabase.from('aimrush_scores').insert({
-      user_id: user.id,
-      score: finalScore,
-      accuracy: finalAccuracy,
-    }).then(({ error }) => {
-      if (error) console.error('Erreur sauvegarde score:', error);
-    });
-  }, [gameState, user, score, accuracy]);
-
-  const accuracy = score + misses > 0 ? Math.round((score / (score + misses)) * 100) : 0;
+  }, [gameState, timeLeft, user]);
 
   const handleTargetClick = (id: number) => {
-    setScore((s) => s + 1);
+    setScore((s) => { scoreRef.current = s + 1; return s + 1; });
     setTargets((prev) => prev.filter((t) => t.id !== id));
     spawnTarget();
   };
 
   const handleAreaClick = () => {
-    if (gameState === 'playing') setMisses((m) => m + 1);
+    if (gameState === 'playing') setMisses((m) => { missesRef.current = m + 1; return m + 1; });
   };
+
+  const accuracy = score + misses > 0 ? Math.round((score / (score + misses)) * 100) : 0;
 
   if (loading) {
     return (
