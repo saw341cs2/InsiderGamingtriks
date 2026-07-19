@@ -25,6 +25,7 @@ const navItems = [
   { id: 'forum', label: 'Forum' },
   { id: 'premium', label: 'Premium' },
   { id: 'aimrush', label: 'Jeu gratuit' },
+  { id: 'classement', label: 'Classement' },
 ];
 
 const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate, onOpenProfile }) => {

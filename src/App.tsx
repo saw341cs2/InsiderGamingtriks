@@ -7,6 +7,7 @@ import ArchivesPage from "@/pages/ArchivesPage";
 import ForumPage from "@/pages/Forum";
 import ProfilePage from "@/pages/Profile";
 import AimRush from "@/pages/AimRush";
+import Classement from "@/pages/Classement";
 import { useState, useEffect } from "react";
 function SplashScreen() {
   const [progress, setProgress] = useState(0);
@@ -94,6 +95,7 @@ function App() {
         <Route path="/forum" element={<ForumPage />} />
         <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
         <Route path="/aimrush" element={<AimRush />} />
+        <Route path="/classement" element={<Classement />} />
       </Routes>
     </>
   );

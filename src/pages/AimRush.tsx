@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '@/contexts/AppContext';
+import { supabase } from '@/lib/supabase';
 
 interface Target {
   id: number;
@@ -58,6 +59,21 @@ export default function AimRush() {
     return () => clearTimeout(timer);
   }, [gameState, timeLeft]);
 
+  useEffect(() => {
+    if (gameState !== 'finished' || !user) return;
+    const finalScore = score;
+    const finalAccuracy = accuracy;
+    supabase.from('aimrush_scores').insert({
+      user_id: user.id,
+      score: finalScore,
+      accuracy: finalAccuracy,
+    }).then(({ error }) => {
+      if (error) console.error('Erreur sauvegarde score:', error);
+    });
+  }, [gameState, user, score, accuracy]);
+
+  const accuracy = score + misses > 0 ? Math.round((score / (score + misses)) * 100) : 0;
+
   const handleTargetClick = (id: number) => {
     setScore((s) => s + 1);
     setTargets((prev) => prev.filter((t) => t.id !== id));
@@ -67,8 +83,6 @@ export default function AimRush() {
   const handleAreaClick = () => {
     if (gameState === 'playing') setMisses((m) => m + 1);
   };
-
-  const accuracy = score + misses > 0 ? Math.round((score / (score + misses)) * 100) : 0;
 
   if (loading) {
     return (
