@@ -118,7 +118,7 @@ export default function Classement() {
                     </p>
                     {isWinner && (
                       <p className="text-yellow-500 text-sm font-semibold mt-0.5">
-                        Gagnant du mois — Premium offert
+                        Gagnant du mois — Pro offert
                       </p>
                     )}
                   </div>

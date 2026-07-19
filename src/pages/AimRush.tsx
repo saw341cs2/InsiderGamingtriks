@@ -132,7 +132,7 @@ export default function AimRush() {
           🎮 Jeu gratuit
         </h2>
         <p className="text-base md:text-lg font-semibold mb-1">
-          Grimpe au classement et gagne ton abonnement Premium chaque mois !
+          Grimpe au classement et gagne ton abonnement Pro chaque mois !
         </p>
         <p className="text-sm opacity-90">
           Tout le monde peut jouer et tenter sa chance
