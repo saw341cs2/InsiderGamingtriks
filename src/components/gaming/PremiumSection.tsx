@@ -68,7 +68,6 @@ const plans = [
       { text: 'Guides vidéo exclusifs', included: true },
       { text: 'Support prioritaire 24/7', included: true },
       { text: 'Accès anticipé contenu', included: true },
-      { text: 'Sessions coaching (2/mois)', included: true },
     ],
   },
 ];
