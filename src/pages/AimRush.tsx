@@ -1,4 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAppContext } from '@/contexts/AppContext';
 
 interface Target {
   id: number;
@@ -10,6 +12,8 @@ const GAME_DURATION = 30;
 const TARGET_SIZE = 60;
 
 export default function AimRush() {
+  const { user, loading } = useAppContext();
+  const navigate = useNavigate();
   const [gameState, setGameState] = useState<'idle' | 'playing' | 'finished'>('idle');
   const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
   const [score, setScore] = useState(0);
@@ -65,6 +69,35 @@ export default function AimRush() {
   };
 
   const accuracy = score + misses > 0 ? Math.round((score / (score + misses)) * 100) : 0;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-400">Chargement...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto px-4">
+          <h2 className="text-2xl font-bold mb-4">Connecte-toi pour jouer</h2>
+          <p className="text-gray-400 mb-6">
+            Connecte-toi pour jouer et tenter de gagner ton abonnement Premium !
+          </p>
+          <button
+            onClick={() => navigate('/')}
+            className="bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition"
+          >
+            Retour à l'accueil
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
