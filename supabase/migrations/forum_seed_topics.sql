@@ -1,0 +1,42 @@
+-- Migration: Insérer 2 sujets de discussion dans le forum
+-- ATTENTION : Exécute D'ABORD la requête 1 pour obtenir ton user_id,
+-- puis remplace 'TON_USER_ID_ICI' dans la requête 2 avant de l'exécuter.
+
+-- ==========================================
+-- REQUÊTE 1 : Trouver ton user_id
+-- Exécute ceci dans le SQL Editor de Supabase
+-- ==========================================
+-- SELECT id, email, raw_user_meta_data->>'username' AS username
+-- FROM auth.users
+-- WHERE raw_user_meta_data->>'username' ILIKE '%fab%'
+--    OR raw_user_meta_data->>'username' ILIKE '%saw%'
+--    OR email ILIKE '%fab%'
+-- ORDER BY created_at ASC
+-- LIMIT 10;
+
+-- ==========================================
+-- REQUÊTE 2 : Insérer les 2 sujets
+-- Remplace 'TON_USER_ID_ICI' par l'UUID obtenu via la requête 1
+-- ==========================================
+-- INSERT INTO forum_posts (author_id, author_name, author_avatar, title, content, category, pinned, created_at)
+-- VALUES
+-- (
+--   'TON_USER_ID_ICI',
+--   'Fab',
+--   NULL,
+--   'Ta meilleure clip du mois ? 🎬',
+--   'Partage ici ta meilleure action, ton meilleur clutch ou ta clip la plus improbable du mois, peu importe le jeu (CS2, Valorant, Battlefield...). La communauté vote pour la meilleure, et qui sait, elle pourrait finir mise en avant sur le site !',
+--   'Discussion',
+--   false,
+--   now()
+-- ),
+-- (
+--   'TON_USER_ID_ICI',
+--   'Fab',
+--   NULL,
+--   'Quelle sensibilité vous utilisez sur CS2/Valorant ? 🎯',
+--   'Petit débat classique mais toujours utile : quelle sensibilité (DPI + in-game) vous utilisez, et pourquoi ? Ça peut vraiment aider les nouveaux joueurs à trouver leurs réglages. Bonus : testez votre visée sur AimRush et dites-nous votre score !',
+--   'Discussion',
+--   false,
+--   now()
+-- );
