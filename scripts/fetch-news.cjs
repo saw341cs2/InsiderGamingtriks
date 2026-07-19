@@ -182,7 +182,8 @@ async function main() {
   // Si pas assez d'articles gaming, utiliser generate-news comme fallback
   if (gaming.length < 2) {
     console.log('Pas assez de news gaming, utilisation du fallback...');
-    require('./generate-news.cjs');
+    const gen = require('./generate-news.cjs');
+    await gen.main();
     return;
   }
 

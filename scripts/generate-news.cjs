@@ -336,4 +336,4 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { articlesPool, generateNews };
+module.exports = { articlesPool, generateNews, main };
