@@ -35,6 +35,11 @@ export default function Index() {
       return;
     }
 
+    if (section === 'aimrush') {
+      navigate('/aimrush');
+      return;
+    }
+
     if (section === 'accueil') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
