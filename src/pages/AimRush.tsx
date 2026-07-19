@@ -80,7 +80,7 @@ export default function AimRush() {
         </p>
       </div>
 
-      <h1 className="text-3xl font-bold text-center mb-6">AimRush</h1>
+      <h1 className="text-3xl font-bold text-center mb-6">Jeu gratuit</h1>
 
       {gameState === 'idle' && (
         <div className="text-center">
