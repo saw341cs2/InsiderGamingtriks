@@ -81,29 +81,9 @@ const CommunitySection: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Discord Card */}
-          <div className="lg:col-span-1">
-            <div className="bg-gradient-to-br from-indigo-900/40 to-purple-900/40 border border-indigo-500/20 rounded-2xl p-6 sticky top-24">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center">
-                  <MessageCircle className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-white font-bold text-lg">Discord</h3>
-                  <p className="text-indigo-300 text-sm">Communauté FPS</p>
-                </div>
-              </div>
-
-
-              <a href="https://discord.gg/PPgXeC2ZW" className="block w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-center rounded-xl transition-colors" target="_blank" rel="noopener noreferrer">
-                Rejoindre le Discord
-              </a>
-            </div>
-          </div>
-
+        <div>
           {/* Forum */}
-          <div className="lg:col-span-2">
+          <div>
             <div className="bg-gray-900/50 border border-gray-800 rounded-2xl overflow-hidden">
               {/* Forum Header */}
               <div className="p-5 border-b border-gray-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
