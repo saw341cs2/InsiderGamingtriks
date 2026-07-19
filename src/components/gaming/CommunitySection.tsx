@@ -95,40 +95,8 @@ const CommunitySection: React.FC = () => {
                 </div>
               </div>
 
-              {/* Server Stats */}
-              <div className="grid grid-cols-2 gap-3 mb-6">
-                <div className="bg-black/30 rounded-xl p-3 text-center">
-                  <div className="text-2xl font-black text-white">1.2K</div>
-                  <div className="text-xs text-indigo-300">Membres</div>
-                </div>
-                <div className="bg-black/30 rounded-xl p-3 text-center">
-                  <div className="text-2xl font-black text-green-400">342</div>
-                  <div className="text-xs text-indigo-300">En ligne</div>
-                </div>
-              </div>
 
-              {/* Channels Preview */}
-              <div className="space-y-2 mb-6">
-                <p className="text-xs text-indigo-400 uppercase tracking-wider font-semibold mb-2">Salons populaires</p>
-                {[
-                  { name: 'général', members: 89 },
-                  { name: 'astuces-cs2', members: 45 },
-                  { name: 'warzone-tips', members: 67 },
-                  { name: 'battlefield', members: 34 },
-                  { name: 'recherche-team', members: 28 },
-                  { name: 'clips-gaming', members: 56 },
-                ].map((ch) => (
-                  <div key={ch.name} className="flex items-center justify-between px-3 py-2 bg-black/20 rounded-lg hover:bg-black/30 transition-colors cursor-pointer">
-                    <div className="flex items-center gap-2">
-                      <Hash className="w-4 h-4 text-indigo-400" />
-                      <span className="text-gray-300 text-sm">{ch.name}</span>
-                    </div>
-                    <span className="text-xs text-gray-500">{ch.members}</span>
-                  </div>
-                ))}
-              </div>
-
-              <a href="https://discord.gg/rnh32gTDjp" className="block w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-center rounded-xl transition-colors" target="_blank" rel="noopener noreferrer">
+              <a href="https://discord.gg/PPgXeC2ZW" className="block w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-center rounded-xl transition-colors" target="_blank" rel="noopener noreferrer">
                 Rejoindre le Discord
               </a>
             </div>
@@ -191,7 +159,7 @@ const CommunitySection: React.FC = () => {
                     <h4 className="text-white font-semibold mb-1">📢 Nous suivre</h4>
                     <div className="space-y-1">
                       <a href="https://www.youtube.com/@InsiderHackGaming" target="_blank" rel="noopener noreferrer" className="block text-red-400 hover:text-red-300">▶️ YouTube : @InsiderHackGaming</a>
-                      <a href="https://discord.gg/rnh32gTDjp" target="_blank" rel="noopener noreferrer" className="block text-indigo-400 hover:text-indigo-300">💬 Discord : Rejoindre le serveur</a>
+                      <a href="https://discord.gg/PPgXeC2ZW" target="_blank" rel="noopener noreferrer" className="block text-indigo-400 hover:text-indigo-300">💬 Discord : Rejoindre le serveur</a>
                       <a href="https://x.com/InsiderGamingTr" target="_blank" rel="noopener noreferrer" className="block text-gray-300 hover:text-white">🐦 X (Twitter) : @InsiderGamingTr</a>
                       <a href="https://www.tiktok.com/@insidergamingtricks2" target="_blank" rel="noopener noreferrer" className="block text-pink-400 hover:text-pink-300">🎵 TikTok : @insidergamingtricks2</a>
                     </div>
