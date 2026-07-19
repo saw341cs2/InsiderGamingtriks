@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Users, MessageCircle, Heart, Mail } from 'lucide-react';
+import { Users, MessageCircle, Heart, Mail, Crown } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+
+const FOUNDER_ID = 'bfaceb02-dd6a-45f8-80cc-09bb00a82caf';
+const FOUNDER_USERNAME = 'Saw341';
 
 interface Member {
   id: string;
@@ -17,7 +20,24 @@ const MembersSection: React.FC = () => {
       .from('profiles')
       .select('id, username, game, created_at')
       .order('created_at', { ascending: false })
-      .then(({ data }) => { if (data) setMembers(data); });
+      .then(({ data }) => {
+        const list = data || [];
+        const hasFounder = list.some((m) => m.id === FOUNDER_ID);
+        if (!hasFounder) {
+          list.unshift({
+            id: FOUNDER_ID,
+            username: FOUNDER_USERNAME,
+            game: 'Fondateur',
+            created_at: new Date().toISOString(),
+          });
+        }
+        list.sort((a, b) => {
+          if (a.id === FOUNDER_ID) return -1;
+          if (b.id === FOUNDER_ID) return 1;
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        });
+        setMembers(list);
+      });
   }, []);
 
   return (
@@ -73,7 +93,14 @@ const MembersSection: React.FC = () => {
                   {(member.username || '?')[0].toUpperCase()}
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-white font-bold text-lg">{member.username || 'Anonyme'}</h3>
+                  <h3 className="text-white font-bold text-lg flex items-center gap-2">
+                    {member.username || 'Anonyme'}
+                    {member.id === FOUNDER_ID && (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-yellow-500/20 border border-yellow-500/30 rounded-full text-yellow-400 text-xs font-bold">
+                        <Crown className="w-3 h-3" />Fondateur
+                      </span>
+                    )}
+                  </h3>
                   {member.game && <p className="text-indigo-400 text-sm">{member.game}</p>}
                 </div>
               </div>
