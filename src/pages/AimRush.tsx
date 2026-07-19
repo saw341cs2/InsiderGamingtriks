@@ -69,11 +69,14 @@ export default function AimRush() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
       <div className="bg-gradient-to-r from-orange-600 to-red-600 rounded-xl p-6 mb-8 text-center text-white shadow-lg">
-        <h2 className="text-2xl md:text-3xl font-bold mb-2">
-          Deviens le meilleur tireur du mois — Premium offert au N°1 !
+        <h2 className="text-2xl md:text-3xl font-bold mb-1">
+          🎮 Jeu gratuit
         </h2>
-        <p className="text-sm md:text-base opacity-90">
-          Tout le monde peut jouer et gagner son abonnement Premium gratuit
+        <p className="text-base md:text-lg font-semibold mb-1">
+          Grimpe au classement et gagne ton abonnement Premium chaque mois !
+        </p>
+        <p className="text-sm opacity-90">
+          Tout le monde peut jouer et tenter sa chance
         </p>
       </div>
 
