@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppProvider } from '@/contexts/AppContext';
@@ -81,28 +82,35 @@ export default function Index() {
     return () => observer.disconnect();
   }, []);
 
-  return (
-    <AppProvider>
-      <div className="min-h-screen bg-black text-white">
-        <Navbar
-          activeSection={activeSection}
-          onNavigate={handleNavigate}
-          onOpenProfile={() => navigate('/profile')}
+   return (
+  <AppProvider>
+    <>
+      <Helmet>
+        <title>Insider Gaming Tricks | Astuces CS2, Battlefield, Call of Duty</title>
+
+        <meta
+          name="description"
+          content="Insider Gaming Tricks : actualités gaming, astuces CS2, Battlefield, Call of Duty, optimisations FPS, guides PC et communauté de joueurs."
         />
-        <main>
-          <HeroSection />
-          <LatestTipsBar />
-          <NewsSection />
-          <AstucesSection onNavigate={handleNavigate} />
-          <VideosSection />
-          <CommunitySection />
-          <MembersSection />
-          <TestimonialsSection />
-          <PremiumSection />
-        </main>
-        <Footer onNavigate={handleNavigate} />
-        <BackToTop />
+
+        <meta
+          name="keywords"
+          content="CS2, Counter-Strike 2, Battlefield, Battlefield 6, Call of Duty, Gaming, FPS, Optimisation, Astuces, Config PC, Insider Gaming Tricks"
+        />
+
+        <meta property="og:title" content="Insider Gaming Tricks" />
+        <meta
+          property="og:description"
+          content="Astuces, guides, actualités et optimisations pour les gamers."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://insidertricks.fr/" />
+      </Helmet>
+
+      <div className="min-h-screen bg-black text-white"></div>
+
+</AppProvider>
       </div>
-    </AppProvider>
-  );
-}
+    </>
+  </AppProvider>
+);
