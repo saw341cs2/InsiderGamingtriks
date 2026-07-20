@@ -1,7 +1,6 @@
-import { Helmet } from "react-helmet-async";
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AppProvider } from '@/contexts/AppContext';
+import { useSectionNavigate } from '@/hooks/useSectionNavigate';
 import Navbar from '@/components/gaming/Navbar';
 import HeroSection from '@/components/gaming/HeroSection';
 import LatestTipsBar from '@/components/gaming/LatestTipsBar';
@@ -27,35 +26,19 @@ const sectionIds: Record<string, string> = {
 export default function Index() {
   const [activeSection, setActiveSection] = useState('accueil');
   const navigate = useNavigate();
+  const goToSection = useSectionNavigate();
 
   const handleNavigate = (section: string) => {
     setActiveSection(section);
-
-    if (section === 'forum') {
-      navigate('/forum');
-      return;
-    }
-
-    if (section === 'aimrush') {
-      navigate('/aimrush');
-      return;
-    }
-
-    if (section === 'classement') {
-      navigate('/classement');
-      return;
-    }
 
     if (section === 'accueil') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
-    const id = sectionIds[section];
-    if (id) {
-      const el = document.getElementById(id);
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }
+    // Astuces, Vidéos, Communauté, Membres, Premium, Forum, Jeu et Classement
+    // ont chacun leur propre URL dédiée (pour le référencement).
+    goToSection(section);
   };
 
   useEffect(() => {
@@ -82,35 +65,26 @@ export default function Index() {
     return () => observer.disconnect();
   }, []);
 
-   return (
-  <AppProvider>
-    <>
-      <Helmet>
-        <title>Insider Gaming Tricks | Astuces CS2, Battlefield, Call of Duty</title>
-
-        <meta
-          name="description"
-          content="Insider Gaming Tricks : actualités gaming, astuces CS2, Battlefield, Call of Duty, optimisations FPS, guides PC et communauté de joueurs."
-        />
-
-        <meta
-          name="keywords"
-          content="CS2, Counter-Strike 2, Battlefield, Battlefield 6, Call of Duty, Gaming, FPS, Optimisation, Astuces, Config PC, Insider Gaming Tricks"
-        />
-
-        <meta property="og:title" content="Insider Gaming Tricks" />
-        <meta
-          property="og:description"
-          content="Astuces, guides, actualités et optimisations pour les gamers."
-        />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://insidertricks.fr/" />
-      </Helmet>
-
-      <div className="min-h-screen bg-black text-white"></div>
-
-</AppProvider>
-      </div>
-    </>
-  </AppProvider>
-);
+  return (
+    <div className="min-h-screen bg-black text-white">
+      <Navbar
+        activeSection={activeSection}
+        onNavigate={handleNavigate}
+        onOpenProfile={() => navigate('/profile')}
+      />
+      <main>
+        <HeroSection />
+        <LatestTipsBar />
+        <NewsSection />
+        <AstucesSection onNavigate={handleNavigate} />
+        <VideosSection />
+        <CommunitySection />
+        <MembersSection />
+        <TestimonialsSection />
+        <PremiumSection />
+      </main>
+      <Footer onNavigate={handleNavigate} />
+      <BackToTop />
+    </div>
+  );
+}

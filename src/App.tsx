@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { AppProvider } from "@/contexts/AppContext";
 import Index from "@/pages/Index";
 import NewsPage from "@/pages/NewsPage";
 import ArchivesPage from "@/pages/ArchivesPage";
@@ -8,6 +9,11 @@ import ForumPage from "@/pages/Forum";
 import ProfilePage from "@/pages/Profile";
 import AimRush from "@/pages/AimRush";
 import Classement from "@/pages/Classement";
+import AstucesPage from "@/pages/Astuces";
+import VideosPage from "@/pages/Videos";
+import CommunautePage from "@/pages/Communaute";
+import MembresPage from "@/pages/Membres";
+import PremiumPage from "@/pages/Premium";
 import { useState, useEffect } from "react";
 function SplashScreen() {
   const [progress, setProgress] = useState(0);
@@ -86,10 +92,15 @@ function App() {
   if (loading) return <SplashScreen />;
 
   return (
-    <>
+    <AppProvider>
       <Toaster />
       <Routes>
         <Route path="/" element={<Index />} />
+        <Route path="/astuces" element={<AstucesPage />} />
+        <Route path="/videos" element={<VideosPage />} />
+        <Route path="/communaute" element={<CommunautePage />} />
+        <Route path="/membres" element={<MembresPage />} />
+        <Route path="/premium" element={<PremiumPage />} />
         <Route path="/news/:id" element={<NewsPage />} />
         <Route path="/archives" element={<ArchivesPage />} />
         <Route path="/forum" element={<ForumPage />} />
@@ -97,7 +108,7 @@ function App() {
         <Route path="/aimrush" element={<AimRush />} />
         <Route path="/classement" element={<Classement />} />
       </Routes>
-    </>
+    </AppProvider>
   );
 }
 

@@ -10,7 +10,25 @@ function setMetaTag(attr: 'name' | 'property', key: string, content: string) {
   element.setAttribute('content', content);
 }
 
-export function useSEO(title: string, description: string, keywords?: string, noIndex?: boolean) {
+function setCanonical(path: string) {
+  const url = `https://insidertricks.fr${path}`;
+  let link = document.querySelector('link[rel="canonical"]');
+  if (!link) {
+    link = document.createElement('link');
+    link.setAttribute('rel', 'canonical');
+    document.head.appendChild(link);
+  }
+  link.setAttribute('href', url);
+  setMetaTag('property', 'og:url', url);
+}
+
+export function useSEO(
+  title: string,
+  description: string,
+  keywords?: string,
+  noIndex?: boolean,
+  path: string = '/',
+) {
   useEffect(() => {
     document.title = title;
     setMetaTag('name', 'description', description);
@@ -22,6 +40,7 @@ export function useSEO(title: string, description: string, keywords?: string, no
       setMetaTag('name', 'keywords', keywords);
     }
     setMetaTag('name', 'robots', noIndex ? 'noindex, nofollow' : 'index, follow');
+    setCanonical(path);
 
     return () => {
       // Remet l'indexation par défaut quand on quitte une page noindex (ex: profil)
@@ -29,5 +48,5 @@ export function useSEO(title: string, description: string, keywords?: string, no
         setMetaTag('name', 'robots', 'index, follow');
       }
     };
-  }, [title, description, keywords, noIndex]);
+  }, [title, description, keywords, noIndex, path]);
 }
