@@ -35,6 +35,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate, onOpenProfil
 
   return (
     <>
+      <style>{`.nav-scroll::-webkit-scrollbar { display: none; }`}</style>
       <nav className="fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-md border-b border-red-900/40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center h-16">
@@ -46,12 +47,15 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate, onOpenProfil
               </div>
             </div>
 
-            <div className="hidden md:flex items-center gap-0.5 lg:gap-1 ml-4 lg:ml-8 min-w-0">
+            <div
+              className="nav-scroll hidden md:flex items-center gap-0.5 lg:gap-1 ml-4 lg:ml-8 flex-1 min-w-0 overflow-x-auto"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
               {navItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => onNavigate(item.id)}
-                  className={`px-2 lg:px-3 py-2 text-xs lg:text-sm font-semibold uppercase tracking-wider transition-all duration-200 rounded whitespace-nowrap ${
+                  className={`px-2 lg:px-3 py-2 text-xs lg:text-sm font-semibold uppercase tracking-wider transition-all duration-200 rounded whitespace-nowrap flex-shrink-0 ${
                     activeSection === item.id
                       ? 'text-red-500 bg-red-500/10'
                       : 'text-gray-300 hover:text-white hover:bg-white/5'
@@ -62,7 +66,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate, onOpenProfil
               ))}
             </div>
 
-            <div className="hidden md:flex items-center gap-1 lg:gap-2 flex-shrink-0 ml-auto pl-4">
+            <div className="hidden md:flex items-center gap-1 lg:gap-2 flex-shrink-0 pl-4">
               <a href="https://www.youtube.com/@InsiderHackGaming" target="_blank" rel="noopener noreferrer" className="p-1.5 lg:p-2 text-red-500 hover:text-red-400 transition-colors flex-shrink-0" title="YouTube">
                 <svg className="w-5 h-5 flex-shrink-0" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
