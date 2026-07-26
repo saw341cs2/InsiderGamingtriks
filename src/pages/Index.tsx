@@ -88,3 +88,90 @@ export default function Index() {
     </div>
   );
 }
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useSectionNavigate } from '@/hooks/useSectionNavigate';
+import Navbar from '@/components/gaming/Navbar';
+import HeroSection from '@/components/gaming/HeroSection';
+import LatestTipsBar from '@/components/gaming/LatestTipsBar';
+import AstucesSection from '@/components/gaming/AstucesSection';
+import VideosSection from '@/components/gaming/VideosSection';
+import MembersSection from '@/components/gaming/MembersSection';
+import NewsSection from '@/components/gaming/NewsSection';
+import TestimonialsSection from '@/components/gaming/TestimonialsSection';
+import PremiumSection from '@/components/gaming/PremiumSection';
+import Footer from '@/components/gaming/Footer';
+import BackToTop from '@/components/gaming/BackToTop';
+
+const sectionIds: Record<string, string> = {
+  accueil: 'top',
+  astuces: 'astuces-section',
+  videos: 'videos-section',
+  membres: 'membres',
+  premium: 'premium-section',
+};
+
+export default function Index() {
+  const [activeSection, setActiveSection] = useState('accueil');
+  const navigate = useNavigate();
+  const goToSection = useSectionNavigate();
+
+  const handleNavigate = (section: string) => {
+    setActiveSection(section);
+
+    if (section === 'accueil') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    // Astuces, Vidéos, Communauté, Membres, Premium, Forum, Jeu et Classement
+    // ont chacun leur propre URL dédiée (pour le référencement).
+    goToSection(section);
+  };
+
+  useEffect(() => {
+    const ids = Object.values(sectionIds);
+    const observer = new IntersectionObserver(
+      entries => {
+        const visible = entries
+          .filter(entry => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+        if (!visible) return;
+
+        const match = Object.entries(sectionIds).find(([, id]) => id === visible.target.id);
+        if (match) setActiveSection(match[0]);
+      },
+      { rootMargin: '-35% 0px -55% 0px', threshold: [0, 0.25, 0.5, 0.75] },
+    );
+
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-black text-white">
+      <Navbar
+        activeSection={activeSection}
+        onNavigate={handleNavigate}
+        onOpenProfile={() => navigate('/profile')}
+      />
+      <main>
+        <HeroSection />
+        <LatestTipsBar />
+        <NewsSection />
+        <AstucesSection onNavigate={handleNavigate} />
+        <VideosSection />
+        <MembersSection />
+        <TestimonialsSection />
+        <PremiumSection />
+      </main>
+      <Footer onNavigate={handleNavigate} />
+      <BackToTop />
+    </div>
+  );
+}
