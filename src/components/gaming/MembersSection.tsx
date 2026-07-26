@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Users, MessageCircle, Heart, Mail, Crown } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
-
-const FOUNDER_ID = 'bfaceb02-dd6a-45f8-80cc-09bb00a82caf';
-const FOUNDER_USERNAME = 'Saw341';
+import { useAppContext } from '@/contexts/AppContext';
+import { FOUNDER_ID, FOUNDER_USERNAME } from '@/lib/founder';
 
 interface Member {
   id: string;
@@ -14,12 +13,14 @@ interface Member {
 }
 
 const MembersSection: React.FC = () => {
+  const { user, username } = useAppContext();
   const [members, setMembers] = useState<Member[]>([]);
+  const [onlineIds, setOnlineIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     supabase
       .from('profiles')
-      .select('id, username, game, created_at, avatar_url')
+      .select('id, username:pseudo, game, created_at, avatar_url')
       .order('created_at', { ascending: false })
       .then(({ data }) => {
         const list = data || [];
@@ -30,6 +31,7 @@ const MembersSection: React.FC = () => {
             username: FOUNDER_USERNAME,
             game: 'Fondateur',
             created_at: new Date().toISOString(),
+            avatar_url: null,
           });
         }
         list.sort((a, b) => {
@@ -40,6 +42,33 @@ const MembersSection: React.FC = () => {
         setMembers(list);
       });
   }, []);
+
+  // Présence en direct : qui est connecté sur le site en ce moment
+  useEffect(() => {
+    const presenceKey = user?.id || `guest-${Math.random().toString(36).slice(2)}`;
+    const channel = supabase.channel('online-members', {
+      config: { presence: { key: presenceKey } },
+    });
+
+    channel
+      .on('presence', { event: 'sync' }, () => {
+        const state = channel.presenceState();
+        setOnlineIds(new Set(Object.keys(state)));
+      })
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED' && user) {
+          await channel.track({
+            user_id: user.id,
+            username: username || user.email,
+            online_at: new Date().toISOString(),
+          });
+        }
+      });
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user, username]);
 
   return (
     <section id="membres" className="bg-gray-950 py-20 md:py-28">
@@ -56,6 +85,15 @@ const MembersSection: React.FC = () => {
           <p className="text-gray-400 max-w-2xl mx-auto">
             Chaque membre inscrit fait vivre ce site. Merci à vous ! 🙏
           </p>
+          {onlineIds.size > 0 && (
+            <div className="inline-flex items-center gap-2 mt-4 px-3 py-1.5 bg-green-500/10 border border-green-500/30 rounded-full text-green-400 text-xs font-semibold">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+              </span>
+              {onlineIds.size} personne{onlineIds.size > 1 ? 's' : ''} en ligne
+            </div>
+          )}
         </div>
 
         {/* Remerciement */}
@@ -90,11 +128,16 @@ const MembersSection: React.FC = () => {
           ) : members.map((member) => (
             <div key={member.id} className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6 hover:bg-gray-900/80 transition-all duration-300">
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-xl overflow-hidden">
-                  {member.avatar_url ? (
-                    <img src={member.avatar_url} alt={member.username} className="w-full h-full object-cover" />
-                  ) : (
-                    (member.username || '?')[0].toUpperCase()
+                <div className="relative">
+                  <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-xl overflow-hidden">
+                    {member.avatar_url ? (
+                      <img src={member.avatar_url} alt={member.username || 'Avatar'} className="w-full h-full object-cover" />
+                    ) : (
+                      (member.username || '?')[0].toUpperCase()
+                    )}
+                  </div>
+                  {onlineIds.has(member.id) && (
+                    <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-gray-900 rounded-full" title="En ligne" />
                   )}
                 </div>
                 <div className="flex-1">
@@ -104,6 +147,9 @@ const MembersSection: React.FC = () => {
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-yellow-500/20 border border-yellow-500/30 rounded-full text-yellow-400 text-xs font-bold">
                         <Crown className="w-3 h-3" />Fondateur
                       </span>
+                    )}
+                    {onlineIds.has(member.id) && (
+                      <span className="text-green-400 text-xs font-semibold">● En ligne</span>
                     )}
                   </h3>
                   {member.game && <p className="text-indigo-400 text-sm">{member.game}</p>}
