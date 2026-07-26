@@ -2,8 +2,10 @@ name: Daily Gaming News
 
 on:
   schedule:
-    # 03:30 UTC = 05:30 Paris
+    # 03:30 UTC = 05:30 Paris en heure d'été (CEST, UTC+2)
     - cron: '30 3 * * *'
+    # 04:30 UTC = 05:30 Paris en heure d'hiver (CET, UTC+1)
+    - cron: '30 4 * * *'
   workflow_dispatch:
 
 permissions:
@@ -15,24 +17,39 @@ jobs:
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
+      - name: Verifier qu'il est bien 5h30 a Paris
+        if: github.event_name == 'schedule'
+        run: |
+          PARIS_HOUR=$(TZ='Europe/Paris' date '+%H')
+          echo "Heure actuelle a Paris : ${PARIS_HOUR}h"
+          if [ "$PARIS_HOUR" != "05" ]; then
+            echo "Pas 5h a Paris, on annule cette execution (l'autre horaire s'en chargera)."
+            echo "SKIP=true" >> "$GITHUB_ENV"
+          fi
+
       - name: Checkout
+        if: env.SKIP != 'true'
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           submodules: false
 
       - name: Setup Node
+        if: env.SKIP != 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
       - name: Generate news
+        if: env.SKIP != 'true'
         run: node scripts/fetch-news.cjs || node scripts/generate-news.cjs
 
       - name: Generate videos
+        if: env.SKIP != 'true'
         run: node scripts/generate-videos.cjs
 
       - name: Install & Build
+        if: env.SKIP != 'true'
         run: |
           rm -f package-lock.json
           rm -rf node_modules
@@ -40,6 +57,7 @@ jobs:
           npm run build
 
       - name: Copy JSON to dist
+        if: env.SKIP != 'true'
         run: |
           cp public/news.json dist/news.json || true
           cp public/astuces.json dist/astuces.json || true
@@ -47,6 +65,7 @@ jobs:
           cp public/news-archives.json dist/news-archives.json || true
 
       - name: Deploy to gh-pages
+        if: env.SKIP != 'true'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: dist
@@ -57,6 +76,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit news.json
+        if: env.SKIP != 'true'
         run: |
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
