@@ -37,7 +37,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate, onOpenProfil
     <>
       <style>{`.nav-scroll::-webkit-scrollbar { display: none; }`}</style>
       <nav className="fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-md border-b border-red-900/40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center h-16">
             <div className="flex items-center gap-2 cursor-pointer flex-shrink-0" onClick={() => onNavigate('accueil')}>
               <Crosshair className="w-7 h-7 text-red-500" />
@@ -48,7 +48,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate, onOpenProfil
             </div>
 
             <div
-              className="nav-scroll hidden xl:flex items-center gap-0.5 ml-3 lg:ml-6 overflow-x-auto"
+              className="nav-scroll hidden 2xl:flex items-center gap-0.5 ml-3 lg:ml-6 overflow-x-auto"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               {navItems.map((item) => (
@@ -66,7 +66,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate, onOpenProfil
               ))}
             </div>
 
-            <div className="hidden xl:flex items-center gap-1 lg:gap-2 flex-shrink-0 ml-auto pl-2 lg:pl-4">
+            <div className="hidden 2xl:flex items-center gap-1 lg:gap-2 flex-shrink-0 ml-auto pl-2 lg:pl-4">
               <div className="hidden 2xl:flex items-center gap-1 lg:gap-2 flex-shrink-0">
                 <a href="https://www.youtube.com/@InsiderHackGaming" target="_blank" rel="noopener noreferrer" className="p-1.5 lg:p-2 text-red-500 hover:text-red-400 transition-colors flex-shrink-0" title="YouTube">
                   <svg className="w-5 h-5 flex-shrink-0" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
@@ -135,7 +135,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate, onOpenProfil
             </div>
 
             <button
-              className="xl:hidden p-2 text-gray-300 hover:text-white"
+              className="2xl:hidden p-2 text-gray-300 hover:text-white"
               onClick={() => setMobileOpen(!mobileOpen)}
             >
               {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -144,7 +144,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate, onOpenProfil
         </div>
 
         {mobileOpen && (
-          <div className="xl:hidden bg-black/98 border-t border-red-900/30 animate-fade-in">
+          <div className="2xl:hidden bg-black/98 border-t border-red-900/30 animate-fade-in">
             <div className="px-4 py-4 space-y-1">
               {navItems.map((item) => (
                 <button
