@@ -10,6 +10,7 @@ interface Member {
   username: string;
   game: string;
   created_at: string;
+  avatar_url?: string | null;
 }
 
 const MembersSection: React.FC = () => {
@@ -18,7 +19,7 @@ const MembersSection: React.FC = () => {
   useEffect(() => {
     supabase
       .from('profiles')
-      .select('id, username, game, created_at')
+      .select('id, username, game, created_at, avatar_url')
       .order('created_at', { ascending: false })
       .then(({ data }) => {
         const list = data || [];
@@ -65,7 +66,7 @@ const MembersSection: React.FC = () => {
             C'est grâce à vous que ce site existe et grandit chaque jour. Vos retours, votre présence sur le Discord et le forum, et votre soutien font toute la différence. Vous êtes le cœur d'Insider Gaming Tricks.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
+            
               href="https://discord.gg/X6D6zzrTf"
               target="_blank"
               rel="noopener noreferrer"
@@ -73,7 +74,7 @@ const MembersSection: React.FC = () => {
             >
               <MessageCircle className="w-5 h-5" /> Rejoindre le Discord
             </a>
-            <a
+            
               href="#community-section"
               className="inline-flex items-center gap-2 px-6 py-3 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white font-bold rounded-xl transition-colors"
             >
@@ -89,8 +90,12 @@ const MembersSection: React.FC = () => {
           ) : members.map((member) => (
             <div key={member.id} className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6 hover:bg-gray-900/80 transition-all duration-300">
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">
-                  {(member.username || '?')[0].toUpperCase()}
+                <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-xl overflow-hidden">
+                  {member.avatar_url ? (
+                    <img src={member.avatar_url} alt={member.username} className="w-full h-full object-cover" />
+                  ) : (
+                    (member.username || '?')[0].toUpperCase()
+                  )}
                 </div>
                 <div className="flex-1">
                   <h3 className="text-white font-bold text-lg flex items-center gap-2">
@@ -108,7 +113,7 @@ const MembersSection: React.FC = () => {
                 <span className="text-xs text-gray-500">
                   Membre depuis {new Date(member.created_at).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long' })}
                 </span>
-                <a
+                
                   href={`https://discord.gg/X6D6zzrTf`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -177,7 +182,7 @@ const MembersSection: React.FC = () => {
             <div className="bg-black/20 rounded-xl p-6 mb-6">
               <h4 className="text-white font-bold text-lg mb-4">Comment nous contacter ?</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <a
+                
                   href="https://discord.gg/X6D6zzrTf"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -189,7 +194,7 @@ const MembersSection: React.FC = () => {
                     <div className="text-indigo-300 text-sm">Rejoins notre serveur</div>
                   </div>
                 </a>
-                <a
+                
                   href="mailto:insiderhackgaming@gmail.com?subject=Candidature%20-%20Poste%20[Précisez]&body=Bonjour%20l'équipe%20Insider%20Gaming%2C%0A%0AJe%20souhaite%20postuler%20pour%20le%20poste%20de%20[Créateur%20Vidéo%20/%20Rédacteur%20News%20/%20Développeur].%0A%0AMon%20expérience%20:%0A[Parlez-nous%20de%20vous%2C%20vos%20compétences%2C%20vos%20motivations]%0A%0ACordialement%2C%0A[Votre%20nom]"
                   className="flex items-center justify-center gap-3 p-4 bg-red-600/20 hover:bg-red-600/30 border border-red-500/30 rounded-lg transition-colors"
                 >
@@ -207,7 +212,7 @@ const MembersSection: React.FC = () => {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
+              
                  href="https://discord.gg/X6D6zzrTf"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -216,7 +221,7 @@ const MembersSection: React.FC = () => {
                 <Users className="w-5 h-5" />
                 Postuler sur Discord
               </a>
-              <a
+              
                 href="mailto:insiderhackgaming@gmail.com?subject=Candidature%20-%20Poste%20[Précisez]&body=Bonjour%20l'équipe%20Insider%20Gaming%2C%0A%0AJe%20souhaite%20postuler%20pour%20le%20poste%20de%20[Créateur%20Vidéo%20/%20Rédacteur%20News%20/%20Développeur].%0A%0AMon%20expérience%20:%0A[Parlez-nous%20de%20vous%2C%20vos%20compétences%2C%20vos%20motivations]%0A%0ACordialement%2C%0A[Votre%20nom]"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white font-bold rounded-xl transition-colors"
               >
