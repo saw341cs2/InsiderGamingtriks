@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Crosshair, Menu, X, LogIn, LogOut, User, ChevronDown } from 'lucide-react';
+import { Crosshair, Menu, X, LogIn, LogOut, User, ChevronDown, Crown } from 'lucide-react';
 import { useAppContext } from '@/contexts/AppContext';
+import { FOUNDER_ID } from '@/lib/founder';
 import AuthModal from './AuthModal';
 import {
   DropdownMenu,
@@ -93,18 +94,28 @@ const Navbar: React.FC<NavbarProps> = ({ activeSection, onNavigate, onOpenProfil
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button className="flex items-center gap-2 px-3 py-2 bg-gray-800/50 border border-gray-700 rounded-lg hover:bg-gray-700 transition-colors">
-                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center">
-                        <span className="text-xs text-white font-bold">
-                          {(username || user?.email)?.[0]?.toUpperCase()}
-                        </span>
+                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center overflow-hidden">
+                        {user?.user_metadata?.avatarUrl ? (
+                          <img src={user.user_metadata.avatarUrl} alt={username || 'Avatar'} className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-xs text-white font-bold">
+                            {(username || user?.email)?.[0]?.toUpperCase()}
+                          </span>
+                        )}
                       </div>
-                      <span className="text-sm text-white font-medium">
+                      <span className="text-sm text-white font-medium flex items-center gap-1">
                         {username || user?.email?.split('@')[0]}
+                        {user?.id === FOUNDER_ID && <Crown className="w-3.5 h-3.5 text-yellow-400" />}
                       </span>
                       <ChevronDown className="w-4 h-4 text-gray-400" />
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-48 bg-gray-900 border-gray-700">
+                    {user?.id === FOUNDER_ID && (
+                      <div className="px-2 py-1.5 flex items-center gap-1.5 text-xs font-bold text-yellow-400">
+                        <Crown className="w-3.5 h-3.5" />Fondateur
+                      </div>
+                    )}
                     <DropdownMenuItem onClick={onOpenProfile} className="text-white hover:bg-gray-800">
                       <User className="w-4 h-4 mr-2" />
                       Profil
