@@ -10,6 +10,7 @@ interface Member {
   username: string;
   game: string;
   created_at: string;
+  avatar_url?: string | null;
 }
 
 const MembersSection: React.FC = () => {
@@ -18,7 +19,7 @@ const MembersSection: React.FC = () => {
   useEffect(() => {
     supabase
       .from('profiles')
-      .select('id, username, game, created_at')
+      .select('id, username, game, created_at, avatar_url')
       .order('created_at', { ascending: false })
       .then(({ data }) => {
         const list = data || [];
@@ -89,8 +90,12 @@ const MembersSection: React.FC = () => {
           ) : members.map((member) => (
             <div key={member.id} className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6 hover:bg-gray-900/80 transition-all duration-300">
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">
-                  {(member.username || '?')[0].toUpperCase()}
+                <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-xl overflow-hidden">
+                  {member.avatar_url ? (
+                    <img src={member.avatar_url} alt={member.username} className="w-full h-full object-cover" />
+                  ) : (
+                    (member.username || '?')[0].toUpperCase()
+                  )}
                 </div>
                 <div className="flex-1">
                   <h3 className="text-white font-bold text-lg flex items-center gap-2">

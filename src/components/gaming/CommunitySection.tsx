@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase';
 interface LivePost {
   id: string;
   title: string;
+  author_id: string;
   author_name: string;
   author_avatar: string | null;
   category: string;
@@ -46,12 +47,21 @@ const CommunitySection: React.FC = () => {
   const navigate = useNavigate();
   const [livePosts, setLivePosts] = useState<LivePost[]>([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
+  const [avatarMap, setAvatarMap] = useState<Record<string, string | null>>({});
+
+  const resolveAvatar = (authorId: string, fallback: string | null) => {
+    return authorId in avatarMap ? avatarMap[authorId] : fallback;
+  };
 
   useEffect(() => {
     const loadLatestPosts = async () => {
       const { data: postsData } = await supabase.from('forum_posts').select('*').order('created_at', { ascending: false }).limit(4);
       const { data: likesData } = await supabase.from('forum_likes').select('post_id');
       const { data: repliesData } = await supabase.from('forum_replies').select('post_id');
+      const { data: profilesData } = await supabase.from('profiles').select('id, avatar_url');
+      const map: Record<string, string | null> = {};
+      (profilesData || []).forEach((p: any) => { map[p.id] = p.avatar_url ?? null; });
+      setAvatarMap(map);
 
       const enriched: LivePost[] = (postsData || []).map((p: any) => ({
         ...p,
@@ -190,7 +200,7 @@ const CommunitySection: React.FC = () => {
                   <div key={post.id} onClick={() => navigate('/forum')} className="px-5 py-4 hover:bg-gray-800/20 transition-colors cursor-pointer group">
                     <div className="flex items-start gap-3">
                       <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-orange-600 rounded-lg flex items-center justify-center text-white text-xs font-bold overflow-hidden shrink-0">
-                        {post.author_avatar ? <img src={post.author_avatar} alt={post.author_name} className="w-full h-full object-cover" /> : initialsOf(post.author_name)}
+                        {resolveAvatar(post.author_id, post.author_avatar) ? <img src={resolveAvatar(post.author_id, post.author_avatar) as string} alt={post.author_name} className="w-full h-full object-cover" /> : initialsOf(post.author_name)}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1 flex-wrap">

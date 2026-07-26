@@ -74,6 +74,11 @@ const ForumPage: React.FC = () => {
   const [loadingReplies, setLoadingReplies] = useState(false);
   const [newReply, setNewReply] = useState('');
   const [sendingReply, setSendingReply] = useState(false);
+  const [avatarMap, setAvatarMap] = useState<Record<string, string | null>>({});
+
+  const resolveAvatar = (authorId: string, fallback: string | null) => {
+    return authorId in avatarMap ? avatarMap[authorId] : fallback;
+  };
 
   useEffect(() => {
     loadPosts();
@@ -90,6 +95,10 @@ const ForumPage: React.FC = () => {
     }
     const { data: likesData } = await supabase.from('forum_likes').select('post_id, user_id');
     const { data: repliesData } = await supabase.from('forum_replies').select('post_id');
+    const { data: profilesData } = await supabase.from('profiles').select('id, avatar_url');
+    const map: Record<string, string | null> = {};
+    (profilesData || []).forEach((p: any) => { map[p.id] = p.avatar_url ?? null; });
+    setAvatarMap(map);
 
     const enriched: ForumPostRow[] = (postsData || []).map((p: any) => {
       const postLikes = (likesData || []).filter((l: any) => l.post_id === p.id);
@@ -245,7 +254,7 @@ const ForumPage: React.FC = () => {
               <h2 className="text-2xl font-bold text-white mb-3">{selectedPost.title}</h2>
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-9 h-9 bg-gradient-to-br from-red-600 to-orange-600 rounded-lg flex items-center justify-center text-white text-xs font-bold overflow-hidden shrink-0">
-                  {selectedPost.author_avatar ? <img src={selectedPost.author_avatar} alt={selectedPost.author_name} className="w-full h-full object-cover" /> : initialsOf(selectedPost.author_name)}
+                  {resolveAvatar(selectedPost.author_id, selectedPost.author_avatar) ? <img src={resolveAvatar(selectedPost.author_id, selectedPost.author_avatar) as string} alt={selectedPost.author_name} className="w-full h-full object-cover" /> : initialsOf(selectedPost.author_name)}
                 </div>
                 <div>
                   <p className="text-white font-semibold text-sm">{selectedPost.author_name}</p>
@@ -279,7 +288,7 @@ const ForumPage: React.FC = () => {
                   {replies.map((r) => (
                     <div key={r.id} className="flex items-start gap-3">
                       <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-lg flex items-center justify-center text-white text-xs font-bold overflow-hidden shrink-0">
-                        {r.author_avatar ? <img src={r.author_avatar} alt={r.author_name} className="w-full h-full object-cover" /> : initialsOf(r.author_name)}
+                        {resolveAvatar(r.author_id, r.author_avatar) ? <img src={resolveAvatar(r.author_id, r.author_avatar) as string} alt={r.author_name} className="w-full h-full object-cover" /> : initialsOf(r.author_name)}
                       </div>
                       <div className="flex-1 bg-gray-800/50 rounded-xl p-3">
                         <div className="flex items-center gap-2 mb-1">
@@ -363,7 +372,7 @@ const ForumPage: React.FC = () => {
               {!loading && filteredPosts.map((post) => (
                 <div key={post.id} onClick={() => openPost(post.id)} className="px-5 py-4 hover:bg-gray-800/20 transition-colors cursor-pointer group flex items-start gap-3">
                   <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-orange-600 rounded-lg flex items-center justify-center text-white text-xs font-bold overflow-hidden shrink-0">
-                    {post.author_avatar ? <img src={post.author_avatar} alt={post.author_name} className="w-full h-full object-cover" /> : initialsOf(post.author_name)}
+                    {resolveAvatar(post.author_id, post.author_avatar) ? <img src={resolveAvatar(post.author_id, post.author_avatar) as string} alt={post.author_name} className="w-full h-full object-cover" /> : initialsOf(post.author_name)}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
