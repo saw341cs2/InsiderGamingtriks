@@ -2,10 +2,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import { HelmetProvider } from 'react-helmet-async';  // ← AJOUTE CETTE LIGNE
+import { HelmetProvider } from 'react-helmet-async';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <HelmetProvider>    {/* ← AJOUTE CETTE BALISE OUVRANTE */}
+  <HelmetProvider>
     <App />
-  </HelmetProvider>   {/* ← AJOUTE CETTE BALISE FERMANTE */}
+  </HelmetProvider>
 );
