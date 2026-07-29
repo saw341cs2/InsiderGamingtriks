@@ -73,7 +73,7 @@ jobs:
           clean: true
           force: true
           single-commit: true
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit news.json
         if: env.SKIP != 'true'
