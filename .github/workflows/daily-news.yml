@@ -42,7 +42,10 @@ jobs:
 
       - name: Generate news
         if: env.SKIP != 'true'
-        run: node scripts/fetch-news.cjs || node scripts/generate-news.cjs
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+        run: node scripts/rewrite-news.cjs || node scripts/generate-news.cjs
 
       - name: Generate videos
         if: env.SKIP != 'true'
