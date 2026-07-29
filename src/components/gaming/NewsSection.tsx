@@ -5,8 +5,11 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 type NewsArticle = {
   title: string;
   body: string;
+  content?: string;
+  avis?: string;
   url: string;
   image: string;
+  imageCredit?: { name: string; url?: string } | null;
   dateTimePub: string;
   source: string;
   topic: string;
@@ -119,11 +122,7 @@ const NewsSection: React.FC = () => {
               className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-800 bg-gray-900 transition duration-300 hover:-translate-y-1 hover:border-red-500/30 cursor-pointer"
             >
               <div className="relative h-48 shrink-0 overflow-hidden bg-gray-800">
-                <img
-                  src={article.image}
-                  alt={article.title}
-                  className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-                />
+                <img src={article.image} alt={article.title} className="h-full w-full object-cover transition duration-300 group-hover:scale-105" />
               </div>
               <div className="flex flex-1 flex-col gap-2 p-5">
                 <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-widest text-red-400">
