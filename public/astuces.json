@@ -1,6 +1,20 @@
 {
   "astuces": [
     {
+      "id": 9,
+      "title": "CS2 : Économie et gestion des rounds",
+      "game": "CS2",
+      "gameId": "counter-strike",
+      "difficulty": "Intermédiaire",
+      "isPremium": false,
+      "category": "Stratégie",
+      "views": 19200,
+      "rating": 4.8,
+      "date": "Aujourd'hui",
+      "image": "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop",
+      "description": "Comprendre l'économie de CS2 est aussi important que viser juste.\n\nTypes de rounds :\n- Full buy : AK/M4 + armure + grenades (3800$+)\n- Force buy : Desert Eagle ou SMG avec armure\n- Eco : pistolet seulement, économise pour le prochain round\n\nRègles d'or :\n1. Ne jamais full buy seul si l'équipe eco\n2. Drop les armes aux coéquipiers pauvres\n3. Après un pistol round gagné → demi-buy\n4. Garde toujours 1000$ pour l'armure minimum\n\nUne bonne économie peut gagner des matchs entiers."
+    },
+    {
       "id": 5,
       "title": "Tuto : Améliorer sa visée en FPS - Les bases",
       "game": "CS2",
@@ -10,7 +24,7 @@
       "category": "Tuto",
       "views": 31000,
       "rating": 5,
-      "date": "Aujourd'hui",
+      "date": "Il y a 2 jours",
       "image": "https://images.unsplash.com/photo-1616588589676-62b3bd4ff6d2?w=400&h=300&fit=crop",
       "description": "Guide complet pour améliorer ta visée dans n'importe quel FPS.\n\nParamètres souris :\n- DPI : entre 400 et 800\n- Sensibilité in-game : basse (0.8 à 1.5 sur CS2)\n- Désactiver l'accélération souris Windows\n\nRoutine d'entraînement quotidienne (30 min) :\n1. Aim Lab ou KovaaK's - 10 min de tracking\n2. 10 min de flicking\n3. 10 min en Deathmatch\n\nRésultats visibles en 2-3 semaines de pratique régulière."
     },
@@ -24,23 +38,9 @@
       "category": "Mouvement",
       "views": 12400,
       "rating": 4.8,
-      "date": "Il y a 2 jours",
+      "date": "Il y a 4 jours",
       "image": "https://images.unsplash.com/photo-1586182987320-4f376d39d787?w=400&h=300&fit=crop",
       "description": "Le counter-strafing est LA technique fondamentale pour tirer avec précision en CS2.\n\n1. Appuie sur D pour aller à droite\n2. Tape rapidement A pour stopper ton élan\n3. Tire dès que ton personnage est immobile\n\nAstuce : écoute le son de tes pas, quand ils s'arrêtent tu peux tirer.\nEntraîne-toi en Deathmatch 15 min par jour pendant 1 semaine."
-    },
-    {
-      "id": 9,
-      "title": "CS2 : Économie et gestion des rounds",
-      "game": "CS2",
-      "gameId": "counter-strike",
-      "difficulty": "Intermédiaire",
-      "isPremium": false,
-      "category": "Stratégie",
-      "views": 19200,
-      "rating": 4.8,
-      "date": "Il y a 4 jours",
-      "image": "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&h=300&fit=crop",
-      "description": "Comprendre l'économie de CS2 est aussi important que viser juste.\n\nTypes de rounds :\n- Full buy : AK/M4 + armure + grenades (3800$+)\n- Force buy : Desert Eagle ou SMG avec armure\n- Eco : pistolet seulement, économise pour le prochain round\n\nRègles d'or :\n1. Ne jamais full buy seul si l'équipe eco\n2. Drop les armes aux coéquipiers pauvres\n3. Après un pistol round gagné → demi-buy\n4. Garde toujours 1000$ pour l'armure minimum\n\nUne bonne économie peut gagner des matchs entiers."
     },
     {
       "id": 2,
@@ -141,8 +141,8 @@
       "description": "Optimise ton PC pour avoir le maximum de FPS et le minimum de latence.\n\nWindows :\n- Mode Haute Performance dans les options d'alimentation\n- Désactiver Xbox Game Bar (Win+G)\n- Désactiver les effets visuels Windows\n- Mettre à jour les drivers GPU\n\nIn-game :\n- Résolution : native ou 1280x960 stretched pour CS2\n- V-Sync : DÉSACTIVÉ\n- Limiter les FPS à 2x ton taux de rafraîchissement\n\nRéseau :\n- Câble ethernet plutôt que WiFi\n- Fermer les applications en arrière-plan\n- DNS : 1.1.1.1 (Cloudflare)"
     }
   ],
-  "generatedAt": "2026-07-27T22:24:27.984Z",
+  "generatedAt": "2026-07-29T06:28:35.881Z",
   "dailyPick": [
-    5
+    9
   ]
 }
