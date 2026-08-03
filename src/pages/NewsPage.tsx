@@ -105,11 +105,7 @@ const NewsPage: React.FC = () => {
               </div>
             )}
 
-            {article.url && !article.url.includes('insidergamingtriks.com/news/') && (
-              <a href={article.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mt-4 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition">
-                Lire l'article complet
-              </a>
-            )}
+
           </div>
         </div>
       </div>
