@@ -75,7 +75,7 @@ const MembersSection: React.FC = () => {
               <MessageCircle className="w-5 h-5" /> Rejoindre le Discord
             </a>
             <a
-              href="#community-section"
+              href="/forum"
               className="inline-flex items-center gap-2 px-6 py-3 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white font-bold rounded-xl transition-colors"
             >
               <Users className="w-5 h-5" /> Accéder au Forum
