@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Lock, Search, Filter, Star, Eye, Crosshair, Target, Bomb, Clock } from 'lucide-react';
+import { useAppContext } from '@/contexts/AppContext';
+import { FOUNDER_ID } from '@/lib/founder';
 
 interface AstucesSectionProps {
   onNavigate: (section: string) => void;
@@ -59,6 +61,8 @@ const defaultImages: Record<string, string> = {
 };
 
 const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
+  const { user } = useAppContext();
+  const isFounder = user?.id === FOUNDER_ID;
   const [astuces, setAstuces] = useState<Astuce[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -95,8 +99,8 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
     return true;
   });
 
-  const openModal = () => { onNavigate('premium'); };
-  const handleDownload = (e: React.MouseEvent) => { e.stopPropagation(); onNavigate('premium'); };
+  const openModal = () => { if (!isFounder) onNavigate('premium'); };
+  const handleDownload = (e: React.MouseEvent) => { e.stopPropagation(); if (!isFounder) onNavigate('premium'); };
 
   return (
     <section id="astuces-section" className="bg-gray-950 py-20 md:py-28">
@@ -194,20 +198,22 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
                   onClick={() => openModal()}
                   className={`group relative bg-gray-900/60 border rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-black/40 flex flex-col border-gray-800/60 hover:border-red-500/30`}
                 >
+                  {!isFounder && (
                   <div className="absolute top-3 right-3 z-20">
                     <span className="flex items-center gap-1 px-2 py-1 bg-gray-900/90 border border-yellow-500/40 rounded-md text-xs font-bold text-yellow-400">
                       <Lock className="w-3 h-3" />PREMIUM
                     </span>
                   </div>
+                  )}
 
-                  <div className="relative h-40 w-full flex-shrink-0 overflow-hidden">
+                    <div className="relative h-40 w-full flex-shrink-0 overflow-hidden">
                     <img
                       src={imgSrc}
                       alt={astuce.title}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                       onError={(e) => { (e.target as HTMLImageElement).src = defaultImages[astuce.game] || defaultImages['CS2']; }}
                     />
-                    <div className="absolute inset-0 bg-gray-900/60 flex items-center justify-center"><Lock className="w-8 h-8 text-yellow-400" /></div>
+                    {!isFounder && <div className="absolute inset-0 bg-gray-900/60 flex items-center justify-center"><Lock className="w-8 h-8 text-yellow-400" /></div>}
                     <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-gray-900 to-transparent" />
                   </div>
 
@@ -240,9 +246,9 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
 
                     <button
                       onClick={(e) => handleDownload(e)}
-                      className="mt-auto w-full flex items-center justify-center gap-2 py-2.5 rounded-lg font-bold text-sm transition-all bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 hover:bg-yellow-500/20"
+                      className={`mt-auto w-full flex items-center justify-center gap-2 py-2.5 rounded-lg font-bold text-sm transition-all ${isFounder ? 'bg-red-600/20 text-red-400 border border-red-500/20 hover:bg-red-600/30' : 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 hover:bg-yellow-500/20'}`}
                     >
-                      <Lock className="w-4 h-4" />Débloquer Premium
+                      {isFounder ? '👑 Accès Fondateur' : <><Lock className="w-4 h-4" />Débloquer Premium</>}
                     </button>
                   </div>
                 </div>
