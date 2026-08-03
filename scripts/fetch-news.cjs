@@ -11,11 +11,11 @@ const FALLBACK_IMAGES = {
 };
 
 const TOPICS = {
-  fps: ['fps', 'shooter', 'call of duty', 'valorant', 'counter-strike', 'battlefield', 'halo', 'warzone', 'apex'],
-  competition: ['esport', 'tournoi', 'competition', 'league of legends', 'csgo', 'dota', 'equipe', 'team', 'championnat'],
-  materiel: ['souris', 'clavier', 'casque', 'écran', 'moniteur', 'gpu', 'cpu', 'carte graphique', 'processeur', 'pc gamer', 'setup', 'périphérique', 'hardware'],
-  gamers: ['streamer', 'joueur', 'pro player', 'twitch', 'youtube gaming', 'gamer', 'influenceur'],
-  jeux: ['jeu video', 'jeu', 'game', 'sortie', 'release', 'test', 'review', 'gaming', 'playstation', 'xbox', 'nintendo'],
+  fps: ['fps', 'shooter', 'call of duty', 'valorant', 'counter-strike', 'cs2', 'battlefield', 'halo', 'warzone', 'apex', 'aim', 'headshot', 'recoil', 'crosshair', 'fps boost', 'optimisation'],
+  competition: ['esport', 'tournoi', 'competition', 'league of legends', 'csgo', 'dota', 'equipe', 'team', 'championnat', 'ranking', 'pro player', 'strategie', 'tactique'],
+  materiel: ['souris', 'clavier', 'casque', 'écran', 'moniteur', 'gpu', 'cpu', 'carte graphique', 'processeur', 'pc gamer', 'setup', 'périphérique', 'hardware', '144hz', 'performance'],
+  gamers: ['streamer', 'joueur', 'pro player', 'twitch', 'youtube gaming', 'gamer', 'influenceur', 'community', 'discord'],
+  jeux: ['jeu video', 'jeu', 'game', 'sortie', 'release', 'test', 'review', 'gaming', 'playstation', 'xbox', 'nintendo', 'patch', 'update', 'gameplay', 'astuce', 'trick', 'guide', 'nouveaute'],
 };
 
 function categorizeArticle(title, description) {
@@ -142,7 +142,7 @@ async function fetchFromNewsDataIO() {
   } catch (e) { console.log('NewsData erreur:', e.message); return []; }
 }
 
-const GAMING_KEYWORDS = ['gaming', 'game', 'jeu', 'fps', 'esport', 'cs2', 'valorant', 'warzone', 'battlefield', 'playstation', 'xbox', 'nintendo', 'steam', 'twitch', 'streamer', 'tournoi', 'patch', 'update', 'meta', 'joueur', 'pro player'];
+const GAMING_KEYWORDS = ['gaming', 'game', 'jeu', 'fps', 'esport', 'cs2', 'valorant', 'warzone', 'battlefield', 'call of duty', 'playstation', 'xbox', 'nintendo', 'steam', 'twitch', 'streamer', 'tournoi', 'patch', 'update', 'meta', 'joueur', 'pro player', 'gpu', 'cpu', 'hardware', 'aim', 'headshot', 'recoil', 'crosshair', 'astuce', 'trick', 'guide', 'gameplay', 'performance', 'ranking', 'discord', 'community', 'nouveaute', 'halo', 'apex', 'dota'];
 
 function isGamingArticle(title, description) {
   const text = `${title} ${description}`.toLowerCase();
