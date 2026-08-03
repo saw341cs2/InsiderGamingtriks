@@ -7,11 +7,7 @@ type NewsArticle = {
   body: string;
   summary?: string;
   content?: string;
-<<<<<<< HEAD
   review?: string;
-=======
-  avis?: string;
->>>>>>> b9b01ce513d9c39c255aae42ac6da6c1639f4efe
   url: string;
   image: string;
   imageCredit?: { name: string; url?: string } | null;
