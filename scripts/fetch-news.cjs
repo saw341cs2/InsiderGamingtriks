@@ -76,13 +76,14 @@ function rewriteWithAI(rawArticles) {
   console.log('🔄 Appel de rewrite-news.cjs pour réécriture IA...');
 
   // Passer les articles bruts via stdin au script de réécriture
-  const inputJson = JSON.stringify(rawArticles);
-  const result = spawnSync('node', [scriptPath], {
-    input: inputJson,
+  const tmpFile = path.join(__dirname, '_tmp_articles.json');
+  fs.writeFileSync(tmpFile, JSON.stringify(rawArticles), 'utf-8');
+  const result = spawnSync('node', [scriptPath, tmpFile], {
     encoding: 'utf-8',
-    timeout: 120000, // 2 minutes max pour 3 articles
+    timeout: 120000,
     env: { ...process.env },
   });
+  try { fs.unlinkSync(tmpFile); } catch {}
 
   if (result.error) {
     console.error(`⚠️  Erreur rewrite-news: ${result.error.message}`);
