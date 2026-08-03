@@ -31,28 +31,47 @@ const MISTRAL_API_URL = 'https://api.mistral.ai/v1/chat/completions';
 
 const USER_AGENT = 'InsiderGamingtriks/1.0';
 
+// Images Unsplash par catégorie (pas de clé API requise)
+const TOPIC_IMAGES = {
+  FPS:         'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop',
+  COMPETITION: 'https://images.unsplash.com/photo-1633545495735-25df17fb9f31?w=800&h=450&fit=crop',
+  MATERIEL:    'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=800&h=450&fit=crop',
+  JOUEURS:     'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&h=450&fit=crop',
+  STREAMING:   'https://images.unsplash.com/photo-1603481588273-2f908a9a7a1b?w=800&h=450&fit=crop',
+  TECH:        'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&h=450&fit=crop',
+  ESPORT:      'https://images.unsplash.com/photo-1560253023-3ec5d502959f?w=800&h=450&fit=crop',
+  JEUX:        'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=800&h=450&fit=crop',
+};
+
+function getImageForCategories(categories) {
+  for (const cat of (categories || [])) {
+    if (TOPIC_IMAGES[cat.toUpperCase()]) return TOPIC_IMAGES[cat.toUpperCase()];
+  }
+  return TOPIC_IMAGES.JEUX;
+}
+
 // Prompt système pour la réécriture journalistique
 const SYSTEM_PROMPT = `Tu es un journaliste gaming expert pour Insider Gaming Tricks, un site d'actualité gaming français.
 
-Tu dois réécrire COMPLÈTEMENT les articles qu'on te donne. Règles strictes :
+Tu es un ÉDITEUR, pas un copiste. Tu t'inspires de l'info source pour créer ton propre article.
 
-1. **Titre original** : Ne copie pas le titre source. Crée un titre accrocheur, unique, avec un émoji pertinent.
-2. **Résumé** : Une phrase qui donne envie de lire.
-3. **Corps de l'article** : 2-3 paragraphes complets, rédigés dans un style journalistique dynamique et moderne. Garde uniquement les faits, reformule tout.
-4. **"Notre avis"** : Une analyse éditoriale (1-2 phrases) qui donne le point de vue d'Insider Gaming Tricks.
-5. **Catégories** : 1 à 3 catégories parmi : FPS, COMPETITION, MATERIEL, JOUEURS, JEUX, STREAMING, TECH, ESPORT.
-6. **Format** : Réponds UNIQUEMENT en JSON valide, sans texte avant/après.
+Règles ABSOLUES :
+1. **Titre** : Invente un titre COMPLÈTEMENT DIFFÉRENT de la source. Accrocheur, avec un émoji. Jamais de copie.
+2. **Résumé** : 1 phrase originale qui donne envie de lire.
+3. **Corps** : 2-3 paragraphes rédigés avec tes propres mots. Style dynamique, ton gaming. AUCUNE phrase copiée.
+4. **Notre avis** : Ton point de vue éditorial en 1-2 phrases. Opinionné, direct.
+5. **Catégories** : 1 à 3 parmi : FPS, COMPETITION, MATERIEL, JOUEURS, JEUX, STREAMING, TECH, ESPORT.
+6. Réponds UNIQUEMENT en JSON valide.
 
-Format de réponse JSON attendu :
 {
-  "title": "🎯 Titre original et accrocheur",
-  "summary": "Résumé en une phrase.",
-  "content": "Corps complet de l'article en 2-3 paragraphes. Utilise un style journalistique dynamique.",
-  "review": "Notre avis : analyse éditoriale en 1-2 phrases.",
-  "categories": ["FPS", "COMPETITION"]
+  "title": "🎯 Ton titre original",
+  "summary": "Ta phrase d'accroche.",
+  "content": "Tes paragraphes originaux.",
+  "review": "Notre avis : ton analyse.",
+  "categories": ["FPS"]
 }
 
-IMPORTANT : Ne copie JAMAIS le texte source. Reformule intégralement. Sois factuel.`;
+INTERDIT : copier-coller, paraphraser mot à mot, garder la structure de la source.`;
 
 /**
  * Appelle l'API Mistral AI pour réécrire un article brut.
@@ -169,7 +188,7 @@ async function main() {
       rewritten.push({
         ...rewrittenContent,
         url: article.url || article.link || '#',
-        image: article.image || '',
+        image: getImageForCategories(rewrittenContent.categories),
         dateTimePub: article.publishedAt || article.dateTimePub || new Date().toISOString(),
         source: 'InsiderGamingtriks',
         originalSource: article.source || article.originalSource || '',
@@ -178,19 +197,9 @@ async function main() {
       console.error(`   ✅ Réécrit: "${rewrittenContent.title}"`);
     } catch (error) {
       console.error(`   ⚠️ Erreur pour "${article.title}": ${error.message}`);
-      // Fallback : garder l'article original mais marqué comme non-réécrit
-      rewritten.push({
-        title: article.title || 'Sans titre',
-        summary: '',
-        content: article.description || article.body || article.content || '',
-        review: '',
-        categories: [article.topic || 'JEUX'],
-        url: article.url || article.link || '#',
-        image: article.image || '',
-        dateTimePub: article.publishedAt || article.dateTimePub || new Date().toISOString(),
-        source: 'InsiderGamingtriks',
-        originalSource: article.source || article.originalSource || '',
-      });
+      // Fallback : on skip cet article plutôt que de publier du copier-coller
+      console.error(`   ⏭️  Article ignoré (pas de réécriture disponible)`);
+      continue;
     }
 
     // Petit délai pour éviter de rate-limiter l'API
