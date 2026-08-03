@@ -1,6 +1,60 @@
 {
   "articles": [
     {
+      "title": "🖱️ Guide tapis de souris gaming : grand format ou petit ?",
+      "body": "Quel tapis de souris choisir pour le gaming compétitif ? On compare les formats, matières et marques du marché.",
+      "url": "https://insidertricks.fr/news/guide-tapis-souris-gaming",
+      "image": "https://images.unsplash.com/photo-1616588589676-62b3bd4ff6d2?w=800&h=450&fit=crop",
+      "topic": "MATERIEL",
+      "dateTimePub": "2026-07-29T20:12:30.842Z",
+      "source": "InsiderGamingtriks"
+    },
+    {
+      "title": "🎮 Hunt Showdown 2 : le FPS extraction qui monte",
+      "body": "Hunt Showdown 2 s'impose comme le FPS extraction incontournable. Analyse du gameplay, des mécaniques et du méta actuel.",
+      "url": "https://insidertricks.fr/news/hunt-showdown-2-analyse",
+      "image": "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&h=450&fit=crop",
+      "topic": "FPS",
+      "dateTimePub": "2026-07-29T20:12:30.842Z",
+      "source": "InsiderGamingtriks"
+    },
+    {
+      "title": "🎮 Escape from Tarkov : la nouvelle map Arena dévoilée",
+      "body": "Battlestate Games présente Arena, une nouvelle map compétitive pour Escape from Tarkov. Format 5v5 et ranked intégré.",
+      "url": "https://insidertricks.fr/news/tarkov-arena-map",
+      "image": "https://images.unsplash.com/photo-1600861194942-f883de0dfe96?w=800&h=450&fit=crop",
+      "topic": "FPS",
+      "dateTimePub": "2026-07-28T20:12:30.842Z",
+      "source": "InsiderGamingtriks"
+    },
+    {
+      "title": "📊 Classement mondial FPS 2026 : les meilleurs joueurs",
+      "body": "Notre classement des 10 meilleurs joueurs FPS du monde en 2026. CS2, Valorant, R6 : qui domine la scène mondiale ?",
+      "url": "https://insidertricks.fr/news/classement-mondial-fps-2026",
+      "image": "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&h=450&fit=crop",
+      "topic": "COMPETITION",
+      "dateTimePub": "2026-07-28T20:12:30.842Z",
+      "source": "InsiderGamingtriks"
+    },
+    {
+      "title": "🎧 Comparatif : les meilleurs DAC/AMP pour gamer en 2026",
+      "body": "Tu veux le meilleur son possible pour entendre les pas ennemis ? On compare les meilleurs DAC/AMP du marché.",
+      "url": "https://insidertricks.fr/news/dac-amp-gaming-2026",
+      "image": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=450&fit=crop",
+      "topic": "MATERIEL",
+      "dateTimePub": "2026-07-27T20:12:30.842Z",
+      "source": "InsiderGamingtriks"
+    },
+    {
+      "title": "🏆 NiKo rejoint une nouvelle équipe : les détails",
+      "body": "Nikola NiKo Kovač quitte G2 Esports et signe dans une nouvelle organisation. Analyse de ce transfert qui secoue la scène.",
+      "url": "https://insidertricks.fr/news/niko-nouveau-transfert",
+      "image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop",
+      "topic": "JOUEURS",
+      "dateTimePub": "2026-07-27T20:12:30.842Z",
+      "source": "InsiderGamingtriks"
+    },
+    {
       "title": "Selon ce psychiatre, jouer à ce type de jeux vidéo a des conséquences inattendues sur notre manière d'appréhender la vie.",
       "body": "Et si certains jeux vidéo faisaient plus que nous divertir ? Pour un psychiatre américain, certaines mécaniques de jeu peuvent favoriser des habitudes psychologiques et modifier, à petite échelle, notre manière de penser et d'agir au quotidien.",
       "url": "https://www.jeuxvideo.com/news/2096143/selon-ce-psychiatre-jouer-a-ce-type-de-jeux-video-a-des-consequences-inattendues-sur-notre-maniere-d-apprehender-la-vie.htm",
@@ -939,67 +993,7 @@
       "source": "InsiderGamingtriks",
       "originalSource": "jeuxvideo.com",
       "topic": "JEUX"
-    },
-    {
-      "title": "GTA 6 PS5 : même pour ses propres jeux, PlayStation n'a jamais fait ça !",
-      "body": "Chose promise, chose due, il est enfin possible de pré-commander Grand Theft Auto VI à peu près partout où on pourrait l’imaginer. Mais alors que Rockstar se frotte déjà les mains, Sony prépare l’arrivée du jeu avec un comportement auquel même ses...",
-      "url": "https://www.jeuxvideo.com/news/2091149/gta-6-ps5-meme-pour-ses-propres-jeux-playstation-n-a-jamais-fait-ca.htm",
-      "image": "https://image.jeuxvideo.com/medias-lg/178241/1782406361-6482-card.jpg",
-      "dateTimePub": "2026-06-27T16:10:09.000Z",
-      "source": "InsiderGamingtriks",
-      "originalSource": "jeuxvideo.com",
-      "topic": "JEUX"
-    },
-    {
-      "title": "Un ado de 15 ans sèche les cours, passe 16 heures sur une partie et devient une icône…",
-      "body": "Avant Internet, avant Twitch et avant même que l’e-sport ne devienne un phénomène mondial, les salles d’arcade étaient le théâtre des plus grands exploits vidéoludiques. Dans les années 1980, un adolescent de 15 ans va pourtant repousser toutes le...",
-      "url": "https://www.jeuxvideo.com/news/2091220/un-ado-de-15-ans-seche-les-cours-passe-16-heures-sur-une-partie-et-devient-une-icone.htm",
-      "image": "https://image.jeuxvideo.com/medias-lg/178246/1782462348-4280-card.jpg",
-      "dateTimePub": "2026-06-27T15:45:10.000Z",
-      "source": "InsiderGamingtriks",
-      "originalSource": "jeuxvideo.com",
-      "topic": "JEUX"
-    },
-    {
-      "title": "WoW : L’une des plus grandes tragédies de l'histoire des MMO a été provoquée par un joueur complètement fou. Blizzard a dû intervenir !",
-      "body": "L'histoire de World of Warcraft abrite des événements tragiques liés à des actions inattendues de certains joueurs. En 2005, un joueur a attiré un monstre redoutable au cœur de la capitale de Hurlevent pour y provoquer un massacre de grande enverg...",
-      "url": "https://www.jeuxvideo.com/news/2091025/wow-l-une-des-plus-grandes-tragedies-de-l-histoire-des-mmo-a-ete-provoquee-par-un-joueur-completement-fou-blizzard-a-du-intervenir.htm",
-      "image": "https://image.jeuxvideo.com/medias-lg/178239/1782392988-230-card.jpg",
-      "dateTimePub": "2026-06-27T15:10:10.000Z",
-      "source": "InsiderGamingtriks",
-      "originalSource": "jeuxvideo.com",
-      "topic": "JEUX"
-    },
-    {
-      "title": "La PS6 pas avant 2029 ? Voilà de quoi avoir quelques doutes...",
-      "body": "Dans son rapport annuel 2025-2026, le groupe Embracer (Tomb Raider Legacy of Atlantis, Kingdom Come Deliverance II) a publié des estimations d’analystes qui ont vite fait le tour du Web. D’après elles, la PlayStation 6 pourrait arriver en 2029. Qu...",
-      "url": "https://www.jeuxvideo.com/news/2090341/la-ps6-pas-avant-2029-voila-de-quoi-avoir-quelques-doutes.htm",
-      "image": "https://image.jeuxvideo.com/medias-lg/178214/1782142755-6074-card.jpg",
-      "dateTimePub": "2026-06-26T20:30:08.000Z",
-      "source": "InsiderGamingtriks",
-      "originalSource": "jeuxvideo.com",
-      "topic": "JEUX"
-    },
-    {
-      "title": "Valve n'a pas confiance en sa Steam Machine à 1000€ et modifie en catastrophe un élément central",
-      "body": "La Steam Machine de Valve est plus proche que jamais. Mais à quelques jours de sa sortie officielle, le développeur a décidé de revenir sur l'une de ses plus grosses promesses, et ça risque de ne pas plaire à ceux qui s'attendaient à une console r...",
-      "url": "https://www.jeuxvideo.com/news/2091261/valve-n-a-pas-confiance-en-sa-steam-machine-a-1000-et-modifie-en-catastrophe-un-element-central.htm",
-      "image": "https://image.jeuxvideo.com/medias-lg/178247/1782468517-5937-card.jpg",
-      "dateTimePub": "2026-06-26T18:55:11.000Z",
-      "source": "InsiderGamingtriks",
-      "originalSource": "jeuxvideo.com",
-      "topic": "COMPETITION"
-    },
-    {
-      "title": "Il pleure systématiquement face à cette scène culte de l'histoire du jeu vidéo : les vrais gamers ne peuvent qu'être d'accord",
-      "body": "Trois ans après la sortie de Rebirth, Final Fantasy VII : Revelation a enfin été annoncé il y a quelques semaines. Pour l'occasion, le directeur du jeu, Naoki  Hamaguchi, a révélé avoir pleuré à chacune de ses parties lors d'une scène bien précise...",
-      "url": "https://www.jeuxvideo.com/news/2090861/il-pleure-systematiquement-face-a-cette-scene-culte-de-l-histoire-du-jeu-video-les-vrais-gamers-ne-peuvent-qu-etre-d-accord.htm",
-      "image": "https://image.jeuxvideo.com/medias-lg/178238/1782380821-8714-card.jpg",
-      "dateTimePub": "2026-06-26T04:05:11.000Z",
-      "source": "InsiderGamingtriks",
-      "originalSource": "jeuxvideo.com",
-      "topic": "JEUX"
     }
   ],
-  "generatedAt": "2026-07-29T18:58:19.447Z"
+  "generatedAt": "2026-08-03T09:05:36.363Z"
 }
