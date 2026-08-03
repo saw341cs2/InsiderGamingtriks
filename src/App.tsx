@@ -10,6 +10,7 @@ import ProfilePage from "@/pages/Profile";
 import AimRush from "@/pages/AimRush";
 import Classement from "@/pages/Classement";
 import AstucesPage from "@/pages/Astuces";
+import AstucePage from "@/pages/AstucePage";
 import VideosPage from "@/pages/Videos";
 import CommunautePage from "@/pages/Communaute";
 import MembresPage from "@/pages/Membres";
@@ -97,6 +98,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/astuces" element={<AstucesPage />} />
+        <Route path="/astuces/:id" element={<AstucePage />} />
         <Route path="/videos" element={<VideosPage />} />
         <Route path="/communaute" element={<CommunautePage />} />
         <Route path="/membres" element={<MembresPage />} />

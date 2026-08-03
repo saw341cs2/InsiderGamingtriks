@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Lock, Search, Filter, Star, Eye, Crosshair, Target, Bomb, Clock } from 'lucide-react';
 import { useAppContext } from '@/contexts/AppContext';
 import { FOUNDER_ID } from '@/lib/founder';
+import { useNavigate } from 'react-router-dom';
 
 interface AstucesSectionProps {
   onNavigate: (section: string) => void;
@@ -63,6 +64,7 @@ const defaultImages: Record<string, string> = {
 const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
   const { user } = useAppContext();
   const isFounder = user?.id === FOUNDER_ID;
+  const navigate = useNavigate();
   const [astuces, setAstuces] = useState<Astuce[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -99,8 +101,23 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
     return true;
   });
 
-  const openModal = () => { if (!isFounder) onNavigate('premium'); };
-  const handleDownload = (e: React.MouseEvent) => { e.stopPropagation(); if (!isFounder) onNavigate('premium'); };
+  const openModal = (astuce: Astuce) => {
+    if (isFounder) {
+      localStorage.setItem('selectedAstuce', JSON.stringify(astuce));
+      navigate(`/astuces/${astuce.id}`);
+    } else {
+      onNavigate('premium');
+    }
+  };
+  const handleDownload = (e: React.MouseEvent, astuce: Astuce) => {
+    e.stopPropagation();
+    if (isFounder) {
+      localStorage.setItem('selectedAstuce', JSON.stringify(astuce));
+      navigate(`/astuces/${astuce.id}`);
+    } else {
+      onNavigate('premium');
+    }
+  };
 
   return (
     <section id="astuces-section" className="bg-gray-950 py-20 md:py-28">
@@ -195,7 +212,7 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
               return (
                 <div
                   key={astuce.id}
-                  onClick={() => openModal()}
+                  onClick={() => openModal(astuce)}
                   className={`group relative bg-gray-900/60 border rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-black/40 flex flex-col border-gray-800/60 hover:border-red-500/30`}
                 >
                   {!isFounder && (
@@ -245,7 +262,7 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
                     </div>
 
                     <button
-                      onClick={(e) => handleDownload(e)}
+                      onClick={(e) => handleDownload(e, astuce)}
                       className={`mt-auto w-full flex items-center justify-center gap-2 py-2.5 rounded-lg font-bold text-sm transition-all ${isFounder ? 'bg-red-600/20 text-red-400 border border-red-500/20 hover:bg-red-600/30' : 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 hover:bg-yellow-500/20'}`}
                     >
                       {isFounder ? '👑 Accès Fondateur' : <><Lock className="w-4 h-4" />Débloquer Premium</>}
