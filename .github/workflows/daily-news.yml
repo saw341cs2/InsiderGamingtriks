@@ -40,8 +40,12 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Generate news
+      - name: Generate news (fetch + rewrite via Mistral AI)
         if: env.SKIP != 'true'
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          GNEWS_API_KEY: ${{ secrets.GNEWS_API_KEY }}
+          NEWSDATA_API_KEY: ${{ secrets.NEWSDATA_API_KEY }}
         run: node scripts/fetch-news.cjs || node scripts/generate-news.cjs
 
       - name: Generate videos

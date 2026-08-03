@@ -5,11 +5,16 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 type NewsArticle = {
   title: string;
   body: string;
+  summary?: string;
+  content?: string;
+  review?: string;
   url: string;
   image: string;
   dateTimePub: string;
   source: string;
   topic: string;
+  categories?: string[];
+  originalSource?: string;
 };
 
 type NewsResponse = {
@@ -132,7 +137,24 @@ const NewsSection: React.FC = () => {
                   <span>{formatDate(article.dateTimePub)}</span>
                 </div>
                 <h3 className="min-h-[3rem] text-base font-bold text-white line-clamp-2">{article.title}</h3>
-                <p className="text-gray-400 text-sm line-clamp-3">{article.body}</p>
+                {/* Résumé si disponible (réécriture IA) */}
+                {article.summary && (
+                  <p className="text-gray-400 text-sm line-clamp-3">{article.summary}</p>
+                )}
+                {/* Fallback sur body si pas de résumé */}
+                {!article.summary && (
+                  <p className="text-gray-400 text-sm line-clamp-3">{article.body}</p>
+                )}
+                {/* Badges catégories si disponibles */}
+                {article.categories && article.categories.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mt-1">
+                    {article.categories.map((cat, i) => (
+                      <span key={i} className="px-2 py-0.5 bg-gray-800 text-gray-300 text-[10px] font-semibold uppercase tracking-wider rounded">
+                        {cat}
+                      </span>
+                    ))}
+                  </div>
+                )}
                 <span className="mt-auto pt-2 text-xs font-semibold text-red-400">Lire l'article →</span>
               </div>
             </div>

@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { spawnSync } = require('child_process');
 
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
@@ -30,8 +31,8 @@ function categorizeArticle(title, description) {
 function decodeHTMLEntities(text) {
   if (!text) return '';
   return text
-    .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, ' ');
+    .replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>')
+    .replace(/"/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, ' ');
 }
 
 function transformArticle(article, topic) {
@@ -54,6 +55,57 @@ function transformArticle(article, topic) {
     originalSource: article.source || '',
     topic: topic.toUpperCase(),
   };
+}
+
+/**
+ * Appelle le script rewrite-news.cjs pour réécrire les articles via Mistral AI.
+ * Retourne les articles réécrits, ou null en cas d'échec.
+ */
+function rewriteWithAI(rawArticles) {
+  if (!process.env.MISTRAL_API_KEY) {
+    console.log('ℹ️  MISTRAL_API_KEY non définie, pas de réécriture IA.');
+    return null;
+  }
+
+  const scriptPath = path.join(__dirname, 'rewrite-news.cjs');
+  if (!fs.existsSync(scriptPath)) {
+    console.log('ℹ️  rewrite-news.cjs non trouvé, pas de réécriture IA.');
+    return null;
+  }
+
+  console.log('🔄 Appel de rewrite-news.cjs pour réécriture IA...');
+
+  // Passer les articles bruts via stdin au script de réécriture
+  const inputJson = JSON.stringify(rawArticles);
+  const result = spawnSync('node', [scriptPath], {
+    input: inputJson,
+    encoding: 'utf-8',
+    timeout: 120000, // 2 minutes max pour 3 articles
+    env: { ...process.env },
+  });
+
+  if (result.error) {
+    console.error(`⚠️  Erreur rewrite-news: ${result.error.message}`);
+    return null;
+  }
+
+  if (result.status !== 0) {
+    console.error(`⚠️  rewrite-news exit code ${result.status}: ${result.stderr?.substring(0, 500)}`);
+    return null;
+  }
+
+  // La sortie stdout du script contient le JSON des articles réécrits
+  try {
+    const output = JSON.parse(result.stdout);
+    if (output.articles && output.articles.length > 0) {
+      console.log(`✅ ${output.articles.length} articles réécrits avec succès via Mistral AI`);
+      return output.articles;
+    }
+  } catch (e) {
+    console.error(`⚠️  Erreur de parsing de la réponse rewrite-news: ${e.message}`);
+  }
+
+  return null;
 }
 
 async function fetchFromGNews() {
@@ -190,18 +242,41 @@ async function main() {
   // Trier par date décroissante avant de prendre les 6 plus récents
   gaming.sort((a, b) => new Date(b.publishedAt || b.dateTimePub || 0) - new Date(a.publishedAt || a.dateTimePub || 0));
 
-  // Transformer et catégoriser
-  const articles = gaming.slice(0, 3).map(a => {
+  // Prendre les 3 articles les plus récents pour transformation
+  const topArticles = gaming.slice(0, 3);
+
+  // Étape 1 : Transformer avec les métadonnées de base
+  const baseArticles = topArticles.map(a => {
     const topic = categorizeArticle(a.title, a.description || a.content || '');
     return transformArticle(a, topic);
   });
+
+  // Étape 2 : Réécriture IA via Mistral AI (si configuré)
+  let finalArticles;
+  const rewritten = rewriteWithAI(topArticles);
+  if (rewritten && rewritten.length > 0) {
+    // On garde les images et URLs des articles de base, mais on prend le contenu réécrit
+    finalArticles = rewritten.map((rw, i) => ({
+      ...rw,
+      image: baseArticles[i]?.image || rw.image,
+      url: baseArticles[i]?.url || rw.url,
+      dateTimePub: baseArticles[i]?.dateTimePub || rw.dateTimePub,
+      source: 'InsiderGamingtriks',
+      originalSource: baseArticles[i]?.originalSource || rw.originalSource || '',
+    }));
+    console.log('✅ Articles réécrits avec contenu original Insider Gaming Tricks');
+  } else {
+    // Fallback : utiliser les articles de base (non réécrits)
+    finalArticles = baseArticles;
+    console.log('ℹ️  Utilisation des articles sans réécriture IA (fallback)');
+  }
 
   const publicPath = path.join(__dirname, '..', 'public');
 
   // Archiver les anciennes news avant d'écraser
   archiveOldNews(publicPath);
 
-  const output = { articles, generatedAt: new Date().toISOString() };
+  const output = { articles: finalArticles, generatedAt: new Date().toISOString() };
   fs.writeFileSync(path.join(publicPath, 'news.json'), JSON.stringify(output, null, 2), 'utf-8');
 
   const docsPath = path.join(__dirname, '..', 'docs');
@@ -209,8 +284,8 @@ async function main() {
     fs.writeFileSync(path.join(docsPath, 'news.json'), JSON.stringify(output, null, 2), 'utf-8');
   }
 
-  console.log(`\n=== ${articles.length} news générées ===`);
-  articles.forEach((a, i) => console.log(`${i + 1}. [${a.topic}] ${a.title.substring(0, 60)}`));
+  console.log(`\n=== ${finalArticles.length} news générées ===`);
+  finalArticles.forEach((a, i) => console.log(`${i + 1}. [${(a.categories || [a.topic || 'JEUX']).join(', ')}] ${a.title.substring(0, 60)}`));
 }
 
 main().catch(console.error);

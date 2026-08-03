@@ -5,12 +5,16 @@ import Navbar from '@/components/gaming/Navbar';
 type NewsArticle = {
   title: string;
   body: string;
+  summary?: string;
   content?: string;
+  review?: string;
   url: string;
   image: string;
   dateTimePub: string;
   source: string;
   topic: string;
+  categories?: string[];
+  originalSource?: string;
 };
 
 const formatDate = (dateString: string) => {
@@ -58,8 +62,44 @@ const NewsPage: React.FC = () => {
               <span className="text-gray-500">|</span>
               <span>{article.source}</span>
             </div>
+
+            {/* Badges catégories */}
+            {article.categories && article.categories.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {article.categories.map((cat, i) => (
+                  <span key={i} className="px-3 py-1 bg-gray-800 text-gray-300 text-xs font-semibold uppercase tracking-wider rounded-full border border-gray-700">
+                    {cat}
+                  </span>
+                ))}
+              </div>
+            )}
+
             <h1 className="text-2xl md:text-3xl font-black text-white">{article.title}</h1>
-            <p className="text-gray-300 leading-relaxed whitespace-pre-line">{article.content || article.body}</p>
+
+            {/* Résumé */}
+            {article.summary && (
+              <div className="border-l-4 border-red-500 pl-4 py-2 bg-red-950/20 rounded-r-lg">
+                <p className="text-gray-200 text-base italic leading-relaxed">{article.summary}</p>
+              </div>
+            )}
+
+            {/* Corps de l'article */}
+            <div className="text-gray-300 leading-relaxed whitespace-pre-line space-y-4">
+              {(article.content || article.body || '').split('\n').filter(p => p.trim()).map((paragraph, i) => (
+                <p key={i}>{paragraph}</p>
+              ))}
+            </div>
+
+            {/* Section "Notre avis" */}
+            {article.review && (
+              <div className="mt-6 p-5 border border-red-500/30 bg-gradient-to-r from-red-950/30 to-gray-900 rounded-xl">
+                <span className="inline-flex items-center gap-2 px-3 py-1 bg-red-600/20 border border-red-600/30 rounded-full text-red-400 text-xs font-bold uppercase tracking-widest mb-3">
+                  🎯 Notre avis
+                </span>
+                <p className="text-gray-200 text-base leading-relaxed mt-2">{article.review}</p>
+              </div>
+            )}
+
             {article.url && !article.url.includes('insidergamingtriks.com/news/') && (
               <a href={article.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mt-4 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition">
                 Lire l'article complet
