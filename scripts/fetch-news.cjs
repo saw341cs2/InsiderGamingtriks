@@ -91,14 +91,9 @@ function rewriteWithAI(rawArticles) {
   }
 
   if (result.status !== 0) {
-    console.error(`⚠️  rewrite-news exit code ${result.status}`);
-    console.error(`STDERR: ${result.stderr?.substring(0, 1000)}`);
-    console.error(`STDOUT: ${result.stdout?.substring(0, 500)}`);
+    console.error(`⚠️  rewrite-news exit code ${result.status}: ${result.stderr?.substring(0, 1000)}`);
     return null;
   }
-
-  console.log(`DEBUG stdout length: ${result.stdout?.length}`);
-  console.log(`DEBUG stderr: ${result.stderr?.substring(0, 500)}`);
 
   // La sortie stdout du script contient le JSON des articles réécrits
   try {
@@ -107,9 +102,9 @@ function rewriteWithAI(rawArticles) {
       console.log(`✅ ${output.articles.length} articles réécrits avec succès via Mistral AI`);
       return output.articles;
     }
-    console.error(`⚠️  output.articles vide ou absent: ${JSON.stringify(output).substring(0, 200)}`);
+    console.error(`⚠️  output.articles vide: ${result.stderr?.substring(0, 500)}`);
   } catch (e) {
-    console.error(`⚠️  Erreur de parsing: ${e.message} — stdout: ${result.stdout?.substring(0, 300)}`);
+    console.error(`⚠️  Erreur de parsing: ${e.message}`);
   }
 
   return null;
