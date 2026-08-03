@@ -7,9 +7,14 @@ type NewsArticle = {
   body: string;
   summary?: string;
   content?: string;
+<<<<<<< HEAD
   review?: string;
+=======
+  avis?: string;
+>>>>>>> b9b01ce513d9c39c255aae42ac6da6c1639f4efe
   url: string;
   image: string;
+  imageCredit?: { name: string; url?: string } | null;
   dateTimePub: string;
   source: string;
   topic: string;
@@ -42,18 +47,22 @@ const NewsPage: React.FC = () => {
     <div className="min-h-screen bg-black text-white">
       <Navbar activeSection="" onNavigate={() => navigate('/')} />
       <div className="max-w-3xl mx-auto px-4 py-12">
-        <button
-          onClick={() => navigate('/')}
-          className="mb-8 inline-flex items-center gap-2 text-sm text-gray-400 hover:text-red-400 transition"
-        >
+        <button onClick={() => navigate('/')} className="mb-8 inline-flex items-center gap-2 text-sm text-gray-400 hover:text-red-400 transition">
           Retour
         </button>
         <div className="rounded-2xl overflow-hidden border border-gray-800 bg-gray-900">
-          <img
-            src={article.image}
-            alt={article.title}
-            className="w-full h-64 object-cover"
-          />
+          <div className="relative">
+            <img src={article.image} alt={article.title} className="w-full h-64 object-cover" />
+            {article.imageCredit?.name && (
+              <span className="absolute bottom-1 right-2 text-[10px] text-gray-300/80 bg-black/40 px-2 py-0.5 rounded">
+                Photo : {article.imageCredit.url ? (
+                  <a href={article.imageCredit.url} target="_blank" rel="noopener noreferrer" className="underline">
+                    {article.imageCredit.name}
+                  </a>
+                ) : article.imageCredit.name} / Unsplash
+              </span>
+            )}
+          </div>
           <div className="p-8 space-y-4">
             <div className="flex items-center gap-3 text-xs uppercase tracking-widest text-red-400">
               <span>{article.topic}</span>

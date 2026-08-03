@@ -43,10 +43,16 @@ jobs:
       - name: Generate news (fetch + rewrite via Mistral AI)
         if: env.SKIP != 'true'
         env:
+<<<<<<< HEAD
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
           GNEWS_API_KEY: ${{ secrets.GNEWS_API_KEY }}
           NEWSDATA_API_KEY: ${{ secrets.NEWSDATA_API_KEY }}
         run: node scripts/fetch-news.cjs || node scripts/generate-news.cjs
+=======
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+        run: node scripts/rewrite-news.cjs || node scripts/generate-news.cjs
+>>>>>>> b9b01ce513d9c39c255aae42ac6da6c1639f4efe
 
       - name: Generate videos
         if: env.SKIP != 'true'
