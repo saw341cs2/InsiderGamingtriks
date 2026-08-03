@@ -249,8 +249,8 @@ async function main() {
   // Trier par date décroissante avant de prendre les 6 plus récents
   gaming.sort((a, b) => new Date(b.publishedAt || b.dateTimePub || 0) - new Date(a.publishedAt || a.dateTimePub || 0));
 
-  // Prendre les 3 articles les plus récents pour transformation
-  const topArticles = gaming.slice(0, 3);
+  // Prendre les 5 articles les plus récents pour transformation (marge si Mistral en rate)
+  const topArticles = gaming.slice(0, 5);
 
   // Étape 1 : Transformer avec les métadonnées de base
   const baseArticles = topArticles.map(a => {
@@ -270,7 +270,7 @@ async function main() {
       dateTimePub: baseArticles[i]?.dateTimePub || rw.dateTimePub,
       source: 'InsiderGamingtriks',
       originalSource: baseArticles[i]?.originalSource || rw.originalSource || '',
-    }));
+    })).slice(0, 3);
     console.log('✅ Articles réécrits avec contenu original Insider Gaming Tricks');
   } else {
     // Fallback : utiliser les articles de base (non réécrits)
