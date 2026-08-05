@@ -114,7 +114,7 @@ async function fetchFromGNews() {
   const apiKey = process.env.GNEWS_API_KEY;
   if (!apiKey) { console.log('GNews: pas de clé API'); return []; }
   try {
-    const queries = ['cs2 counter-strike', 'valorant warzone fps', 'battlefield call of duty', 'esport fps tournoi', 'apex legends overwatch'];
+    const queries = ['cs2 counter-strike valorant', 'battlefield call of duty warzone', 'esport fps tournoi', 'souris clavier gaming promo', 'apex legends overwatch pro player'];
     let all = [];
     for (const q of queries) {
       const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(q)}&lang=fr&max=10&apikey=${apiKey}`;
@@ -144,7 +144,7 @@ async function fetchFromNewsDataIO() {
   } catch (e) { console.log('NewsData erreur:', e.message); return []; }
 }
 
-const GAMING_KEYWORDS = ['fps', 'cs2', 'counter-strike', 'valorant', 'warzone', 'battlefield', 'call of duty', 'cod', 'apex', 'halo', 'overwatch', 'rainbow six', 'r6', 'esport', 'tournoi', 'pro player', 'patch', 'update', 'aim', 'headshot', 'recoil', 'crosshair', 'gameplay', 'ranking', 'ranked', 'clutch', 'fragmovie', 'streamer', 'twitch'];
+const GAMING_KEYWORDS = ['fps', 'cs2', 'counter-strike', 'valorant', 'warzone', 'battlefield', 'call of duty', 'cod', 'apex', 'halo', 'overwatch', 'rainbow six', 'r6', 'esport', 'tournoi', 'pro player', 'patch', 'update', 'aim', 'headshot', 'recoil', 'crosshair', 'gameplay', 'ranking', 'ranked', 'clutch', 'streamer', 'twitch', 'souris', 'clavier', 'casque', 'moniteur', 'gpu', 'cpu', 'carte graphique', 'hardware', 'setup', 'peripherique', '144hz', 'promo', 'soldes', 'offre', 'reduction'];
 
 function isGamingArticle(title, description) {
   const text = `${title} ${description}`.toLowerCase();
