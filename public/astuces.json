@@ -1,6 +1,23 @@
 {
   "astuces": [
     {
+      "id": 5,
+      "title": "Apex Legends : Survivre en solo contre des squads complets",
+      "game": "CS2",
+      "gameId": "general",
+      "difficulty": "Expert",
+      "isPremium": true,
+      "category": "Survie",
+      "views": 9800,
+      "rating": 4.7,
+      "date": "Aujourd'hui",
+      "image": "https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=400&h=300&fit=crop",
+      "summary": "Tes coéquipiers sont morts en 30 secondes ? Voici comment finir le match quand même.",
+      "content": "Se retrouver seul contre des squads complets dans Apex Legends, c'est la situation la plus difficile du jeu. Mais avec la bonne approche, tu peux non seulement survivre mais aussi gagner.\n\nLa règle d'or : ne jamais engager un squad complet de face. Ton seul avantage en solo, c'est la mobilité et l'imprévisibilité.\n\nStratégie de survie :\nEvite les zones ouvertes — reste dans les bâtiments et les zones avec beaucoup de couverture. Déplace-toi constamment, ne reste jamais au même endroit plus de 10 secondes après un engagement.\n\nComment éliminer des squads complets :\n1. Attends qu'ils se battent contre un autre squad\n2. Interviens quand ils sont affaiblis et en train de se soigner\n3. Priorise le joueur qui se ressuscite — il est immobile\n4. Prends le kill et repositionne-toi immédiatement\n\nGestion des ressources :\nGarde toujours une grenade pour forcer les ennemis à bouger. Un bouclier de niveau 3 minimum est indispensable. Priorise les soins rapides plutôt que les grandes batteries.",
+      "review": "Notre avis : jouer en solo dans Apex est l'une des expériences les plus intenses du gaming. Maîtriser cette situation te rend bien meilleur même quand tu joues en équipe.",
+      "description": "Guide complet pour survivre et gagner en solo contre des squads complets dans Apex Legends."
+    },
+    {
       "id": 4,
       "title": "Valorant : Maîtriser Jett pour dominer en ranked en 2026",
       "game": "CS2",
@@ -10,7 +27,7 @@
       "category": "Agent",
       "views": 14200,
       "rating": 4.8,
-      "date": "Aujourd'hui",
+      "date": "Il y a 2 jours",
       "image": "https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=400&h=300&fit=crop",
       "summary": "Jett reste l'agent le plus fort en ranked si tu sais exploiter ses capacités à fond.",
       "content": "Jett est l'agent duelliste par excellence dans Valorant. En 2026, après plusieurs nerfs, beaucoup de joueurs l'ont abandonnée. Erreur — elle reste redoutable si tu comprends comment l'utiliser correctement.\n\nSes forces actuelles :\nSa dash (E) est toujours l'une des meilleures capacités de mobilité du jeu. Elle te permet de prendre des angles impossibles pour les autres agents et de fuir instantanément après un kill. Son ultime Blade Storm reste dévastateur en mains expertes.\n\nComment jouer Jett efficacement :\nUtilise ta dash pour entrer sur site, pas pour fuir. Les meilleurs joueurs Jett entrent en premier, prennent 1-2 kills, et ressortent avant que l'équipe adverse réagisse. Ne garde pas ta dash pour la fin du round — utilise-la de manière agressive.\n\nCombo gagnant :\n1. Updraft (Q) pour monter sur une caisse ou un toit inattendu\n2. Dash (E) pour traverser rapidement\n3. Tire, prends le kill\n4. Dash à nouveau pour sortir\n\nErreur classique : garder ses capacités au lieu de les utiliser. Jett est une agent agressive — joue-la comme telle.",
@@ -27,29 +44,12 @@
       "category": "Mouvement",
       "views": 8400,
       "rating": 4.9,
-      "date": "Il y a 2 jours",
+      "date": "Il y a 4 jours",
       "image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=300&fit=crop",
       "summary": "Une technique de mouvement simple qui te donne l'avantage dans 90% des duels.",
       "content": "Le wide peek est probablement la technique la plus sous-estimée par les joueurs casual en CS2. Pourtant, c'est celle que tu vois dans chaque highlight de pro.\n\nLe principe est simple : en sortant très large d'un angle, tu forces l'adversaire à déplacer son réticule beaucoup plus vite que toi. Son crosshair doit parcourir une grande distance pendant que le tien n'a qu'à bouger légèrement. Résultat : tu tires en premier, même si ta réaction est moins rapide.\n\nComment l'exécuter correctement :\nApproche l'angle en marchant (shift) pour ne pas alerter l'ennemi. Ensuite, sors très large et rapidement — ne longe surtout pas le mur. Tire dès que tu aperçois une partie du corps adverse. Ne t'arrête pas au milieu du peek, continue ton mouvement.\n\nL'erreur que tout le monde fait : sortir trop près du mur. Dans ce cas, c'est l'ennemi qui te voit en premier et tu perds le duel avant même d'avoir tiré.\n\nEntraîne-toi sur Deathmatch en te forçant à faire uniquement des wide peeks pendant 15 minutes par jour. En une semaine, tu verras une différence énorme sur ton ratio de duels gagnés.",
       "review": "Notre avis : cette technique change vraiment la donne. Une fois maîtrisée, tu gagnes des duels que tu perdais systématiquement avant. Indispensable pour monter en rank.",
       "description": "Le wide peek est la technique la plus efficace pour prendre l'avantage dans un duel en CS2. Sors large, tire vite, domine."
-    },
-    {
-      "id": 5,
-      "title": "Apex Legends : Survivre en solo contre des squads complets",
-      "game": "CS2",
-      "gameId": "general",
-      "difficulty": "Expert",
-      "isPremium": true,
-      "category": "Survie",
-      "views": 9800,
-      "rating": 4.7,
-      "date": "Il y a 4 jours",
-      "image": "https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=400&h=300&fit=crop",
-      "summary": "Tes coéquipiers sont morts en 30 secondes ? Voici comment finir le match quand même.",
-      "content": "Se retrouver seul contre des squads complets dans Apex Legends, c'est la situation la plus difficile du jeu. Mais avec la bonne approche, tu peux non seulement survivre mais aussi gagner.\n\nLa règle d'or : ne jamais engager un squad complet de face. Ton seul avantage en solo, c'est la mobilité et l'imprévisibilité.\n\nStratégie de survie :\nEvite les zones ouvertes — reste dans les bâtiments et les zones avec beaucoup de couverture. Déplace-toi constamment, ne reste jamais au même endroit plus de 10 secondes après un engagement.\n\nComment éliminer des squads complets :\n1. Attends qu'ils se battent contre un autre squad\n2. Interviens quand ils sont affaiblis et en train de se soigner\n3. Priorise le joueur qui se ressuscite — il est immobile\n4. Prends le kill et repositionne-toi immédiatement\n\nGestion des ressources :\nGarde toujours une grenade pour forcer les ennemis à bouger. Un bouclier de niveau 3 minimum est indispensable. Priorise les soins rapides plutôt que les grandes batteries.",
-      "review": "Notre avis : jouer en solo dans Apex est l'une des expériences les plus intenses du gaming. Maîtriser cette situation te rend bien meilleur même quand tu joues en équipe.",
-      "description": "Guide complet pour survivre et gagner en solo contre des squads complets dans Apex Legends."
     },
     {
       "id": 3,
@@ -103,8 +103,8 @@
       "description": "Guide complet pour trouver et régler la sensibilité souris parfaite en FPS. eDPI, DPI, sensibilité in-game — tout ce qu'il faut savoir."
     }
   ],
-  "generatedAt": "2026-08-17T04:38:46.150Z",
+  "generatedAt": "2026-08-19T04:33:49.245Z",
   "dailyPick": [
-    4
+    5
   ]
 }
