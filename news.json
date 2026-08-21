@@ -1,0 +1,59 @@
+{
+  "articles": [
+    {
+      "title": "💻 RTX 5090 vs RX 9900 XTX : le duel des GPU gaming",
+      "body": "On a comparé les deux monstres du marché GPU. Performances en 4K, ray tracing et rapport qualité/prix analysés.",
+      "url": "https://insidertricks.fr/news/rtx5090-vs-rx9900",
+      "image": "https://images.unsplash.com/photo-1591488320449-011701bb6704?w=800&h=450&fit=crop",
+      "topic": "MATERIEL",
+      "dateTimePub": "2026-08-21T11:31:08.553Z",
+      "source": "InsiderGamingtriks"
+    },
+    {
+      "title": "🎮 Overwatch 2 : la saison 15 apporte des changements majeurs",
+      "body": "Blizzard annonce des changements profonds pour la saison 15 d'Overwatch 2. Nouveau mode de jeu et héros retravaill.",
+      "url": "https://insidertricks.fr/news/overwatch2-saison15",
+      "image": "https://images.unsplash.com/photo-1547394765-185e1e68f34e?w=800&h=450&fit=crop",
+      "topic": "JEUX",
+      "dateTimePub": "2026-08-21T11:31:08.553Z",
+      "source": "InsiderGamingtriks"
+    },
+    {
+      "title": "🎯 Valorant : patch 9.0 — tous les changements d'agents",
+      "body": "Riot Games déploie le patch 9.0 de Valorant. Nerfs, buffs et reworks : voici tout ce qui change pour les agents.",
+      "url": "https://insidertricks.fr/news/valorant-patch-9",
+      "image": "https://images.unsplash.com/photo-1542751110-97427bbecf20?w=800&h=450&fit=crop",
+      "topic": "FPS",
+      "dateTimePub": "2026-08-20T11:31:08.553Z",
+      "source": "InsiderGamingtriks"
+    },
+    {
+      "title": "🌍 Rainbow Six Siege : la nouvelle opération dévoilée",
+      "body": "Ubisoft présente la nouvelle opération de Rainbow Six Siege avec deux nouveaux opérateurs et une map remasterisée.",
+      "url": "https://insidertricks.fr/news/r6-nouvelle-operation",
+      "image": "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=800&h=450&fit=crop",
+      "topic": "FPS",
+      "dateTimePub": "2026-08-20T11:31:08.553Z",
+      "source": "InsiderGamingtriks"
+    },
+    {
+      "title": "🏆 Fnatic remporte l'IEM Cologne 2026 face à NaVi",
+      "body": "Fnatic s'impose en finale de l'IEM Cologne dans un match épique en 3 maps. Retour au sommet pour la légende britannique.",
+      "url": "https://insidertricks.fr/news/fnatic-iem-cologne-2026",
+      "image": "https://images.unsplash.com/photo-1560253023-3ec5d502959f?w=800&h=450&fit=crop",
+      "topic": "COMPETITION",
+      "dateTimePub": "2026-08-19T11:31:08.553Z",
+      "source": "InsiderGamingtriks"
+    },
+    {
+      "title": "⌨️ Guide : choisir son clavier mécanique pour le gaming",
+      "body": "Cherry MX Red, Blue ou Brown ? On t'explique tout sur les switchs mécaniques pour trouver le clavier parfait.",
+      "url": "https://insidertricks.fr/news/guide-clavier-mecanique",
+      "image": "https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=800&h=450&fit=crop",
+      "topic": "MATERIEL",
+      "dateTimePub": "2026-08-19T11:31:08.553Z",
+      "source": "InsiderGamingtriks"
+    }
+  ],
+  "generatedAt": "2026-08-21T11:31:08.553Z"
+}
