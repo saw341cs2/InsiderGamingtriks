@@ -1,6 +1,23 @@
 {
   "astuces": [
     {
+      "id": 2,
+      "title": "Battlefield : La classe Support joue mieux que le Assault — voilà pourquoi",
+      "game": "BF",
+      "gameId": "battlefield",
+      "difficulty": "Débutant",
+      "isPremium": true,
+      "category": "Classe",
+      "views": 5200,
+      "rating": 4.7,
+      "date": "Aujourd'hui",
+      "image": "https://images.unsplash.com/photo-1547394765-185e1e68f34e?w=400&h=300&fit=crop",
+      "summary": "La classe la plus rentable en points si tu sais l'utiliser — et la plupart des joueurs ne savent pas.",
+      "content": "La majorité des joueurs Battlefield choisissent Assault parce qu'ils veulent des kills. Erreur. La classe Support, bien jouée, te met systématiquement dans le top 3 du scoreboard sans avoir besoin de dominer les gunfights.\n\nPourquoi Support est si fort :\nChaque caisse de munitions posée près d'un objectif te rapporte des points en continu. Chaque résurrection au défibrillateur te donne un bonus. Chaque suppression ennemie aide ton équipe à avancer et te rapporte des points.\n\nÉquipement optimal :\nPrends le LMG avec bipied — pose-toi derrière une couverture et arrose les zones. Équipe la caisse de munitions et le défibrillateur. Ces deux gadgets sont ta vraie arme.\n\nLes 4 règles du bon Support :\n1. Pose ta caisse AVANT le combat, pas pendant\n2. Reste près des objectifs, pas à l'arrière\n3. Ressuscite en priorité les Medics et Engineers\n4. Ne cherche pas les kills — cherche la suppression\n\nUn Support bien joué peut finir top 3 avec 8 kills et 15 résurrections. Les kills ne font pas tout.",
+      "review": "Notre avis : si tu veux progresser rapidement en Battlefield et aider ton équipe à gagner, Support est le meilleur choix. Moins glamour que Assault, mais bien plus efficace.",
+      "description": "La classe Support est la plus rentable en points si tu sais l'utiliser. Caisses de munitions, résurrections, suppression — voici comment scorer sans forcer."
+    },
+    {
       "id": 5,
       "title": "Apex Legends : Survivre en solo contre des squads complets",
       "game": "CS2",
@@ -10,7 +27,7 @@
       "category": "Survie",
       "views": 9800,
       "rating": 4.7,
-      "date": "Aujourd'hui",
+      "date": "Il y a 2 jours",
       "image": "https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=400&h=300&fit=crop",
       "summary": "Tes coéquipiers sont morts en 30 secondes ? Voici comment finir le match quand même.",
       "content": "Se retrouver seul contre des squads complets dans Apex Legends, c'est la situation la plus difficile du jeu. Mais avec la bonne approche, tu peux non seulement survivre mais aussi gagner.\n\nLa règle d'or : ne jamais engager un squad complet de face. Ton seul avantage en solo, c'est la mobilité et l'imprévisibilité.\n\nStratégie de survie :\nEvite les zones ouvertes — reste dans les bâtiments et les zones avec beaucoup de couverture. Déplace-toi constamment, ne reste jamais au même endroit plus de 10 secondes après un engagement.\n\nComment éliminer des squads complets :\n1. Attends qu'ils se battent contre un autre squad\n2. Interviens quand ils sont affaiblis et en train de se soigner\n3. Priorise le joueur qui se ressuscite — il est immobile\n4. Prends le kill et repositionne-toi immédiatement\n\nGestion des ressources :\nGarde toujours une grenade pour forcer les ennemis à bouger. Un bouclier de niveau 3 minimum est indispensable. Priorise les soins rapides plutôt que les grandes batteries.",
@@ -27,7 +44,7 @@
       "category": "Agent",
       "views": 14200,
       "rating": 4.8,
-      "date": "Il y a 2 jours",
+      "date": "Il y a 4 jours",
       "image": "https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=400&h=300&fit=crop",
       "summary": "Jett reste l'agent le plus fort en ranked si tu sais exploiter ses capacités à fond.",
       "content": "Jett est l'agent duelliste par excellence dans Valorant. En 2026, après plusieurs nerfs, beaucoup de joueurs l'ont abandonnée. Erreur — elle reste redoutable si tu comprends comment l'utiliser correctement.\n\nSes forces actuelles :\nSa dash (E) est toujours l'une des meilleures capacités de mobilité du jeu. Elle te permet de prendre des angles impossibles pour les autres agents et de fuir instantanément après un kill. Son ultime Blade Storm reste dévastateur en mains expertes.\n\nComment jouer Jett efficacement :\nUtilise ta dash pour entrer sur site, pas pour fuir. Les meilleurs joueurs Jett entrent en premier, prennent 1-2 kills, et ressortent avant que l'équipe adverse réagisse. Ne garde pas ta dash pour la fin du round — utilise-la de manière agressive.\n\nCombo gagnant :\n1. Updraft (Q) pour monter sur une caisse ou un toit inattendu\n2. Dash (E) pour traverser rapidement\n3. Tire, prends le kill\n4. Dash à nouveau pour sortir\n\nErreur classique : garder ses capacités au lieu de les utiliser. Jett est une agent agressive — joue-la comme telle.",
@@ -44,7 +61,7 @@
       "category": "Mouvement",
       "views": 8400,
       "rating": 4.9,
-      "date": "Il y a 4 jours",
+      "date": "Il y a 6 jours",
       "image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=400&h=300&fit=crop",
       "summary": "Une technique de mouvement simple qui te donne l'avantage dans 90% des duels.",
       "content": "Le wide peek est probablement la technique la plus sous-estimée par les joueurs casual en CS2. Pourtant, c'est celle que tu vois dans chaque highlight de pro.\n\nLe principe est simple : en sortant très large d'un angle, tu forces l'adversaire à déplacer son réticule beaucoup plus vite que toi. Son crosshair doit parcourir une grande distance pendant que le tien n'a qu'à bouger légèrement. Résultat : tu tires en premier, même si ta réaction est moins rapide.\n\nComment l'exécuter correctement :\nApproche l'angle en marchant (shift) pour ne pas alerter l'ennemi. Ensuite, sors très large et rapidement — ne longe surtout pas le mur. Tire dès que tu aperçois une partie du corps adverse. Ne t'arrête pas au milieu du peek, continue ton mouvement.\n\nL'erreur que tout le monde fait : sortir trop près du mur. Dans ce cas, c'est l'ennemi qui te voit en premier et tu perds le duel avant même d'avoir tiré.\n\nEntraîne-toi sur Deathmatch en te forçant à faire uniquement des wide peeks pendant 15 minutes par jour. En une semaine, tu verras une différence énorme sur ton ratio de duels gagnés.",
@@ -61,29 +78,12 @@
       "category": "Stratégie",
       "views": 11300,
       "rating": 4.8,
-      "date": "Il y a 6 jours",
+      "date": "Il y a 8 jours",
       "image": "https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?w=400&h=300&fit=crop",
       "summary": "90% des joueurs perdent au cercle final à cause d'erreurs de positionnement évitables.",
       "content": "Le cercle final de Warzone, c'est là où tout se joue. Et pourtant, la plupart des joueurs font les mêmes erreurs en boucle : ils arrivent en retard, se positionnent au centre, ou gaspillent leurs ressources trop tôt.\n\nLa règle numéro 1 : entre dans le cercle final AVANT les autres. Jamais en dernier. Celui qui court dans le gaz en top 5 est déjà mort — il est à découvert, affaibli, et tout le monde le voit.\n\nPositionnement gagnant :\nCherche une position en hauteur avec une couverture dans le dos. Ne va jamais au centre du cercle — tu seras pris en sandwich entre deux équipes. Colle-toi au bord du cercle, dos au gaz, et laisse les ennemis venir à toi.\n\nGestion des ressources :\nGarde au minimum 2 plaques d'armure pour le final. Conserve tes grenades fumigènes — elles te sauvent la vie pour te repositionner. Un sniper ou un fusil longue portée est indispensable quand il reste 5 équipes.\n\nLa mentalité qui fait gagner :\nLaisse les autres s'entre-tuer. Interviens uniquement quand un ennemi est affaibli. Un kill au bon moment vaut mieux que 5 kills risqués qui t'exposent. La patience bat l'agressivité dans le cercle final — toujours.",
       "review": "Notre avis : cette approche passive-agressive du cercle final est celle des joueurs qui gagnent régulièrement. Arrête de rush, commence à penser.",
       "description": "Le cercle final se gagne avant tout avec le positionnement et la patience. Voici la stratégie complète pour finir top 1 plus souvent."
-    },
-    {
-      "id": 2,
-      "title": "Battlefield : La classe Support joue mieux que le Assault — voilà pourquoi",
-      "game": "BF",
-      "gameId": "battlefield",
-      "difficulty": "Débutant",
-      "isPremium": true,
-      "category": "Classe",
-      "views": 5200,
-      "rating": 4.7,
-      "date": "Il y a 8 jours",
-      "image": "https://images.unsplash.com/photo-1547394765-185e1e68f34e?w=400&h=300&fit=crop",
-      "summary": "La classe la plus rentable en points si tu sais l'utiliser — et la plupart des joueurs ne savent pas.",
-      "content": "La majorité des joueurs Battlefield choisissent Assault parce qu'ils veulent des kills. Erreur. La classe Support, bien jouée, te met systématiquement dans le top 3 du scoreboard sans avoir besoin de dominer les gunfights.\n\nPourquoi Support est si fort :\nChaque caisse de munitions posée près d'un objectif te rapporte des points en continu. Chaque résurrection au défibrillateur te donne un bonus. Chaque suppression ennemie aide ton équipe à avancer et te rapporte des points.\n\nÉquipement optimal :\nPrends le LMG avec bipied — pose-toi derrière une couverture et arrose les zones. Équipe la caisse de munitions et le défibrillateur. Ces deux gadgets sont ta vraie arme.\n\nLes 4 règles du bon Support :\n1. Pose ta caisse AVANT le combat, pas pendant\n2. Reste près des objectifs, pas à l'arrière\n3. Ressuscite en priorité les Medics et Engineers\n4. Ne cherche pas les kills — cherche la suppression\n\nUn Support bien joué peut finir top 3 avec 8 kills et 15 résurrections. Les kills ne font pas tout.",
-      "review": "Notre avis : si tu veux progresser rapidement en Battlefield et aider ton équipe à gagner, Support est le meilleur choix. Moins glamour que Assault, mais bien plus efficace.",
-      "description": "La classe Support est la plus rentable en points si tu sais l'utiliser. Caisses de munitions, résurrections, suppression — voici comment scorer sans forcer."
     },
     {
       "id": 6,
@@ -103,8 +103,8 @@
       "description": "Guide complet pour trouver et régler la sensibilité souris parfaite en FPS. eDPI, DPI, sensibilité in-game — tout ce qu'il faut savoir."
     }
   ],
-  "generatedAt": "2026-08-19T04:33:49.245Z",
+  "generatedAt": "2026-08-21T04:34:51.441Z",
   "dailyPick": [
-    5
+    2
   ]
 }
