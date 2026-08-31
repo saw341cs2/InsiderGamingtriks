@@ -1,0 +1,48 @@
+{
+  "videos": [
+    {
+      "id": 0,
+      "title": "Video Short - InsiderGamingTricks",
+      "game": "PC",
+      "topic": "FPS",
+      "duration": "",
+      "youtubeId": "",
+      "thumbnail": "",
+      "views": "0",
+      "likes": "0",
+      "date": "Aujourd'hui",
+      "youtubeUrl": "",
+      "featured": false,
+      "localVideoPath": "videos/video-short.mp4"
+    },
+    {
+      "id": 1,
+      "title": "Tuto : Optimiser Windows 11 pour le gaming FPS",
+      "game": "PC",
+      "topic": "MATERIEL",
+      "duration": "22:40",
+      "youtubeId": "ScNTWbKMZX4",
+      "thumbnail": "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=640&h=360&fit=crop",
+      "views": "534K",
+      "likes": "31K",
+      "date": "Aujourd'hui",
+      "youtubeUrl": "https://www.youtube.com/watch?v=ScNTWbKMZX4",
+      "featured": true
+    },
+    {
+      "id": 2,
+      "title": "Casque gaming : lequel choisir en 2026 ? Comparatif",
+      "game": "PC",
+      "topic": "MATERIEL",
+      "duration": "18:00",
+      "youtubeId": "ScNTWbKMZX4",
+      "thumbnail": "https://images.unsplash.com/photo-1595225476474-87563907a212?w=640&h=360&fit=crop",
+      "views": "145K",
+      "likes": "8K",
+      "date": "Aujourd'hui",
+      "youtubeUrl": "https://www.youtube.com/watch?v=ScNTWbKMZX4",
+      "featured": false
+    }
+  ],
+  "generatedAt": "2026-08-31T22:31:07.023Z"
+}
