@@ -107,7 +107,7 @@ Génère un article original en français au style Insider Gaming Tricks, même 
         { role: 'user', content: userPrompt },
       ],
       temperature: 0.8,
-      max_tokens: 1024,
+      max_tokens: 1800,
       response_format: { type: 'json_object' },
     }),
     signal: AbortSignal.timeout(30000),

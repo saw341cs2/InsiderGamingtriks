@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
+const { buildFallbackContent, buildFallbackReview } = require('./generate-news.cjs');
 
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
@@ -317,8 +318,10 @@ async function main() {
     // Fallback : utiliser les articles de base (non réécrits)
     finalArticles = baseArticles.map(article => ({
       ...article,
-      content: article.body,
+      content: buildFallbackContent(article),
       summary: article.body,
+      review: buildFallbackReview(article),
+      categories: [article.topic],
     })).slice(0, 3);
     console.log('ℹ️  Utilisation des articles sans réécriture IA (fallback)');
   }

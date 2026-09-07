@@ -265,9 +265,44 @@ function generateNews() {
   const selectedArticles = [...fpsArticles, ...allArticles.filter(article => !fpsArticles.includes(article))].slice(0, 3);
 
   return {
-    articles: selectedArticles,
+    articles: selectedArticles.map(article => ({
+      ...article,
+      summary: article.body,
+      content: buildFallbackContent(article),
+      review: buildFallbackReview(article),
+      categories: [article.topic],
+    })),
     generatedAt: new Date().toISOString(),
   };
+}
+
+function buildFallbackContent(article) {
+  const topicParagraphs = {
+    FPS: [
+      `Cette actualité concerne directement les joueurs de FPS, qui suivent de près les changements susceptibles de modifier leurs habitudes de jeu. Derrière l'annonce, ce sont surtout le rythme des parties, la précision et les choix de stratégie qui peuvent évoluer.`,
+      `Pour les joueurs réguliers, le plus important sera d'observer les effets concrets en match. Une modification annoncée comme secondaire peut changer la valeur d'une arme, d'une position ou d'une routine d'entraînement. Il faudra donc prendre le temps de tester avant de modifier définitivement ses réglages.`,
+      `Dans un environnement compétitif, l'adaptation fera la différence. Les équipes et les joueurs qui analyseront rapidement les changements pourront ajuster leur équipement, leurs déplacements et leur communication. Les prochains jours permettront de distinguer l'effet de nouveauté d'un véritable changement de méta.`,
+      `Notre rédaction suivra l'évolution du sujet et les retours de la communauté. En attendant, cette actualité mérite d'être surveillée par tous ceux qui veulent rester performants sans suivre aveuglément les premières réactions publiées en ligne.`,
+    ],
+    COMPETITION: [
+      `Cette actualité s'inscrit dans une scène esport où chaque résultat peut modifier l'équilibre entre les équipes. Les performances ne dépendent pas seulement du talent individuel : préparation, choix tactiques et capacité à garder son calme pèsent également lourd dans les moments décisifs.`,
+      `L'intérêt de ce rendez-vous réside aussi dans les détails. Une carte bien préparée, une adaptation rapide ou une lecture différente de l'adversaire peuvent faire basculer une rencontre. C'est souvent dans ces ajustements que se construit une victoire durable.`,
+      `Pour les spectateurs, les prochaines confrontations permettront de vérifier si la tendance actuelle se confirme. Pour les joueurs amateurs, ces matchs offrent aussi des exemples utiles de communication, de placement et de gestion des rounds sous pression.`,
+      `La suite de la compétition sera donc déterminante. Les résultats à venir donneront une image plus précise du niveau réel des participants et de leur capacité à répondre lorsque leurs adversaires auront eu le temps d'étudier leurs habitudes.`,
+    ],
+    JOUEURS: [
+      `Cette actualité met en lumière un joueur dont les choix peuvent avoir des conséquences sur toute une équipe. Dans l'esport moderne, une carrière se construit autant sur les performances que sur la compatibilité avec un projet, un encadrement et une méthode de travail.`,
+      `Le changement évoqué devra être observé sur la durée. Les premières apparitions attirent naturellement l'attention, mais c'est la régularité en match officiel qui permettra de juger l'efficacité de cette nouvelle étape.`,
+      `Au-delà du résultat immédiat, cette situation rappelle l'importance de la préparation et de la confiance. Un joueur performant doit pouvoir retrouver ses automatismes tout en s'intégrant aux habitudes de ses nouveaux partenaires.`,
+      `Les prochains matchs apporteront les réponses les plus fiables. Notre analyse se concentrera sur le rôle réellement occupé, les décisions prises en jeu et l'impact du joueur sur la dynamique collective.`,
+    ],
+  };
+  const paragraphs = topicParagraphs[article.topic] || topicParagraphs.FPS;
+  return [article.body, ...paragraphs].join('\n\n');
+}
+
+function buildFallbackReview(article) {
+  return `Notre avis : ${article.title.replace(/^\S+\s*/, '')} mérite d'être suivi, mais il faudra attendre davantage de données avant de tirer des conclusions définitives.`;
 }
 
 const NEWS_TARGETS = [
@@ -339,4 +374,4 @@ if (require.main === module) {
   main();
 }
 
-module.exports = { articlesPool, generateNews, main };
+module.exports = { articlesPool, generateNews, buildFallbackContent, buildFallbackReview, main };
