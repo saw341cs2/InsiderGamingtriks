@@ -18,13 +18,23 @@ const TOPICS = {
   jeux: ['jeu video', 'jeu', 'game', 'sortie', 'release', 'test', 'review', 'gaming', 'playstation', 'xbox', 'nintendo', 'patch', 'update', 'gameplay', 'astuce', 'trick', 'guide', 'nouveaute'],
 };
 
+/**
+ * Vérifie qu'un mot-clé apparaît comme un mot entier dans le texte (et non
+ * comme simple sous-chaîne). Évite les faux positifs du type "team" détecté
+ * à l'intérieur de "myTEAM" ou "cod" détecté à l'intérieur de "codes".
+ */
+function keywordMatches(text, keyword) {
+  const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`\\b${escaped}\\b`, 'i').test(text);
+}
+
 function categorizeArticle(title, description) {
   const text = `${title} ${description}`.toLowerCase();
-  for (const topic of TOPICS.fps) { if (text.includes(topic)) return 'fps'; }
-  for (const topic of TOPICS.competition) { if (text.includes(topic)) return 'competition'; }
-  for (const topic of TOPICS.materiel) { if (text.includes(topic)) return 'materiel'; }
-  for (const topic of TOPICS.gamers) { if (text.includes(topic)) return 'gamers'; }
-  for (const topic of TOPICS.jeux) { if (text.includes(topic)) return 'jeux'; }
+  for (const topic of TOPICS.fps) { if (keywordMatches(text, topic)) return 'fps'; }
+  for (const topic of TOPICS.competition) { if (keywordMatches(text, topic)) return 'competition'; }
+  for (const topic of TOPICS.materiel) { if (keywordMatches(text, topic)) return 'materiel'; }
+  for (const topic of TOPICS.gamers) { if (keywordMatches(text, topic)) return 'gamers'; }
+  for (const topic of TOPICS.jeux) { if (keywordMatches(text, topic)) return 'jeux'; }
   return 'jeux';
 }
 
@@ -122,6 +132,14 @@ async function fetchFromGNews() {
       const data = await res.json();
       if (data.articles) all = [...all, ...data.articles.map(a => ({ ...a, image: a.image }))];
     }
+    // Requêtes en anglais aussi pour plus de contenu FPS
+    const queriesEN = ['CS2 update patch', 'Valorant esport', 'Warzone Battlefield news'];
+    for (const q of queriesEN) {
+      const url = `https://gnews.io/api/v4/search?q=${encodeURIComponent(q)}&lang=en&max=5&apikey=${apiKey}`;
+      const res = await fetch(url, { headers: { 'User-Agent': USER_AGENT }, signal: AbortSignal.timeout(8000) });
+      const data = await res.json();
+      if (data.articles) all = [...all, ...data.articles.map(a => ({ ...a, image: a.image }))];
+    }
     console.log(`GNews: ${all.length} articles`);
     return all;
   } catch (e) { console.log('GNews erreur:', e.message); return []; }
@@ -144,18 +162,36 @@ async function fetchFromNewsDataIO() {
   } catch (e) { console.log('NewsData erreur:', e.message); return []; }
 }
 
-const GAMING_KEYWORDS = ['fps', 'cs2', 'counter-strike', 'valorant', 'warzone', 'battlefield', 'call of duty', 'cod', 'apex', 'halo', 'overwatch', 'rainbow six', 'r6', 'esport', 'tournoi', 'pro player', 'patch', 'update', 'aim', 'headshot', 'recoil', 'crosshair', 'gameplay', 'ranking', 'ranked', 'clutch', 'streamer', 'twitch', 'souris', 'clavier', 'casque', 'moniteur', 'gpu', 'cpu', 'carte graphique', 'hardware', 'setup', 'peripherique', '144hz', 'promo', 'soldes', 'offre', 'reduction'];
+const GAMING_KEYWORDS = [
+  // FPS titres spécifiques
+  'cs2', 'counter-strike', 'valorant', 'warzone', 'battlefield', 'call of duty', 'black ops', 'cod', 'apex legends', 'halo', 'overwatch', 'rainbow six siege', 'r6 siege', 'hunt showdown', 'escape from tarkov', 'delta force', 'xdefiant', 'the finals',
+  // Esport FPS
+  'esport', 'esports', 'major', 'vct', 'blast', 'iem', 'esl', 'pgl', 'faceit', 'pro league',
+  // Matériel gaming
+  'gaming mouse', 'gaming keyboard', 'gaming headset', 'gaming monitor', '144hz', '240hz', 'souris gaming', 'clavier gaming',
+];
+
+const EXCLUDE_KEYWORDS = [
+  'nba', 'fifa', 'football', 'pokemon', 'nintendo', 'mario', 'zelda', 'persona', 'final fantasy', 'dragon quest',
+  'mobile game', 'candy crush', 'clash of clans', 'minecraft', 'roblox', 'the sims', 'civilization',
+  'openai', 'chatgpt', 'ai model', 'machine learning',
+  'mlbb', 'mobile legends', 'free fire', 'pubg mobile',
+];
 
 function isGamingArticle(title, description) {
   const text = `${title} ${description}`.toLowerCase();
+  if (EXCLUDE_KEYWORDS.some(kw => text.includes(kw))) return false;
   return GAMING_KEYWORDS.some(kw => text.includes(kw));
 }
 
 async function fetchFromRSS() {
   const rssUrls = [
-    'https://www.jeuxvideo.com/rss/rss.xml',
-    'https://www.gamekult.com/feed.rss',
-    'https://www.millenium.org/rss.xml',
+    'https://www.jeuxvideo.com/rss/rss.xml',       // FR général gaming
+    'https://www.vlr.gg/rss',                       // Valorant esport
+    'https://dotesports.com/feed',                  // Esport général
+    'https://www.rockpapershotgun.com/feed',        // FPS PC spécialisé
+    'https://www.eurogamer.net/feed',               // Gaming général EN
+    'https://www.pcgamer.com/rss/',                 // PC gaming EN
   ];
   let all = [];
   for (const rssUrl of rssUrls) {
@@ -234,7 +270,7 @@ async function main() {
   console.log(`Articles gaming: ${gaming.length}`);
 
   // Si pas assez d'articles gaming, utiliser generate-news comme fallback
-  if (gaming.length < 2) {
+  if (gaming.length < 1) {
     console.log('Pas assez de news gaming, utilisation du fallback...');
     const gen = require('./generate-news.cjs');
     await gen.main();
