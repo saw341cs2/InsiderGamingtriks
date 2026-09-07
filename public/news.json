@@ -1,35 +1,32 @@
 {
   "articles": [
     {
-      "title": "This week in PC games: Wardogs, Shroom and Gloom, a heist game from the King of Dragon Pass creators, and a bullet time FPS inspired by F.E.A.R.",
-      "body": "Hello there, loyal regulars and filthy, fickle drop-ins! A merry New Week to you, wherever you are. Thanks for feeding the Maw while we were away last Monday. You were mostly successful in sating the creature's hunger and preventing cosmic disturb...",
-      "url": "https://www.rockpapershotgun.com/this-week-in-pc-games-wardogs-shroom-and-gloom-a-heist-game-from-the-king-of-dragon-pass-creators-and-a-bullet-time-fps-inspired-by-fear",
-      "image": "https://assetsio.gnwcdn.com/sprawl-zer.jpg?width=1200&amp;height=630&amp;fit=crop&amp;enable=upscale&amp;auto=webp",
-      "dateTimePub": "2026-09-07T12:33:27.000Z",
-      "source": "InsiderGamingtriks",
-      "originalSource": "rockpapershotgun.com",
-      "topic": "FPS"
+      "title": "🏆 NiKo rejoint une nouvelle équipe : les détails",
+      "body": "Nikola NiKo Kovač quitte G2 Esports et signe dans une nouvelle organisation. Analyse de ce transfert qui secoue la scène.",
+      "url": "https://insidertricks.fr/news/niko-nouveau-transfert",
+      "image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop",
+      "topic": "JOUEURS",
+      "dateTimePub": "2026-09-07T17:05:27.213Z",
+      "source": "InsiderGamingtriks"
     },
     {
-      "title": "Windows 11 va activer d'office une sécurité réduisant les FPS en jeu dès octobre",
-      "body": "Si vous avez constaté une baisse suspecte de vos performances en jeu après une mise à jour de Windows 11, le responsable pourrait bien se cacher au cœur de votre système. Microsoft déploie progressivement une fonction de sécurité gourmande en ress...",
-      "url": "https://www.jeuxvideo.com/news/2102234/windows-11-va-activer-d-office-une-securite-reduisant-les-fps-en-jeu-des-octobre.htm",
-      "image": "https://image.jeuxvideo.com/medias-lg/178852/1788521827-4230-card.jpg",
-      "dateTimePub": "2026-09-07T10:50:11.000Z",
-      "source": "InsiderGamingtriks",
-      "originalSource": "jeuxvideo.com",
-      "topic": "FPS"
+      "title": "🔧 Comment optimiser CS2 pour avoir plus de FPS",
+      "body": "Guide complet pour booster tes FPS sur CS2. Paramètres graphiques, launch options et config Windows optimale.",
+      "url": "https://insidertricks.fr/news/optimiser-cs2-fps",
+      "image": "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&h=450&fit=crop",
+      "topic": "FPS",
+      "dateTimePub": "2026-09-06T17:05:27.213Z",
+      "source": "InsiderGamingtriks"
     },
     {
-      "title": "How to unlock all Freerun Descent Event rewards in Black Ops 7",
-      "body": "Find all unlock details here.",
-      "url": "https://dotesports.com/call-of-duty/guides/freerun-descent-event-rewards-bo7",
-      "image": "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=800&h=450&fit=crop",
-      "dateTimePub": "2026-09-07T06:57:16.000Z",
-      "source": "InsiderGamingtriks",
-      "originalSource": "dotesports.com",
-      "topic": "JEUX"
+      "title": "🏅 EWC 2026 : l'Esport World Cup bat tous les records",
+      "body": "L'Esport World Cup 2026 à Riyad affiche un prize pool record de 60 millions de dollars. Les meilleures équipes mondiales présentes.",
+      "url": "https://insidertricks.fr/news/ewc-2026-record",
+      "image": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=450&fit=crop",
+      "topic": "COMPETITION",
+      "dateTimePub": "2026-09-05T17:05:27.213Z",
+      "source": "InsiderGamingtriks"
     }
   ],
-  "generatedAt": "2026-09-07T16:58:37.715Z"
+  "generatedAt": "2026-09-07T17:05:27.213Z"
 }
