@@ -261,8 +261,11 @@ function generateNews() {
     })));
   }
 
+  const fpsArticles = allArticles.filter(article => ['FPS', 'COMPETITION', 'JOUEURS'].includes(article.topic));
+  const selectedArticles = [...fpsArticles, ...allArticles.filter(article => !fpsArticles.includes(article))].slice(0, 3);
+
   return {
-    articles: allArticles,
+    articles: selectedArticles,
     generatedAt: new Date().toISOString(),
   };
 }

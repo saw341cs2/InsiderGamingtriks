@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Navbar from '@/components/gaming/Navbar';
 
 type NewsArticle = {
@@ -26,17 +26,43 @@ const formatDate = (dateString: string) => {
 
 const NewsPage: React.FC = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
   const [article, setArticle] = useState<NewsArticle | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const stored = localStorage.getItem('selectedNews');
-    if (stored) {
-      setArticle(JSON.parse(stored));
-    } else {
-      navigate('/');
-    }
-  }, []);
+    const loadArticle = async () => {
+      try {
+        const response = await fetch(new URL('news.json', document.baseURI).href);
+        const data = await response.json();
+        const articles = Array.isArray(data.articles) ? data.articles : [];
+        const selected = articles[Number(id)];
+        if (selected) {
+          setArticle(selected);
+          localStorage.setItem('selectedNews', JSON.stringify(selected));
+          return;
+        }
+      } catch {
+        // Le stockage local permet de conserver l'article si le réseau est momentanément indisponible.
+      }
 
+      const stored = localStorage.getItem('selectedNews');
+      if (stored) {
+        try {
+          setArticle(JSON.parse(stored));
+          return;
+        } catch {
+          localStorage.removeItem('selectedNews');
+        }
+      }
+      navigate('/');
+      setLoading(false);
+    };
+
+    loadArticle();
+  }, [id, navigate]);
+
+  if (loading && !article) return <div className="min-h-screen bg-black text-white flex items-center justify-center">Chargement de l'article...</div>;
   if (!article) return null;
 
   return (

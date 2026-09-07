@@ -33,8 +33,12 @@ const USER_AGENT = 'InsiderGamingtriks/1.0';
 
 // Images Unsplash par catégorie (pas de clé API requise)
 const TOPIC_IMAGES = {
-  FPS:         'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop',
-  COMPETITION: 'https://images.unsplash.com/photo-1633545495735-25df17fb9f31?w=800&h=450&fit=crop',
+  FPS:         [
+    'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop',
+    'https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=800&h=450&fit=crop',
+    'https://images.unsplash.com/photo-1542751110-97427bbecf20?w=800&h=450&fit=crop',
+  ],
+  COMPETITION: ['https://images.unsplash.com/photo-1633545495735-25df17fb9f31?w=800&h=450&fit=crop'],
   MATERIEL:    'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=800&h=450&fit=crop',
   JOUEURS:     'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&h=450&fit=crop',
   STREAMING:   'https://images.unsplash.com/photo-1603481588273-2f908a9a7a1b?w=800&h=450&fit=crop',
@@ -45,7 +49,10 @@ const TOPIC_IMAGES = {
 
 function getImageForCategories(categories) {
   for (const cat of (categories || [])) {
-    if (TOPIC_IMAGES[cat.toUpperCase()]) return TOPIC_IMAGES[cat.toUpperCase()];
+    if (TOPIC_IMAGES[cat.toUpperCase()]) {
+      const images = TOPIC_IMAGES[cat.toUpperCase()];
+      return Array.isArray(images) ? images[0] : images;
+    }
   }
   return TOPIC_IMAGES.JEUX;
 }
@@ -56,12 +63,13 @@ const SYSTEM_PROMPT = `Tu es un journaliste gaming expert pour Insider Gaming Tr
 Tu es un ÉDITEUR, pas un copiste. Tu t'inspires de l'info source pour créer ton propre article.
 
 Règles ABSOLUES :
-1. **Titre** : Invente un titre COMPLÈTEMENT DIFFÉRENT de la source. Accrocheur, avec un émoji. Jamais de copie.
-2. **Résumé** : 1 phrase originale qui donne envie de lire.
-3. **Corps** : 2-3 paragraphes rédigés avec tes propres mots. Style dynamique, ton gaming. AUCUNE phrase copiée.
-4. **Notre avis** : Ton point de vue éditorial en 1-2 phrases. Opinionné, direct.
-5. **Catégories** : 1 à 3 parmi : FPS, COMPETITION, MATERIEL, JOUEURS, JEUX, STREAMING, TECH, ESPORT.
-6. Réponds UNIQUEMENT en JSON valide.
+1. Rédige TOUT en français. Ne conserve aucun titre, phrase ou mot anglais sauf un nom officiel de jeu, d'équipe ou de joueur.
+2. **Titre** : Invente un titre COMPLÈTEMENT DIFFÉRENT de la source. Accrocheur, avec un émoji. Jamais de copie.
+3. **Résumé** : 1 phrase originale qui donne envie de lire.
+4. **Corps** : 4 à 6 paragraphes rédigés avec tes propres mots, soit au moins 350 mots. Style dynamique, ton gaming. AUCUNE phrase copiée.
+5. **Notre avis** : Ton point de vue éditorial en 1-2 phrases. Opinionné, direct.
+6. **Catégories** : 1 à 3 parmi : FPS, COMPETITION, MATERIEL, JOUEURS, JEUX, STREAMING, TECH, ESPORT.
+7. Réponds UNIQUEMENT en JSON valide.
 
 {
   "title": "🎯 Ton titre original",
@@ -83,7 +91,7 @@ TITRE SOURCE : ${rawTitle || 'Sans titre'}
 DESCRIPTION SOURCE : ${rawDescription || ''}
 CONTENU SOURCE : ${rawContent ? rawContent.substring(0, 500) : ''}
 
-Génère un article original au style Insider Gaming Tricks.`;
+Génère un article original en français au style Insider Gaming Tricks, même si la source est en anglais.`;
 
   const response = await fetch(MISTRAL_API_URL, {
     method: 'POST',
@@ -188,7 +196,8 @@ async function main() {
       rewritten.push({
         ...rewrittenContent,
         url: article.url || article.link || '#',
-        image: getImageForCategories(rewrittenContent.categories),
+        // L'image de la source est plus pertinente que le fallback de catégorie.
+        image: article.image || getImageForCategories(rewrittenContent.categories),
         dateTimePub: article.publishedAt || article.dateTimePub || new Date().toISOString(),
         source: 'InsiderGamingtriks',
         originalSource: article.source || article.originalSource || '',
