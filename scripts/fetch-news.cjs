@@ -162,13 +162,16 @@ async function fetchFromNewsDataIO() {
   } catch (e) { console.log('NewsData erreur:', e.message); return []; }
 }
 
-const GAMING_KEYWORDS = [
-  // FPS titres spécifiques
-  'cs2', 'counter-strike', 'valorant', 'warzone', 'battlefield', 'call of duty', 'black ops', 'cod', 'apex legends', 'halo', 'overwatch', 'rainbow six siege', 'r6 siege', 'hunt showdown', 'escape from tarkov', 'delta force', 'xdefiant', 'the finals',
-  // Esport FPS
-  'esport', 'esports', 'major', 'vct', 'blast', 'iem', 'esl', 'pgl', 'faceit', 'pro league',
-  // Matériel gaming
-  'gaming mouse', 'gaming keyboard', 'gaming headset', 'gaming monitor', '144hz', '240hz', 'souris gaming', 'clavier gaming',
+const FPS_KEYWORDS = [
+  'cs2', 'counter-strike', 'valorant', 'warzone', 'battlefield',
+  'call of duty', 'black ops', 'apex legends', 'halo', 'overwatch',
+  'rainbow six siege', 'r6 siege', 'hunt showdown', 'escape from tarkov',
+  'delta force', 'xdefiant', 'the finals', 'doom', 'quake', 'fps', 'shooter',
+];
+
+const FPS_ESPORT_KEYWORDS = [
+  'vct', 'valorant champions', 'counter-strike major', 'cs2 major',
+  'blast premier', 'iem', 'esl pro league', 'pgl cs2', 'faceit cs2',
 ];
 
 const EXCLUDE_KEYWORDS = [
@@ -178,10 +181,11 @@ const EXCLUDE_KEYWORDS = [
   'mlbb', 'mobile legends', 'free fire', 'pubg mobile',
 ];
 
-function isGamingArticle(title, description) {
+function isFpsArticle(title, description) {
   const text = `${title} ${description}`.toLowerCase();
   if (EXCLUDE_KEYWORDS.some(kw => text.includes(kw))) return false;
-  return GAMING_KEYWORDS.some(kw => text.includes(kw));
+  return FPS_KEYWORDS.some(kw => keywordMatches(text, kw)) ||
+    FPS_ESPORT_KEYWORDS.some(kw => keywordMatches(text, kw));
 }
 
 async function fetchFromRSS() {
@@ -211,7 +215,7 @@ async function fetchFromRSS() {
         if (titleMatch && linkMatch) {
           const title = decodeHTMLEntities(titleMatch[1].trim());
           const description = decodeHTMLEntities((descMatch ? descMatch[1] : '').replace(/<[^>]*>/g, '').trim());
-          if (!isGamingArticle(title, description)) continue;
+          if (!isFpsArticle(title, description)) continue;
           all.push({
             title,
             description,
@@ -226,6 +230,26 @@ async function fetchFromRSS() {
     } catch (e) { console.log(`RSS erreur ${rssUrl}:`, e.message); }
   }
   return all;
+}
+
+async function resolveArticleImage(article) {
+  const sourceUrl = article.url || article.link;
+  const rssImage = article.image && /^https?:\/\//i.test(article.image) ? article.image : null;
+  if (!sourceUrl || !/^https?:\/\//i.test(sourceUrl)) return rssImage;
+
+  try {
+    const response = await fetch(sourceUrl, {
+      headers: { 'User-Agent': USER_AGENT },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!response.ok) return rssImage;
+    const html = await response.text();
+    const ogImage = html.match(/<meta[^>]+(?:property|name)=["']og:image(?::secure_url)?["'][^>]+content=["']([^"']+)/i) ||
+      html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+(?:property|name)=["']og:image(?::secure_url)?["']/i);
+    return ogImage?.[1]?.startsWith('http') ? decodeHTMLEntities(ogImage[1]) : rssImage;
+  } catch {
+    return rssImage;
+  }
 }
 
 function archiveOldNews(publicPath) {
@@ -266,7 +290,7 @@ async function main() {
   });
 
   // Filtrer uniquement les articles gaming
-  const gaming = unique.filter(a => isGamingArticle(a.title, a.description || a.content || ''));
+  const gaming = unique.filter(a => isFpsArticle(a.title, a.description || a.content || ''));
   console.log(`Articles gaming: ${gaming.length}`);
 
   // Si pas assez d'articles gaming, utiliser generate-news comme fallback
@@ -277,11 +301,14 @@ async function main() {
     return;
   }
 
-  // Trier par date décroissante avant de prendre les 6 plus récents
+  // Trier par date décroissante avant de retenir les trois actualités du jour
   gaming.sort((a, b) => new Date(b.publishedAt || b.dateTimePub || 0) - new Date(a.publishedAt || a.dateTimePub || 0));
 
-  // Prendre les 5 articles les plus récents pour transformation (marge si Mistral en rate)
-  const topArticles = gaming.slice(0, 5);
+  // Ne jamais publier plus de trois articles.
+  const topArticles = await Promise.all(gaming.slice(0, 3).map(async article => ({
+    ...article,
+    image: await resolveArticleImage(article),
+  })));
 
   // Étape 1 : Transformer avec les métadonnées de base
   const baseArticles = topArticles.map(a => {
@@ -305,7 +332,7 @@ async function main() {
     console.log('✅ Articles réécrits avec contenu original Insider Gaming Tricks');
   } else {
     // Fallback : utiliser les articles de base (non réécrits)
-    finalArticles = baseArticles;
+    finalArticles = baseArticles.slice(0, 3);
     console.log('ℹ️  Utilisation des articles sans réécriture IA (fallback)');
   }
 
@@ -314,7 +341,7 @@ async function main() {
   // Archiver les anciennes news avant d'écraser
   archiveOldNews(publicPath);
 
-  const output = { articles: finalArticles, generatedAt: new Date().toISOString() };
+  const output = { articles: finalArticles.slice(0, 3), generatedAt: new Date().toISOString() };
   fs.writeFileSync(path.join(publicPath, 'news.json'), JSON.stringify(output, null, 2), 'utf-8');
 
   const docsPath = path.join(__dirname, '..', 'docs');
