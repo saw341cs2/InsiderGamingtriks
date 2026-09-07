@@ -29,7 +29,7 @@ const formatDate = (dateString: string) => {
   return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 };
 
-const NEWS_PER_PAGE = 6; // v2
+const NEWS_PER_PAGE = 3;
 const NewsSection: React.FC = () => {
   const [articles, setArticles] = useState<NewsArticle[]>([]);
   const [loading, setLoading] = useState(true);
@@ -63,11 +63,13 @@ const NewsSection: React.FC = () => {
         archived = [];
       }
 
-      const seenUrls = new Set(data.articles.map(article => article.url));
+      // Les trois articles du jour restent toujours en première page.
+      const todayArticles = data.articles.slice(0, 3);
+      const seenUrls = new Set(todayArticles.map(article => article.url));
       const combined = [
-        ...data.articles,
+        ...todayArticles,
         ...archived.filter(article => !seenUrls.has(article.url)),
-      ].sort((a, b) => new Date(b.dateTimePub).getTime() - new Date(a.dateTimePub).getTime());
+      ];
       setArticles(combined);
       setPage(1);
     } catch (catchError) {
