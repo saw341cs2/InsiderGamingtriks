@@ -34,34 +34,54 @@ function parseJSON(text) {
 }
 
 async function callMistral(prompt) {
-  const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${MISTRAL_API_KEY}` },
-    body: JSON.stringify({
-      model: MISTRAL_MODEL,
-      messages: [{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: prompt }],
-      temperature: 0.8, max_tokens: 1800, response_format: { type: 'json_object' },
-    }),
-    signal: AbortSignal.timeout(30000),
-  });
-  if (!res.ok) throw new Error(`Mistral ${res.status}: ${await res.text()}`);
-  const data = await res.json();
-  return data.choices?.[0]?.message?.content;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${MISTRAL_API_KEY}` },
+      body: JSON.stringify({
+        model: MISTRAL_MODEL,
+        messages: [{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: prompt }],
+        temperature: 0.8, max_tokens: 1800, response_format: { type: 'json_object' },
+      }),
+      signal: AbortSignal.timeout(30000),
+    });
+    if (res.status === 429) {
+      console.error(`   Mistral rate limit, attente ${attempt * 10}s...`);
+      await new Promise(r => setTimeout(r, attempt * 10000));
+      continue;
+    }
+    if (!res.ok) throw new Error(`Mistral ${res.status}: ${await res.text()}`);
+    const data = await res.json();
+    return data.choices?.[0]?.message?.content;
+  }
+  throw new Error('Mistral rate limit après 3 tentatives');
 }
 
 async function callGemini(prompt) {
-  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: SYSTEM_PROMPT + '\n\n' + prompt }] }],
-      generationConfig: { temperature: 0.8, maxOutputTokens: 1800 },
-    }),
-    signal: AbortSignal.timeout(30000),
-  });
-  if (!res.ok) throw new Error(`Gemini ${res.status}: ${await res.text()}`);
-  const data = await res.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text;
+  // Essayer plusieurs modèles dans l'ordre
+  const models = ['gemini-2.0-flash-001', 'gemini-1.5-flash-001', 'gemini-pro'];
+  for (const model of models) {
+    try {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${GEMINI_API_KEY}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: SYSTEM_PROMPT + '\n\n' + prompt }] }],
+          generationConfig: { temperature: 0.8, maxOutputTokens: 1800 },
+        }),
+        signal: AbortSignal.timeout(30000),
+      });
+      if (res.status === 404) { console.error(`   Gemini ${model} non disponible, essai suivant...`); continue; }
+      if (!res.ok) throw new Error(`Gemini ${res.status}: ${await res.text()}`);
+      const data = await res.json();
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (text) { console.error(`   Gemini OK avec ${model}`); return text; }
+    } catch (e) {
+      if (e.message.includes('404')) continue;
+      throw e;
+    }
+  }
+  throw new Error('Aucun modèle Gemini disponible');
 }
 
 async function rewriteArticle(article) {
