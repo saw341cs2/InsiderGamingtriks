@@ -2,9 +2,6 @@ name: Daily Gaming News
 
 on:
   schedule:
-    # 03:30 UTC = 05:30 Paris en heure d'été (CEST, UTC+2)
-    - cron: '30 3 * * *'
-    # 04:30 UTC = 05:30 Paris en heure d'hiver (CET, UTC+1)
     - cron: '30 4 * * *'
   workflow_dispatch:
 
@@ -17,16 +14,6 @@ jobs:
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
-      - name: Verifier heure Paris (fenetre 4h-7h)
-        if: github.event_name == 'schedule'
-        run: |
-          PARIS_HOUR=$(TZ='Europe/Paris' date '+%H')
-          echo "Heure actuelle a Paris : ${PARIS_HOUR}h"
-          if [ "$PARIS_HOUR" -lt "4" ] || [ "$PARIS_HOUR" -gt "7" ]; then
-            echo "Hors fenetre, on annule."
-            echo "SKIP=true" >> "$GITHUB_ENV"
-          fi
-
       - name: Checkout
         if: env.SKIP != 'true'
         uses: actions/checkout@v4
