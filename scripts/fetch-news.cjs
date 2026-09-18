@@ -148,9 +148,8 @@ async function fetchFromNewsAPI() {
   } catch (e) { console.log('NewsAPI erreur:', e.message); return []; }
 }
 
-
+async function fetchFromGNews() {
   const apiKey = process.env.GNEWS_API_KEY;
-  if (!apiKey) { console.log('GNews: pas de clé API'); return []; }
   try {
     const queries = ['cs2 counter-strike valorant', 'battlefield call of duty warzone', 'esport fps tournoi', 'souris clavier gaming promo', 'apex legends overwatch pro player'];
     let all = [];
