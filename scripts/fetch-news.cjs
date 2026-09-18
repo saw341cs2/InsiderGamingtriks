@@ -1,19 +1,97 @@
 const fs = require('fs');
 const path = require('path');
-const { spawnSync } = require('child_process');
 const { buildFallbackContent, buildFallbackReview } = require('./generate-news.cjs');
 
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
-const FALLBACK_IMAGES = {
-  fps: [
-    'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1542751110-97427bbecf20?w=800&h=450&fit=crop',
-  ],
-  competition: ['https://images.unsplash.com/photo-1633545495735-25df17fb9f31?w=800&h=450&fit=crop'],
-  jeux: 'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=800&h=450&fit=crop',
+const TOPIC_IMAGES = {
+  FPS:         'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop',
+  COMPETITION: 'https://images.unsplash.com/photo-1633545495735-25df17fb9f31?w=800&h=450&fit=crop',
+  MATERIEL:    'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=800&h=450&fit=crop',
+  JOUEURS:     'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&h=450&fit=crop',
+  ESPORT:      'https://images.unsplash.com/photo-1560253023-3ec5d502959f?w=800&h=450&fit=crop',
+  JEUX:        'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=800&h=450&fit=crop',
 };
+
+const AI_SYSTEM_PROMPT = `Tu es un journaliste gaming pour Insider Gaming Tricks, site français.
+Réécris l'article source en français, de façon originale, style dynamique gaming.
+Réponds UNIQUEMENT avec un objet JSON valide (sans balises markdown) :
+{"title":"🎯 Titre accrocheur","summary":"1 phrase.","content":"4 paragraphes min 300 mots.","review":"Notre avis.","categories":["FPS"]}
+Catégories : FPS, COMPETITION, MATERIEL, JOUEURS, JEUX, ESPORT.
+INTERDIT : copier-coller, phrases anglaises (sauf noms propres).`;
+
+function parseAIJson(text) {
+  if (!text) return null;
+  const cleaned = text.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
+  try { return JSON.parse(cleaned); } catch {}
+  const match = cleaned.match(/\{[\s\S]*\}/);
+  if (match) { try { return JSON.parse(match[0]); } catch {} }
+  return null;
+}
+
+async function callMistral(prompt) {
+  const key = process.env.MISTRAL_API_KEY;
+  if (!key) return null;
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+      body: JSON.stringify({ model: 'mistral-small-latest', messages: [{ role: 'system', content: AI_SYSTEM_PROMPT }, { role: 'user', content: prompt }], temperature: 0.8, max_tokens: 1200, response_format: { type: 'json_object' } }),
+      signal: AbortSignal.timeout(25000),
+    });
+    if (res.status === 429) { await new Promise(r => setTimeout(r, attempt * 5000)); continue; }
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.choices?.[0]?.message?.content;
+  }
+  return null;
+}
+
+async function callGemini(prompt) {
+  const key = process.env.GEMINI_API_KEY;
+  if (!key) return null;
+  const models = ['gemini-2.0-flash-001', 'gemini-1.5-flash-001', 'gemini-1.0-pro'];
+  for (const model of models) {
+    try {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${key}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: [{ parts: [{ text: AI_SYSTEM_PROMPT + '\n\n' + prompt }] }], generationConfig: { temperature: 0.8, maxOutputTokens: 1200 } }),
+        signal: AbortSignal.timeout(25000),
+      });
+      if (res.status === 404) continue;
+      if (!res.ok) return null;
+      const data = await res.json();
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (text) { console.log(`   Gemini OK (${model})`); return text; }
+    } catch { continue; }
+  }
+  return null;
+}
+
+async function rewriteArticleWithAI(article) {
+  const prompt = `Réécris cet article en français :
+TITRE : ${article.title || ''}
+DESCRIPTION : ${(article.description || article.body || '').substring(0, 500)}`;
+  const raw = (await callMistral(prompt)) || (await callGemini(prompt));
+  if (!raw) return null;
+  const parsed = parseAIJson(raw);
+  if (!parsed?.title) return null;
+  const cats = Array.isArray(parsed.categories) ? parsed.categories : ['JEUX'];
+  return {
+    title: parsed.title,
+    summary: parsed.summary || '',
+    content: parsed.content || '',
+    review: parsed.review || '',
+    categories: cats,
+    topic: cats[0]?.toUpperCase() || 'JEUX',
+    url: article.url || '#',
+    image: (article.image && article.image.startsWith('http')) ? article.image : (TOPIC_IMAGES[cats[0]?.toUpperCase()] || TOPIC_IMAGES.JEUX),
+    dateTimePub: article.publishedAt || article.dateTimePub || new Date().toISOString(),
+    source: 'InsiderGamingtriks',
+    originalSource: article.source || '',
+  };
+}
 
 const TOPICS = {
   fps: ['fps', 'shooter', 'call of duty', 'valorant', 'counter-strike', 'cs2', 'battlefield', 'halo', 'warzone', 'apex', 'aim', 'headshot', 'recoil', 'crosshair', 'fps boost', 'optimisation'],
@@ -56,12 +134,8 @@ function transformArticle(article, topic, index = 0) {
   if (!body) body = title;
   if (body.length > 1600) body = body.substring(0, 1597) + '...';
 
-  // Garder la vraie image de l'article, sinon fallback par topic
-  const topicImages = FALLBACK_IMAGES[topic] || FALLBACK_IMAGES.jeux;
-  const fallbackImage = Array.isArray(topicImages) ? topicImages[index % topicImages.length] : topicImages;
-  const image = (article.image && article.image.startsWith('http'))
-    ? article.image 
-    : fallbackImage;
+  const topicImages = TOPIC_IMAGES[topic.toUpperCase()] || TOPIC_IMAGES.JEUX;
+  const image = (article.image && article.image.startsWith('http')) ? article.image : topicImages;
 
   return {
     title,
@@ -73,59 +147,6 @@ function transformArticle(article, topic, index = 0) {
     originalSource: article.source || '',
     topic: topic.toUpperCase(),
   };
-}
-
-/**
- * Appelle le script rewrite-news.cjs pour réécrire les articles via Mistral AI.
- * Retourne les articles réécrits, ou null en cas d'échec.
- */
-function rewriteWithAI(rawArticles) {
-  if (!process.env.MISTRAL_API_KEY) {
-    console.log('ℹ️  MISTRAL_API_KEY non définie, pas de réécriture IA.');
-    return null;
-  }
-
-  const scriptPath = path.join(__dirname, 'rewrite-news.cjs');
-  if (!fs.existsSync(scriptPath)) {
-    console.log('ℹ️  rewrite-news.cjs non trouvé, pas de réécriture IA.');
-    return null;
-  }
-
-  console.log('🔄 Appel de rewrite-news.cjs pour réécriture IA...');
-
-  // Passer les articles bruts via stdin au script de réécriture
-  const tmpFile = path.join(__dirname, '_tmp_articles.json');
-  fs.writeFileSync(tmpFile, JSON.stringify(rawArticles), 'utf-8');
-  const result = spawnSync('node', [scriptPath, tmpFile], {
-    encoding: 'utf-8',
-    timeout: 120000,
-    env: { ...process.env },
-  });
-  try { fs.unlinkSync(tmpFile); } catch {}
-
-  if (result.error) {
-    console.error(`⚠️  Erreur rewrite-news: ${result.error.message}`);
-    return null;
-  }
-
-  if (result.status !== 0) {
-    console.error(`⚠️  rewrite-news exit code ${result.status}: ${result.stderr?.substring(0, 1000)}`);
-    return null;
-  }
-
-  // La sortie stdout du script contient le JSON des articles réécrits
-  try {
-    const output = JSON.parse(result.stdout);
-    if (output.articles && output.articles.length > 0) {
-      console.log(`✅ ${output.articles.length} articles réécrits avec succès via Mistral AI`);
-      return output.articles;
-    }
-    console.error(`⚠️  output.articles vide: ${result.stderr?.substring(0, 500)}`);
-  } catch (e) {
-    console.error(`⚠️  Erreur de parsing: ${e.message}`);
-  }
-
-  return null;
 }
 
 async function fetchFromNewsAPI() {
@@ -308,22 +329,29 @@ async function main() {
     return transformArticle(a, topic, index);
   });
 
-  // Étape 2 : Réécriture IA via Mistral AI (si configuré)
+  // Étape 2 : Réécriture IA directe (Mistral puis Gemini en fallback)
+  const hasAI = process.env.MISTRAL_API_KEY || process.env.GEMINI_API_KEY;
   let finalArticles;
-  const rewritten = rewriteWithAI(topArticles);
-  if (rewritten && rewritten.length > 0) {
-    // On garde les images et URLs des articles de base, mais on prend le contenu réécrit
-    finalArticles = rewritten.map((rw, i) => ({
-      ...rw,
-      image: baseArticles[i]?.image || rw.image,
-      url: baseArticles[i]?.url || rw.url,
-      dateTimePub: baseArticles[i]?.dateTimePub || rw.dateTimePub,
-      source: 'InsiderGamingtriks',
-      originalSource: baseArticles[i]?.originalSource || rw.originalSource || '',
-    })).filter(article => article.content || article.body || article.summary).slice(0, 6);
-    console.log('✅ Articles réécrits avec contenu original Insider Gaming Tricks');
-  } else {
-    // Fallback : utiliser les articles de base (non réécrits)
+
+  if (hasAI) {
+    console.log('🔄 Réécriture IA en cours...');
+    const rewritten = [];
+    for (let i = 0; i < topArticles.length; i++) {
+      const result = await rewriteArticleWithAI(topArticles[i]);
+      if (result) {
+        rewritten.push(result);
+        console.log(`   ✅ [${rewritten.length}] ${result.title.substring(0, 60)}`);
+        if (rewritten.length >= 6) break;
+      }
+      if (i < topArticles.length - 1) await new Promise(r => setTimeout(r, 1000));
+    }
+    if (rewritten.length > 0) {
+      finalArticles = rewritten;
+      console.log(`✅ ${finalArticles.length} articles réécrits en français`);
+    }
+  }
+
+  if (!finalArticles || finalArticles.length === 0) {
     finalArticles = baseArticles.map(article => ({
       ...article,
       content: buildFallbackContent(article),
@@ -338,7 +366,7 @@ async function main() {
   finalArticles = finalArticles.map((article, index) => {
     let image = article.image;
     if (!image || usedImages.has(image)) {
-      const candidates = FALLBACK_IMAGES.fps;
+      const candidates = Object.values(TOPIC_IMAGES);
       image = candidates.find(candidate => !usedImages.has(candidate)) || candidates[index % candidates.length];
     }
     usedImages.add(image);
