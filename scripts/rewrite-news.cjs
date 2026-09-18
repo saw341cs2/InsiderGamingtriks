@@ -1,93 +1,56 @@
 #!/usr/bin/env node
 
-/**
- * rewrite-news.cjs
- * 
- * Prend des articles bruts (titre + description provenant de sources externes)
- * et les réécrit intégralement via l'API Mistral AI pour produire un contenu
- * original au style Insider Gaming Tricks.
- *
- * Génère pour chaque article :
- *   - Un titre unique et accrocheur (pas de copie)
- *   - Un résumé (summary)
- *   - Un corps d'article complet et original (content)
- *   - Une section "Notre avis" (review)
- *   - Des catégories pertinentes (categories)
- *
- * Usage :
- *   node scripts/rewrite-news.cjs < input-raw.json > output-rewritten.json
- *
- * Variables d'environnement :
- *   MISTRAL_API_KEY (obligatoire) - Clé API Mistral AI
- *   MISTRAL_MODEL   (optionnel)   - Modèle (défaut: mistral-small-latest)
- */
-
 const fs = require('fs');
-const path = require('path');
 
 const MISTRAL_API_KEY = process.env.MISTRAL_API_KEY;
-const MISTRAL_MODEL = process.env.MISTRAL_MODEL || 'mistral-small-latest';
-const MISTRAL_API_URL = 'https://api.mistral.ai/v1/chat/completions';
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent`;
+const MISTRAL_MODEL = 'mistral-small-latest';
 
-const USER_AGENT = 'InsiderGamingtriks/1.0';
-
-// Images Unsplash par catégorie (pas de clé API requise)
 const TOPIC_IMAGES = {
-  FPS:         [
-    'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1542751110-97427bbecf20?w=800&h=450&fit=crop',
-  ],
-  COMPETITION: ['https://images.unsplash.com/photo-1633545495735-25df17fb9f31?w=800&h=450&fit=crop'],
+  FPS:         'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop',
+  COMPETITION: 'https://images.unsplash.com/photo-1633545495735-25df17fb9f31?w=800&h=450&fit=crop',
   MATERIEL:    'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=800&h=450&fit=crop',
   JOUEURS:     'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&h=450&fit=crop',
-  STREAMING:   'https://images.unsplash.com/photo-1603481588273-2f908a9a7a1b?w=800&h=450&fit=crop',
-  TECH:        'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&h=450&fit=crop',
   ESPORT:      'https://images.unsplash.com/photo-1560253023-3ec5d502959f?w=800&h=450&fit=crop',
   JEUX:        'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=800&h=450&fit=crop',
 };
 
-function getImageForCategories(categories) {
-  for (const cat of (categories || [])) {
-    if (TOPIC_IMAGES[cat.toUpperCase()]) {
-      const images = TOPIC_IMAGES[cat.toUpperCase()];
-      return Array.isArray(images) ? images[0] : images;
-    }
-  }
-  return TOPIC_IMAGES.JEUX;
+const SYSTEM_PROMPT = `Tu es un journaliste gaming pour Insider Gaming Tricks, site français.
+Réécris l'article source en français, de façon originale, style dynamique gaming.
+Réponds UNIQUEMENT avec un objet JSON valide (sans balises markdown, sans \`\`\`json) :
+{"title":"🎯 Titre accrocheur original","summary":"1 phrase d'accroche.","content":"4 paragraphes minimum, 300 mots minimum.","review":"Notre avis en 1-2 phrases.","categories":["FPS"]}
+Catégories possibles : FPS, COMPETITION, MATERIEL, JOUEURS, JEUX, ESPORT.
+INTERDIT : copier-coller, garder des phrases anglaises (sauf noms propres de jeux/joueurs/équipes).`;
+
+function parseJSON(text) {
+  if (!text) return null;
+  // Nettoyer les balises markdown que Gemini ajoute parfois
+  const cleaned = text.replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '').trim();
+  try { return JSON.parse(cleaned); } catch {}
+  // Extraire le premier objet JSON trouvé
+  const match = cleaned.match(/\{[\s\S]*\}/);
+  if (match) { try { return JSON.parse(match[0]); } catch {} }
+  return null;
 }
 
-// Prompt système pour la réécriture journalistique
-const SYSTEM_PROMPT = `Tu es un journaliste gaming expert pour Insider Gaming Tricks, un site d'actualité gaming français.
-
-Tu es un ÉDITEUR, pas un copiste. Tu t'inspires de l'info source pour créer ton propre article.
-
-Règles ABSOLUES :
-1. Rédige TOUT en français. Ne conserve aucun titre, phrase ou mot anglais sauf un nom officiel de jeu, d'équipe ou de joueur.
-2. **Titre** : Invente un titre COMPLÈTEMENT DIFFÉRENT de la source. Accrocheur, avec un émoji. Jamais de copie.
-3. **Résumé** : 1 phrase originale qui donne envie de lire.
-4. **Corps** : 4 à 6 paragraphes rédigés avec tes propres mots, soit au moins 350 mots. Style dynamique, ton gaming. AUCUNE phrase copiée.
-5. **Notre avis** : Ton point de vue éditorial en 1-2 phrases. Opinionné, direct.
-6. **Catégories** : 1 à 3 parmi : FPS, COMPETITION, MATERIEL, JOUEURS, JEUX, STREAMING, TECH, ESPORT.
-7. Réponds UNIQUEMENT en JSON valide.
-
-{
-  "title": "🎯 Ton titre original",
-  "summary": "Ta phrase d'accroche.",
-  "content": "Tes paragraphes originaux.",
-  "review": "Notre avis : ton analyse.",
-  "categories": ["FPS"]
+async function callMistral(prompt) {
+  const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${MISTRAL_API_KEY}` },
+    body: JSON.stringify({
+      model: MISTRAL_MODEL,
+      messages: [{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: prompt }],
+      temperature: 0.8, max_tokens: 1800, response_format: { type: 'json_object' },
+    }),
+    signal: AbortSignal.timeout(30000),
+  });
+  if (!res.ok) throw new Error(`Mistral ${res.status}: ${await res.text()}`);
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content;
 }
 
-INTERDIT : copier-coller, paraphraser mot à mot, garder la structure de la source.`;
-
-/**
- * Appelle l'API Mistral AI pour réécrire un article brut.
- */
-async function rewriteWithGemini(prompt) {
-  const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+async function callGemini(prompt) {
+  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -96,170 +59,84 @@ async function rewriteWithGemini(prompt) {
     }),
     signal: AbortSignal.timeout(30000),
   });
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Gemini API error ${response.status}: ${errorText}`);
-  }
-  const data = await response.json();
+  if (!res.ok) throw new Error(`Gemini ${res.status}: ${await res.text()}`);
+  const data = await res.json();
   return data.candidates?.[0]?.content?.parts?.[0]?.text;
 }
 
-async function rewriteWithMistral(prompt) {
-  const response = await fetch(MISTRAL_API_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${MISTRAL_API_KEY}`,
-      'User-Agent': USER_AGENT,
-    },
-    body: JSON.stringify({
-      model: MISTRAL_MODEL,
-      messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
-        { role: 'user', content: prompt },
-      ],
-      temperature: 0.8,
-      max_tokens: 1800,
-      response_format: { type: 'json_object' },
-    }),
-    signal: AbortSignal.timeout(30000),
-  });
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Mistral API error ${response.status}: ${errorText}`);
-  }
-  const data = await response.json();
-  return data.choices?.[0]?.message?.content;
-}
+async function rewriteArticle(article) {
+  const prompt = `Réécris cet article en français (ne copie PAS, réécris complètement) :
+TITRE : ${article.title || ''}
+DESCRIPTION : ${(article.description || article.body || '').substring(0, 600)}`;
 
-async function rewriteArticle(rawTitle, rawDescription, rawContent) {
-  const userPrompt = `Voici l'article brut à réécrire (ne copie PAS ce texte, réécris-le complètement) :
+  let raw = null;
 
-TITRE SOURCE : ${rawTitle || 'Sans titre'}
-DESCRIPTION SOURCE : ${rawDescription || ''}
-CONTENU SOURCE : ${rawContent ? rawContent.substring(0, 500) : ''}
-
-Génère un article original en français au style Insider Gaming Tricks, même si la source est en anglais.`;
-
-  // Essayer Mistral d'abord, puis Gemini en fallback
-  let content;
   if (MISTRAL_API_KEY) {
-    try { content = await rewriteWithMistral(userPrompt); } catch (e) {
-      console.error(`   ⚠️ Mistral échoué: ${e.message}, tentative Gemini...`);
-    }
+    try { raw = await callMistral(prompt); }
+    catch (e) { console.error(`   ⚠️ Mistral échoué: ${e.message}`); }
   }
-  if (!content && GEMINI_API_KEY) {
-    content = await rewriteWithGemini(userPrompt);
-  }
-  if (!content) throw new Error('Aucun LLM disponible');
-
-  if (!content) {
-    throw new Error('Réponse vide de Mistral AI');
+  if (!raw && GEMINI_API_KEY) {
+    try { raw = await callGemini(prompt); }
+    catch (e) { console.error(`   ⚠️ Gemini échoué: ${e.message}`); }
   }
 
-  // Extraire le JSON de la réponse
-  let parsed;
-  try {
-    parsed = JSON.parse(content);
-  } catch {
-    // Tentative d'extraction du JSON dans la réponse textuelle
-    const jsonMatch = content.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
-      parsed = JSON.parse(jsonMatch[0]);
-    } else {
-      throw new Error(`Impossible de parser la réponse Mistral: ${content.substring(0, 200)}`);
-    }
-  }
+  if (!raw) throw new Error('Aucun LLM disponible ou réponse vide');
 
+  const parsed = parseJSON(raw);
+  if (!parsed) throw new Error(`JSON invalide: ${raw.substring(0, 200)}`);
+
+  const cats = Array.isArray(parsed.categories) ? parsed.categories : ['JEUX'];
   return {
-    title: parsed.title || rawTitle,
+    title: parsed.title || article.title,
     summary: parsed.summary || '',
-    content: parsed.content || rawDescription || rawContent || '',
+    content: parsed.content || '',
     review: parsed.review || '',
-    categories: Array.isArray(parsed.categories) ? parsed.categories : [],
+    categories: cats,
+    url: article.url || '#',
+    image: article.image || TOPIC_IMAGES[cats[0]?.toUpperCase()] || TOPIC_IMAGES.JEUX,
+    dateTimePub: article.publishedAt || article.dateTimePub || new Date().toISOString(),
+    source: 'InsiderGamingtriks',
+    originalSource: article.source || article.originalSource || '',
   };
 }
 
-/**
- * Point d'entrée principal.
- * Lit les articles bruts depuis stdin ou un fichier passé en argument.
- */
 async function main() {
   if (!MISTRAL_API_KEY && !GEMINI_API_KEY) {
-    console.error('❌ Aucune clé API LLM (MISTRAL_API_KEY ou GEMINI_API_KEY). Mode fallback.');
+    console.error('❌ Aucune clé LLM disponible.');
     process.exit(1);
   }
 
-  // Lire les articles bruts depuis stdin ou depuis un fichier argument
-  let rawArticles = [];
   const inputFile = process.argv[2];
-
-  if (inputFile && fs.existsSync(inputFile)) {
-    const raw = JSON.parse(fs.readFileSync(inputFile, 'utf-8'));
-    rawArticles = Array.isArray(raw) ? raw : (raw.articles || []);
-  } else {
-    // Lire depuis stdin
-    const stdin = fs.readFileSync('/dev/stdin', 'utf-8').trim();
-    if (stdin) {
-      const raw = JSON.parse(stdin);
-      rawArticles = Array.isArray(raw) ? raw : (raw.articles || []);
-    }
+  if (!inputFile || !fs.existsSync(inputFile)) {
+    console.error('❌ Fichier input manquant.');
+    process.exit(1);
   }
+
+  const raw = JSON.parse(fs.readFileSync(inputFile, 'utf-8'));
+  const rawArticles = Array.isArray(raw) ? raw : (raw.articles || []);
 
   if (rawArticles.length === 0) {
     console.error('❌ Aucun article à réécrire.');
     process.exit(1);
   }
 
-  console.error(`🔄 Réécriture de ${rawArticles.length} articles via Mistral AI...`);
+  console.error(`🔄 Réécriture de ${rawArticles.length} articles (Mistral: ${!!MISTRAL_API_KEY}, Gemini: ${!!GEMINI_API_KEY})...`);
 
   const rewritten = [];
   for (let i = 0; i < rawArticles.length; i++) {
     const article = rawArticles[i];
-    console.error(`   [${i + 1}/${rawArticles.length}] "${(article.title || '').substring(0, 50)}..."`);
-
+    console.error(`   [${i + 1}/${rawArticles.length}] "${(article.title || '').substring(0, 60)}"`);
     try {
-      const rewrittenContent = await rewriteArticle(
-        article.title,
-        article.description || article.body || '',
-        article.content || ''
-      );
-
-      rewritten.push({
-        ...rewrittenContent,
-        url: article.url || article.link || '#',
-        // L'image de la source est plus pertinente que le fallback de catégorie.
-        image: article.image || getImageForCategories(rewrittenContent.categories),
-        dateTimePub: article.publishedAt || article.dateTimePub || new Date().toISOString(),
-        source: 'InsiderGamingtriks',
-        originalSource: article.source || article.originalSource || '',
-      });
-
-      console.error(`   ✅ Réécrit: "${rewrittenContent.title}"`);
-    } catch (error) {
-      console.error(`   ⚠️ Erreur pour "${article.title}": ${error.message}`);
-      // Fallback : on skip cet article plutôt que de publier du copier-coller
-      console.error(`   ⏭️  Article ignoré (pas de réécriture disponible)`);
-      continue;
+      const result = await rewriteArticle(article);
+      rewritten.push(result);
+      console.error(`   ✅ "${result.title.substring(0, 60)}"`);
+    } catch (e) {
+      console.error(`   ⏭️ Ignoré: ${e.message}`);
     }
-
-    // Petit délai pour éviter de rate-limiter l'API
-    if (i < rawArticles.length - 1) {
-      await new Promise(resolve => setTimeout(resolve, 500));
-    }
+    if (i < rawArticles.length - 1) await new Promise(r => setTimeout(r, 500));
   }
 
-  // Sortie JSON sur stdout
-  const output = {
-    articles: rewritten,
-    generatedAt: new Date().toISOString(),
-  };
-
-  console.log(JSON.stringify(output, null, 2));
+  console.log(JSON.stringify({ articles: rewritten, generatedAt: new Date().toISOString() }));
 }
 
-// Exécution
-main().catch(error => {
-  console.error(`❌ Erreur fatale: ${error.message}`);
-  process.exit(1);
-});
+main().catch(e => { console.error(`❌ ${e.message}`); process.exit(1); });
