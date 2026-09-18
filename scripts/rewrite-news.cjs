@@ -28,6 +28,8 @@ const path = require('path');
 const MISTRAL_API_KEY = process.env.MISTRAL_API_KEY;
 const MISTRAL_MODEL = process.env.MISTRAL_MODEL || 'mistral-small-latest';
 const MISTRAL_API_URL = 'https://api.mistral.ai/v1/chat/completions';
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent`;
 
 const USER_AGENT = 'InsiderGamingtriks/1.0';
 
@@ -84,15 +86,25 @@ INTERDIT : copier-coller, paraphraser mot à mot, garder la structure de la sour
 /**
  * Appelle l'API Mistral AI pour réécrire un article brut.
  */
-async function rewriteArticle(rawTitle, rawDescription, rawContent) {
-  const userPrompt = `Voici l'article brut à réécrire (ne copie PAS ce texte, réécris-le complètement) :
+async function rewriteWithGemini(prompt) {
+  const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: SYSTEM_PROMPT + '\n\n' + prompt }] }],
+      generationConfig: { temperature: 0.8, maxOutputTokens: 1800 },
+    }),
+    signal: AbortSignal.timeout(30000),
+  });
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Gemini API error ${response.status}: ${errorText}`);
+  }
+  const data = await response.json();
+  return data.candidates?.[0]?.content?.parts?.[0]?.text;
+}
 
-TITRE SOURCE : ${rawTitle || 'Sans titre'}
-DESCRIPTION SOURCE : ${rawDescription || ''}
-CONTENU SOURCE : ${rawContent ? rawContent.substring(0, 500) : ''}
-
-Génère un article original en français au style Insider Gaming Tricks, même si la source est en anglais.`;
-
+async function rewriteWithMistral(prompt) {
   const response = await fetch(MISTRAL_API_URL, {
     method: 'POST',
     headers: {
@@ -104,7 +116,7 @@ Génère un article original en français au style Insider Gaming Tricks, même 
       model: MISTRAL_MODEL,
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
-        { role: 'user', content: userPrompt },
+        { role: 'user', content: prompt },
       ],
       temperature: 0.8,
       max_tokens: 1800,
@@ -112,14 +124,34 @@ Génère un article original en français au style Insider Gaming Tricks, même 
     }),
     signal: AbortSignal.timeout(30000),
   });
-
   if (!response.ok) {
     const errorText = await response.text();
     throw new Error(`Mistral API error ${response.status}: ${errorText}`);
   }
-
   const data = await response.json();
-  const content = data.choices?.[0]?.message?.content;
+  return data.choices?.[0]?.message?.content;
+}
+
+async function rewriteArticle(rawTitle, rawDescription, rawContent) {
+  const userPrompt = `Voici l'article brut à réécrire (ne copie PAS ce texte, réécris-le complètement) :
+
+TITRE SOURCE : ${rawTitle || 'Sans titre'}
+DESCRIPTION SOURCE : ${rawDescription || ''}
+CONTENU SOURCE : ${rawContent ? rawContent.substring(0, 500) : ''}
+
+Génère un article original en français au style Insider Gaming Tricks, même si la source est en anglais.`;
+
+  // Essayer Mistral d'abord, puis Gemini en fallback
+  let content;
+  if (MISTRAL_API_KEY) {
+    try { content = await rewriteWithMistral(userPrompt); } catch (e) {
+      console.error(`   ⚠️ Mistral échoué: ${e.message}, tentative Gemini...`);
+    }
+  }
+  if (!content && GEMINI_API_KEY) {
+    content = await rewriteWithGemini(userPrompt);
+  }
+  if (!content) throw new Error('Aucun LLM disponible');
 
   if (!content) {
     throw new Error('Réponse vide de Mistral AI');
@@ -153,8 +185,8 @@ Génère un article original en français au style Insider Gaming Tricks, même 
  * Lit les articles bruts depuis stdin ou un fichier passé en argument.
  */
 async function main() {
-  if (!MISTRAL_API_KEY) {
-    console.error('❌ MISTRAL_API_KEY non définie. Mode fallback : les articles ne seront pas réécrits.');
+  if (!MISTRAL_API_KEY && !GEMINI_API_KEY) {
+    console.error('❌ Aucune clé API LLM (MISTRAL_API_KEY ou GEMINI_API_KEY). Mode fallback.');
     process.exit(1);
   }
 
