@@ -35,7 +35,7 @@ async function callMistral(prompt) {
   for (let attempt = 1; attempt <= 2; attempt++) {
     const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
       body: JSON.stringify({ model: 'mistral-small-latest', messages: [{ role: 'system', content: AI_SYSTEM_PROMPT }, { role: 'user', content: prompt }], temperature: 0.8, max_tokens: 1200, response_format: { type: 'json_object' } }),
       signal: AbortSignal.timeout(25000),
     });
@@ -203,13 +203,11 @@ async function fetchFromNewsDataIO() {
   } catch (e) { console.log('NewsData erreur:', e.message); return []; }
 }
 
-const GAMING_KEYWORDS = [
-  // FPS titres spécifiques
-  'cs2', 'counter-strike', 'valorant', 'warzone', 'battlefield', 'call of duty', 'black ops', 'cod', 'apex legends', 'halo', 'overwatch', 'rainbow six siege', 'r6 siege', 'hunt showdown', 'escape from tarkov', 'delta force', 'xdefiant', 'the finals',
-  // Esport FPS
-  'esport', 'esports', 'major', 'vct', 'blast', 'iem', 'esl', 'pgl', 'faceit', 'pro league',
-  // Matériel gaming
-  'gaming mouse', 'gaming keyboard', 'gaming headset', 'gaming monitor', '144hz', '240hz', 'souris gaming', 'clavier gaming',
+const FPS_KEYWORDS = [
+  'cs2', 'cs:go', 'counter-strike', 'valorant', 'warzone', 'call of duty', 'black ops',
+  'battlefield', 'apex legends', 'halo infinite', 'halo', 'overwatch', 'rainbow six siege',
+  'r6 siege', 'hunt showdown', 'escape from tarkov', 'delta force', 'xdefiant', 'the finals',
+  'doom', 'quake', 'destiny 2', 'tarkov', 'vct', 'faceit', 'blast premier', 'iem',
 ];
 
 const EXCLUDE_KEYWORDS = [
@@ -219,10 +217,10 @@ const EXCLUDE_KEYWORDS = [
   'mlbb', 'mobile legends', 'free fire', 'pubg mobile',
 ];
 
-function isGamingArticle(title, description) {
+function isFpsArticle(title, description) {
   const text = `${title} ${description}`.toLowerCase();
   if (EXCLUDE_KEYWORDS.some(kw => text.includes(kw))) return false;
-  return GAMING_KEYWORDS.some(kw => text.includes(kw));
+  return FPS_KEYWORDS.some(kw => text.includes(kw));
 }
 
 async function fetchFromRSS() {
@@ -251,7 +249,7 @@ async function fetchFromRSS() {
         if (titleMatch && linkMatch) {
           const title = decodeHTMLEntities(titleMatch[1].trim());
           const description = decodeHTMLEntities((descMatch ? descMatch[1] : '').replace(/<[^>]*>/g, '').trim());
-          if (!isGamingArticle(title, description)) continue;
+          if (!isFpsArticle(title, description)) continue;
           all.push({
             title,
             description,
@@ -297,22 +295,26 @@ async function main() {
 
   console.log(`Total brut: ${all.length} articles`);
 
-  // Dédoublonner par URL
-  const seen = new Set();
+  // Dédoublonner par URL et par titre normalisé (les agrégateurs republient
+  // souvent la même dépêche avec plusieurs URL de tracking).
+  const seenUrls = new Set();
+  const seenTitles = new Set();
   const unique = all.filter(a => {
     const url = a.url || a.link;
-    if (!url || seen.has(url)) return false;
-    seen.add(url);
+    const normalizedTitle = (a.title || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+    if (!url || seenUrls.has(url) || (normalizedTitle && seenTitles.has(normalizedTitle))) return false;
+    seenUrls.add(url);
+    if (normalizedTitle) seenTitles.add(normalizedTitle);
     return true;
   });
 
-  // Filtrer uniquement les articles gaming
-  const gaming = unique.filter(a => isGamingArticle(a.title, a.description || a.content || ''));
-  console.log(`Articles gaming: ${gaming.length}`);
+  // Filtrer uniquement les articles FPS
+  const gaming = unique.filter(a => isFpsArticle(a.title, a.description || a.content || ''));
+  console.log(`Articles FPS: ${gaming.length}`);
 
   // Si pas assez d'articles gaming, utiliser generate-news comme fallback
-  if (gaming.length < 1) {
-    console.log('Pas assez de news gaming, utilisation du fallback...');
+  if (gaming.length < 3) {
+    console.log('Pas assez de news FPS, utilisation du fallback...');
     const gen = require('./generate-news.cjs');
     await gen.main();
     return;
@@ -321,7 +323,7 @@ async function main() {
   // Trier par date décroissante
   gaming.sort((a, b) => new Date(b.publishedAt || b.dateTimePub || 0) - new Date(a.publishedAt || a.dateTimePub || 0));
 
-  const topArticles = gaming.slice(0, 7); // marge pour Mistral
+  const topArticles = gaming.slice(0, 3);
 
   // Étape 1 : Transformer avec les métadonnées de base
   const baseArticles = topArticles.map((a, index) => {
@@ -358,9 +360,22 @@ async function main() {
       summary: article.body,
       review: buildFallbackReview(article),
       categories: [article.topic],
-    })).slice(0, 6);
+    }));
     console.log('ℹ️  Utilisation des articles sans réécriture IA (fallback)');
   }
+
+  if (finalArticles.length < 3) {
+    const rewrittenUrls = new Set(finalArticles.map(article => article.url));
+    finalArticles = [...finalArticles, ...baseArticles.filter(article => !rewrittenUrls.has(article.url))
+      .map(article => ({
+        ...article,
+        content: buildFallbackContent(article),
+        summary: article.body,
+        review: buildFallbackReview(article),
+        categories: ['FPS'],
+      }))];
+  }
+  finalArticles = finalArticles.slice(0, 3);
 
   const usedImages = new Set();
   finalArticles = finalArticles.map((article, index) => {
@@ -390,4 +405,9 @@ async function main() {
   finalArticles.forEach((a, i) => console.log(`${i + 1}. [${(a.categories || [a.topic || 'JEUX']).join(', ')}] ${a.title.substring(0, 60)}`));
 }
 
-main().catch(console.error);
+if (require.main === module) main().catch(error => {
+  console.error(error);
+  process.exitCode = 1;
+});
+
+module.exports = { isFpsArticle, keywordMatches, categorizeArticle, transformArticle };

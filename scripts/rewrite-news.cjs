@@ -37,7 +37,7 @@ async function callMistral(prompt) {
   for (let attempt = 1; attempt <= 3; attempt++) {
     const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${MISTRAL_API_KEY}` },
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + MISTRAL_API_KEY },
       body: JSON.stringify({
         model: MISTRAL_MODEL,
         messages: [{ role: 'system', content: SYSTEM_PROMPT }, { role: 'user', content: prompt }],

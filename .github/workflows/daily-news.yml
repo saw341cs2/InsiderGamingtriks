@@ -2,7 +2,8 @@ name: Daily Gaming News
 
 on:
   schedule:
-    - cron: '30 4 * * *'
+    # GitHub cron est en UTC; le script garde uniquement 05:30 Europe/Paris.
+    - cron: '30 3,4 * * *'
   workflow_dispatch:
 
 permissions:
@@ -27,8 +28,15 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Generate news (fetch + rewrite via Mistral AI)
+      - name: Vérifier le créneau Europe/Paris
+        id: schedule
         if: env.SKIP != 'true'
+        env:
+          ALLOW_MANUAL: ${{ github.event_name == 'workflow_dispatch' && 'true' || 'false' }}
+        run: node scripts/should-publish-news.cjs >> "$GITHUB_OUTPUT"
+
+      - name: Generate news (fetch + rewrite via Mistral AI)
+        if: env.SKIP != 'true' && steps.schedule.outputs.publish == 'true'
         env:
           MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -38,11 +46,11 @@ jobs:
         run: node scripts/fetch-news.cjs || node scripts/generate-news.cjs
 
       - name: Generate videos
-        if: env.SKIP != 'true'
+        if: env.SKIP != 'true' && steps.schedule.outputs.publish == 'true'
         run: node scripts/generate-videos.cjs
 
       - name: Install & Build
-        if: env.SKIP != 'true'
+        if: env.SKIP != 'true' && steps.schedule.outputs.publish == 'true'
         run: |
           rm -f package-lock.json
           rm -rf node_modules
@@ -50,7 +58,7 @@ jobs:
           npm run build
 
       - name: Copy JSON to dist
-        if: env.SKIP != 'true'
+        if: env.SKIP != 'true' && steps.schedule.outputs.publish == 'true'
         run: |
           cp public/news.json dist/news.json || true
           cp public/astuces.json dist/astuces.json || true
@@ -58,7 +66,7 @@ jobs:
           cp public/news-archives.json dist/news-archives.json || true
 
       - name: Deploy to gh-pages
-        if: env.SKIP != 'true'
+        if: env.SKIP != 'true' && steps.schedule.outputs.publish == 'true'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: dist
@@ -69,7 +77,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit news.json
-        if: env.SKIP != 'true'
+        if: env.SKIP != 'true' && steps.schedule.outputs.publish == 'true'
         run: |
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
