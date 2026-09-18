@@ -262,7 +262,11 @@ function generateNews() {
   }
 
   const fpsArticles = allArticles.filter(article => ['FPS', 'COMPETITION', 'JOUEURS'].includes(article.topic));
-  const selectedArticles = [...fpsArticles, ...allArticles.filter(article => !fpsArticles.includes(article))].slice(0, 3);
+  const selectedArticles = fpsArticles.slice(0, 3);
+
+  if (selectedArticles.length < 3) {
+    throw new Error(`Fallback incomplet: ${selectedArticles.length}/3 articles FPS`);
+  }
 
   return {
     articles: selectedArticles.map(article => ({

@@ -1,70 +1,49 @@
-# Guide de déploiement - News Gaming Automatiques
+# Déploiement des news FPS
 
-## Résumé de la solution
+La publication est faite par `.github/workflows/daily-news.yml`. Chaque exécution
+valide le fuseau `Europe/Paris` avant de lancer le générateur : une seule
+publication est donc autorisée à **05:30 heure de Paris**, en hiver comme en été.
+Le workflow est planifié à `03:30` et `04:30` UTC pour couvrir les deux offsets
+français, puis ignore le créneau qui ne correspond pas à 05:30 Paris.
 
-**NOUVELLE APPROCHE SIMPLIFIÉE:** Le site récupère maintenant directement les news gaming depuis NewsAPI via un proxy CORS. Plus besoin de déployer des Edge Functions!
+## Contrat éditorial
 
-Ce système affiche des news gaming en temps réel sur votre site:
-- **Jeux vidéo** - Actualités, sorties, mises à jour
-- **Compétition** - Tournois esports, résultats
-- **Matériel** - Hardware gaming, périphériques
+- `scripts/fetch-news.cjs` agrège RSS/NewsAPI/GNews/NewsDataIO.
+- Le filtre exige un jeu ou une compétition FPS identifiable (Counter-Strike,
+  Battlefield, Valorant, Call of Duty, Apex, etc.) et exclut les autres jeux et
+  le matériel seul.
+- Les doublons sont retirés par URL et par titre normalisé.
+- Trois articles exactement sont écrits dans `public/news.json`, puis copiés
+  dans `docs/news.json` et `news.json`. Si les sources ou la réécriture IA
+  échouent, le pool FPS déterministe de `generate-news.cjs` complète la sortie.
+- L’image fournie par la source est conservée lorsqu’elle est exploitable ;
+  sinon une image de secours par thème FPS est utilisée. Les images restent
+  attachées à l’article lors de la réécriture.
 
-Les articles sont récupérés de plusieurs catégories gaming et affichés de manière aléatoire.
+## Configuration GitHub
 
----
+Configurer dans **Settings → Secrets and variables → Actions** les secrets
+nécessaires (aucun secret n’est stocké dans le dépôt) :
 
-## ⚠️ Action urgente - Sécurité
+| Secret | Usage |
+| --- | --- |
+| `GNEWS_API_KEY` | Sources GNews |
+| `NEWS_API_KEY` | Sources NewsAPI |
+| `NEWSDATA_API_KEY` | Sources NewsDataIO |
+| `MISTRAL_API_KEY` ou `GEMINI_API_KEY` | Réécriture française facultative |
 
-**Changez votre clé API NewsAPI** rapidement sur [newsapi.org](https://newsapi.org), car vous l'avez partagée publiquement.
+Au moins une source de news et, si souhaité, une clé LLM doivent être valides.
+Sans clé LLM, les articles sont publiés avec leur contenu source et le fallback
+éditorial. `workflow_dispatch` force volontairement la publication pour un
+test manuel.
 
----
+## Validation locale
 
-## Étape 1: Modifier le code (OPTIONNEL)
-
-Le fichier [`src/components/gaming/NewsSection.tsx`](src/components/gaming/NewsSection.tsx) a déjà été modifié pour appeler directement NewsAPI avec un proxy CORS. Les news seront récupérées automatiquement!
-
-### Ce qui a été fait:
-- ✅ Le site appelle maintenant NewsAPI directement
-- ✅ Utilisation d'un proxy CORS pour éviter les blocages
-- ✅ Couverture de 3 thématiques: jeux, compétition, matériel
-
----
-
-## Étape 2: Redéployer votre site
-
-1. Commit et push vos changements
-2. Votre site affichera maintenant les news gaming en temps réel
-
----
-
-## Alternative: Pour une publication automatique à 7h
-
-Si vous voulez vraiment publier EXACTEMENT 2 news à 7h chaque jour (au lieu d'afficher des news en temps réel), vous pouvez:
-
-1. **Utiliser GitHub Actions** (déjà configuré dans `.github/workflows/`)
-2. **Configurer un cron externe** comme [EasyCron](https://www.easycron.com) (gratuit)
-
-Contactez-moi si vous voulez cette fonctionnalité avancée.
-
----
-
-## Problèmes courants
-
-| Problème | Solution |
-|----------|----------|
-| Les news ne s'affichent pas | Vérifiez les logs dans Supabase Dashboard > Edge Functions |
-| Le cron ne fonctionne pas | Vérifiez que le repository GitHub est public ou utilisez un service externe |
-| Erreur API | Vérifiez que la clé NewsAPI est valide et active |
-
----
-
-## 💡 Tester maintenant
-
-### Option 1: Tester en local
 ```bash
-npm run dev
+npm install
+npm test
+npm run build
 ```
-Puis ouvrez http://localhost:5173 et cliquez sur "Actualiser" dans la section News.
 
-### Option 2: Via GitHub Actions
-Allez dans votre repository GitHub > Actions > Daily Gaming News > Run workflow
+`npm test` couvre le filtre FPS, le fallback à trois articles, la déduplication
+indirecte et les changements d’heure Europe/Paris.
