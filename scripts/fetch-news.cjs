@@ -128,7 +128,27 @@ function rewriteWithAI(rawArticles) {
   return null;
 }
 
-async function fetchFromGNews() {
+async function fetchFromNewsAPI() {
+  const apiKey = process.env.NEWS_API_KEY;
+  if (!apiKey) { console.log('NewsAPI: pas de clé API'); return []; }
+  try {
+    const queries = ['valorant esport', 'CS2 counter-strike', 'warzone call of duty', 'apex legends', 'overwatch'];
+    let all = [];
+    for (const q of queries) {
+      const url = `https://newsapi.org/v2/everything?q=${encodeURIComponent(q)}&language=en&sortBy=publishedAt&pageSize=5&apiKey=${apiKey}`;
+      const res = await fetch(url, { headers: { 'User-Agent': USER_AGENT }, signal: AbortSignal.timeout(8000) });
+      const data = await res.json();
+      if (data.articles) all = [...all, ...data.articles.map(a => ({
+        title: a.title, description: a.description, content: a.content,
+        url: a.url, image: a.urlToImage, publishedAt: a.publishedAt, source: a.source?.name,
+      }))];
+    }
+    console.log(`NewsAPI: ${all.length} articles`);
+    return all;
+  } catch (e) { console.log('NewsAPI erreur:', e.message); return []; }
+}
+
+
   const apiKey = process.env.GNEWS_API_KEY;
   if (!apiKey) { console.log('GNews: pas de clé API'); return []; }
   try {
@@ -251,6 +271,7 @@ async function main() {
 
   let all = [];
   all = [...all, ...(await fetchFromRSS())];
+  all = [...all, ...(await fetchFromNewsAPI())];
   all = [...all, ...(await fetchFromGNews())];
   all = [...all, ...(await fetchFromNewsDataIO())];
 
