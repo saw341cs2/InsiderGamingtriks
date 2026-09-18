@@ -17,13 +17,13 @@ jobs:
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
-      - name: Verifier qu'il est bien 5h30 a Paris
+      - name: Verifier heure Paris (fenetre 4h-7h)
         if: github.event_name == 'schedule'
         run: |
           PARIS_HOUR=$(TZ='Europe/Paris' date '+%H')
           echo "Heure actuelle a Paris : ${PARIS_HOUR}h"
-          if [ "$PARIS_HOUR" != "05" ]; then
-            echo "Pas 5h a Paris, on annule cette execution (l'autre horaire s'en chargera)."
+          if [ "$PARIS_HOUR" -lt "4" ] || [ "$PARIS_HOUR" -gt "7" ]; then
+            echo "Hors fenetre, on annule."
             echo "SKIP=true" >> "$GITHUB_ENV"
           fi
 
