@@ -179,27 +179,19 @@ const EXCLUDE_KEYWORDS = [
   'mlbb', 'mobile legends', 'free fire', 'pubg mobile',
 ];
 
-const ENGLISH_MARKERS = [
-  'this week', 'how to ', 'the ', ' and ', ' win ', 'players', 'rewards',
-  'what we know', 'revealed', 'event ', ' all ',
-];
-
 function isGamingArticle(title, description) {
   const text = `${title} ${description}`.toLowerCase();
   if (EXCLUDE_KEYWORDS.some(kw => text.includes(kw))) return false;
   return GAMING_KEYWORDS.some(kw => text.includes(kw));
 }
 
-function isFrenchArticle(title, description) {
-  const text = ` ${title} ${description} `.toLowerCase();
-  const englishMarkers = ENGLISH_MARKERS.filter(marker => text.includes(marker));
-  return englishMarkers.length < 2;
-}
-
 async function fetchFromRSS() {
   const rssUrls = [
-    'https://www.jeuxvideo.com/rss/rss.xml',       // FR général gaming
-    'https://www.vlr.gg/rss',                       // Valorant esport
+    'https://www.jeuxvideo.com/rss/rss.xml',
+    'https://www.vlr.gg/rss',
+    'https://dotesports.com/feed',
+    'https://www.rockpapershotgun.com/feed',
+    'https://www.eurogamer.net/feed',
   ];
   let all = [];
   for (const rssUrl of rssUrls) {
@@ -219,7 +211,7 @@ async function fetchFromRSS() {
         if (titleMatch && linkMatch) {
           const title = decodeHTMLEntities(titleMatch[1].trim());
           const description = decodeHTMLEntities((descMatch ? descMatch[1] : '').replace(/<[^>]*>/g, '').trim());
-          if (!isGamingArticle(title, description) || !isFrenchArticle(title, description)) continue;
+          if (!isGamingArticle(title, description)) continue;
           all.push({
             title,
             description,
@@ -274,23 +266,21 @@ async function main() {
   });
 
   // Filtrer uniquement les articles gaming
-  const gaming = unique.filter(a => isGamingArticle(a.title, a.description || a.content || '') && isFrenchArticle(a.title, a.description || a.content || ''));
-  const fpsNews = gaming.filter(a => categorizeArticle(a.title, a.description || a.content || '') === 'fps');
-  console.log(`Articles gaming: ${gaming.length}, FPS: ${fpsNews.length}`);
+  const gaming = unique.filter(a => isGamingArticle(a.title, a.description || a.content || ''));
+  console.log(`Articles gaming: ${gaming.length}`);
 
   // Si pas assez d'articles gaming, utiliser generate-news comme fallback
-  if (fpsNews.length < 3) {
+  if (gaming.length < 1) {
     console.log('Pas assez de news gaming, utilisation du fallback...');
     const gen = require('./generate-news.cjs');
     await gen.main();
     return;
   }
 
-  // Trier par date décroissante avant de prendre les 6 plus récents
-  fpsNews.sort((a, b) => new Date(b.publishedAt || b.dateTimePub || 0) - new Date(a.publishedAt || a.dateTimePub || 0));
+  // Trier par date décroissante
+  gaming.sort((a, b) => new Date(b.publishedAt || b.dateTimePub || 0) - new Date(a.publishedAt || a.dateTimePub || 0));
 
-  // Prendre les 5 articles les plus récents pour transformation (marge si Mistral en rate)
-  const topArticles = fpsNews.slice(0, 3);
+  const topArticles = gaming.slice(0, 5);
 
   // Étape 1 : Transformer avec les métadonnées de base
   const baseArticles = topArticles.map((a, index) => {
