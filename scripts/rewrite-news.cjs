@@ -50,7 +50,7 @@ async function callMistral(prompt) {
 }
 
 async function callGemini(prompt) {
-  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`, {
+  const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -123,8 +123,9 @@ async function main() {
   console.error(`🔄 Réécriture de ${rawArticles.length} articles (Mistral: ${!!MISTRAL_API_KEY}, Gemini: ${!!GEMINI_API_KEY})...`);
 
   const rewritten = [];
-  for (let i = 0; i < rawArticles.length; i++) {
-    const article = rawArticles[i];
+  const toProcess = rawArticles.slice(0, 6);
+  for (let i = 0; i < toProcess.length; i++) {
+    const article = toProcess[i];
     console.error(`   [${i + 1}/${rawArticles.length}] "${(article.title || '').substring(0, 60)}"`);
     try {
       const result = await rewriteArticle(article);
@@ -133,7 +134,7 @@ async function main() {
     } catch (e) {
       console.error(`   ⏭️ Ignoré: ${e.message}`);
     }
-    if (i < rawArticles.length - 1) await new Promise(r => setTimeout(r, 500));
+    if (i < toProcess.length - 1) await new Promise(r => setTimeout(r, 2000));
   }
 
   console.log(JSON.stringify({ articles: rewritten, generatedAt: new Date().toISOString() }));
