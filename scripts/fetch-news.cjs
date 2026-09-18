@@ -300,7 +300,7 @@ async function main() {
   // Trier par date décroissante
   gaming.sort((a, b) => new Date(b.publishedAt || b.dateTimePub || 0) - new Date(a.publishedAt || a.dateTimePub || 0));
 
-  const topArticles = gaming.slice(0, 5);
+  const topArticles = gaming.slice(0, 7); // marge pour Mistral
 
   // Étape 1 : Transformer avec les métadonnées de base
   const baseArticles = topArticles.map((a, index) => {
@@ -313,16 +313,14 @@ async function main() {
   const rewritten = rewriteWithAI(topArticles);
   if (rewritten && rewritten.length > 0) {
     // On garde les images et URLs des articles de base, mais on prend le contenu réécrit
-    const rewrittenArticles = rewritten.map((rw, i) => ({
+    finalArticles = rewritten.map((rw, i) => ({
       ...rw,
       image: baseArticles[i]?.image || rw.image,
       url: baseArticles[i]?.url || rw.url,
       dateTimePub: baseArticles[i]?.dateTimePub || rw.dateTimePub,
       source: 'InsiderGamingtriks',
       originalSource: baseArticles[i]?.originalSource || rw.originalSource || '',
-    })).filter(article => article.content || article.body || article.summary);
-    const byUrl = new Map([...baseArticles, ...rewrittenArticles].map(article => [article.url, article]));
-    finalArticles = [...byUrl.values()].slice(0, 3);
+    })).filter(article => article.content || article.body || article.summary).slice(0, 6);
     console.log('✅ Articles réécrits avec contenu original Insider Gaming Tricks');
   } else {
     // Fallback : utiliser les articles de base (non réécrits)
@@ -332,7 +330,7 @@ async function main() {
       summary: article.body,
       review: buildFallbackReview(article),
       categories: [article.topic],
-    })).slice(0, 3);
+    })).slice(0, 6);
     console.log('ℹ️  Utilisation des articles sans réécriture IA (fallback)');
   }
 

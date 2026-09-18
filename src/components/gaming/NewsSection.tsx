@@ -31,7 +31,8 @@ const formatDate = (dateString: string) => {
 
 const NEWS_PER_PAGE = 3;
 const NewsSection: React.FC = () => {
-  const [articles, setArticles] = useState<NewsArticle[]>([]);
+  const [todayArticles, setTodayArticles] = useState<NewsArticle[]>([]);
+  const [archivedArticles, setArchivedArticles] = useState<NewsArticle[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
@@ -47,34 +48,24 @@ const NewsSection: React.FC = () => {
       if (!response.ok) throw new Error(`Impossible de charger les news (${response.status}).`);
       const data = (await response.json()) as NewsResponse;
       if (!Array.isArray(data.articles)) throw new Error('Format de données invalide.');
+      setTodayArticles(data.articles.slice(0, 3));
 
-      // Les news plus anciennes sont archivées : on les ajoute après les news
-      // récentes pour qu'elles restent consultables en page 2 et au-delà.
-      let archived: NewsArticle[] = [];
       try {
         const archiveUrl = new URL('news-archives.json', document.baseURI);
         archiveUrl.searchParams.set('t', Date.now().toString());
         const archiveResponse = await fetch(archiveUrl.href);
         if (archiveResponse.ok) {
           const archiveData = (await archiveResponse.json()) as NewsResponse;
-          if (Array.isArray(archiveData.articles)) archived = archiveData.articles;
+          if (Array.isArray(archiveData.articles)) {
+            const seenUrls = new Set(data.articles.map(a => a.url));
+            setArchivedArticles(archiveData.articles.filter(a => !seenUrls.has(a.url)));
+          }
         }
-      } catch {
-        archived = [];
-      }
+      } catch { setArchivedArticles([]); }
 
-      // Les trois articles du jour restent toujours en première page.
-      const todayArticles = data.articles.slice(0, 3);
-      const seenUrls = new Set(todayArticles.map(article => article.url));
-      const combined = [
-        ...todayArticles,
-        ...archived.filter(article => !seenUrls.has(article.url)),
-      ];
-      setArticles(combined);
       setPage(1);
     } catch (catchError) {
       setError(catchError instanceof Error ? catchError.message : 'Erreur inconnue');
-      setArticles([]);
     } finally {
       setLoading(false);
     }
@@ -82,8 +73,13 @@ const NewsSection: React.FC = () => {
 
   useEffect(() => { loadNews(); }, []);
 
-  const totalPages = Math.ceil(articles.length / NEWS_PER_PAGE);
-  const currentArticles = articles.slice((page - 1) * NEWS_PER_PAGE, page * NEWS_PER_PAGE);
+  // Page 1 = 3 news du jour, pages suivantes = archives par tranches de 3
+  const archivePages = Math.ceil(archivedArticles.length / NEWS_PER_PAGE);
+  const totalPages = 1 + archivePages;
+  const currentArticles = page === 1
+    ? todayArticles
+    : archivedArticles.slice((page - 2) * NEWS_PER_PAGE, (page - 1) * NEWS_PER_PAGE);
+  const isArchivePage = page > 1;
 
   const handleArticleClick = (article: NewsArticle, index: number) => {
     localStorage.setItem('selectedNews', JSON.stringify(article));
@@ -102,12 +98,8 @@ const NewsSection: React.FC = () => {
               Actualités <span className="text-red-500">Gaming</span>
             </h2>
           </div>
-          <button
-            type="button"
-            onClick={loadNews}
-            disabled={loading}
-            className="inline-flex items-center justify-center rounded-lg bg-gray-800 px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-700 disabled:opacity-60"
-          >
+          <button type="button" onClick={loadNews} disabled={loading}
+            className="inline-flex items-center justify-center rounded-lg bg-gray-800 px-4 py-2 text-sm font-medium text-white transition hover:bg-gray-700 disabled:opacity-60">
             {loading ? 'Chargement...' : 'Actualiser'}
           </button>
         </div>
@@ -119,11 +111,20 @@ const NewsSection: React.FC = () => {
           </div>
         )}
 
+        {/* Séparateur archives */}
+        {isArchivePage && (
+          <div className="flex items-center gap-3 mb-6">
+            <div className="flex-1 h-px bg-gray-800" />
+            <span className="text-xs text-gray-500 uppercase tracking-widest">Archives</span>
+            <div className="flex-1 h-px bg-gray-800" />
+          </div>
+        )}
+
         <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-stretch">
           {currentArticles.map((article, index) => (
             <div
               key={article.url + index}
-              onClick={() => handleArticleClick(article, (page - 1) * NEWS_PER_PAGE + index)}
+              onClick={() => handleArticleClick(article, index)}
               className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-800 bg-gray-900 transition duration-300 hover:-translate-y-1 hover:border-red-500/30 cursor-pointer"
             >
               <div className="relative h-48 shrink-0 overflow-hidden bg-gray-800">
