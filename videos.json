@@ -1,0 +1,48 @@
+{
+  "videos": [
+    {
+      "id": 0,
+      "title": "Video Short - InsiderGamingTricks",
+      "game": "PC",
+      "topic": "FPS",
+      "duration": "",
+      "youtubeId": "",
+      "thumbnail": "",
+      "views": "0",
+      "likes": "0",
+      "date": "Aujourd'hui",
+      "youtubeUrl": "",
+      "featured": false,
+      "localVideoPath": "videos/video-short.mp4"
+    },
+    {
+      "id": 1,
+      "title": "Battlefield 2042 : Tuto maîtriser les véhicules",
+      "game": "BF",
+      "topic": "JEUX",
+      "duration": "13:55",
+      "youtubeId": "ScNTWbKMZX4",
+      "thumbnail": "https://images.unsplash.com/photo-1547394765-185e1e68f34e?w=640&h=360&fit=crop",
+      "views": "78K",
+      "likes": "4.2K",
+      "date": "Aujourd'hui",
+      "youtubeUrl": "https://www.youtube.com/watch?v=ScNTWbKMZX4",
+      "featured": true
+    },
+    {
+      "id": 2,
+      "title": "CS2 : Tuto économie et gestion des rounds",
+      "game": "CS2",
+      "topic": "JEUX",
+      "duration": "10:15",
+      "youtubeId": "ScNTWbKMZX4",
+      "thumbnail": "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=640&h=360&fit=crop",
+      "views": "312K",
+      "likes": "17K",
+      "date": "Aujourd'hui",
+      "youtubeUrl": "https://www.youtube.com/watch?v=ScNTWbKMZX4",
+      "featured": false
+    }
+  ],
+  "generatedAt": "2026-09-18T18:54:59.391Z"
+}
