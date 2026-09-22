@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { buildFallbackContent, buildFallbackReview } = require('./generate-news.cjs');
+const { buildFallbackContent, buildFallbackReview, generateNews } = require('./generate-news.cjs');
 
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
@@ -27,6 +27,27 @@ function parseAIJson(text) {
   const match = cleaned.match(/\{[\s\S]*\}/);
   if (match) { try { return JSON.parse(match[0]); } catch {} }
   return null;
+}
+
+const COMMON_FRENCH_WORDS = new Set([
+  'le', 'la', 'les', 'des', 'une', 'un', 'est', 'et', 'avec', 'pour', 'dans',
+  'que', 'qui', 'du', 'au', 'aux', 'plus', 'sur', 'ce', 'cette', 'ces', 'notre',
+  'votre', 'son', 'ses', 'être', 'après', 'mais', 'sans', 'entre', 'joueurs',
+  'actualité', 'nouvelle', 'annonce', 'selon', 'leurs',
+]);
+const COMMON_ENGLISH_WORDS = new Set([
+  'the', 'and', 'after', 'while', 'that', 'they', 'have', 'will', 'with', 'from',
+  'into', 'this', 'are', 'was', 'were', 'more', 'than', 'for', 'not', 'how',
+  'what', 'when', 'its', 'their', 'back', 'needs', 'evolve', 'decide', 'pledging',
+  'bring', 'announcing', 'changes', 'developing', 'read',
+]);
+
+function isLikelyFrench(text) {
+  const words = (text || '').toLocaleLowerCase('fr-FR').match(/[a-zàâçéèêëîïôûùüÿœæ]+/g) || [];
+  if (words.length < 8) return false;
+  const frenchCount = words.filter(word => COMMON_FRENCH_WORDS.has(word)).length;
+  const englishCount = words.filter(word => COMMON_ENGLISH_WORDS.has(word)).length;
+  return frenchCount >= 3 && englishCount <= Math.max(1, frenchCount * 0.35);
 }
 
 async function callMistral(prompt) {
@@ -76,7 +97,11 @@ DESCRIPTION : ${(article.description || article.body || '').substring(0, 500)}`;
   const raw = (await callMistral(prompt)) || (await callGemini(prompt));
   if (!raw) return null;
   const parsed = parseAIJson(raw);
-  if (!parsed?.title) return null;
+  const rewrittenText = `${parsed?.title || ''} ${parsed?.summary || ''} ${parsed?.content || ''}`;
+  if (!parsed?.title || !parsed?.summary || !parsed?.content || !isLikelyFrench(rewrittenText)) {
+    console.warn(`   ⚠️ Réécriture ignorée: réponse absente ou non française pour "${article.title || ''}"`);
+    return null;
+  }
   const cats = Array.isArray(parsed.categories) ? parsed.categories : ['JEUX'];
   return {
     title: parsed.title,
@@ -365,15 +390,8 @@ async function main() {
   }
 
   if (finalArticles.length < 3) {
-    const rewrittenUrls = new Set(finalArticles.map(article => article.url));
-    finalArticles = [...finalArticles, ...baseArticles.filter(article => !rewrittenUrls.has(article.url))
-      .map(article => ({
-        ...article,
-        content: buildFallbackContent(article),
-        summary: article.body,
-        review: buildFallbackReview(article),
-        categories: ['FPS'],
-      }))];
+    console.log('⚠️ Réécriture française incomplète : fallback éditorial français utilisé.');
+    finalArticles = generateNews().articles;
   }
   finalArticles = finalArticles.slice(0, 3);
 
@@ -410,4 +428,4 @@ if (require.main === module) main().catch(error => {
   process.exitCode = 1;
 });
 
-module.exports = { isFpsArticle, keywordMatches, categorizeArticle, transformArticle };
+module.exports = { isFpsArticle, isLikelyFrench, keywordMatches, categorizeArticle, transformArticle };

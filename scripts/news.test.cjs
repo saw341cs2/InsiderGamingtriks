@@ -2,7 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { execFileSync } = require('node:child_process');
 
-const { isFpsArticle } = require('./fetch-news.cjs');
+const { isFpsArticle, isLikelyFrench } = require('./fetch-news.cjs');
 const { generateNews } = require('./generate-news.cjs');
 const { isParisPublicationTime } = require('./should-publish-news.cjs');
 
@@ -12,6 +12,15 @@ test('filtre les FPS et rejette les autres jeux', () => {
   assert.equal(isFpsArticle('Nintendo annonce un nouveau jeu', 'Mario arrive bientôt'), false);
   assert.equal(isFpsArticle('Tournoi esport', 'finale sans jeu FPS identifié'), false);
   assert.equal(isFpsArticle('Guide souris gaming', 'comparatif 240 Hz'), false);
+});
+
+test('refuse un contenu anglais après réécriture IA', () => {
+  assert.equal(isLikelyFrench(
+    'Bungie decide their destiny is to do more Destiny after all, pledging to bring back vaulted campaigns. Read more',
+  ), false);
+  assert.equal(isLikelyFrench(
+    'Bungie annonce le retour de campagnes mises au coffre. Cette actualité concerne les joueurs et présente une nouvelle direction pour le jeu.',
+  ), true);
 });
 
 test('le fallback génère exactement trois articles FPS distincts', () => {
