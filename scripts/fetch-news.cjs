@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { buildFallbackContent, buildFallbackReview, generateNews } = require('./generate-news.cjs');
+const { generateNews } = require('./generate-news.cjs');
 
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
@@ -379,14 +379,8 @@ async function main() {
   }
 
   if (!finalArticles || finalArticles.length === 0) {
-    finalArticles = baseArticles.map(article => ({
-      ...article,
-      content: buildFallbackContent(article),
-      summary: article.body,
-      review: buildFallbackReview(article),
-      categories: [article.topic],
-    }));
-    console.log('ℹ️  Utilisation des articles sans réécriture IA (fallback)');
+    finalArticles = generateNews().articles;
+    console.log('ℹ️  Aucune réécriture française valide : fallback éditorial français utilisé.');
   }
 
   if (finalArticles.length < 3) {
