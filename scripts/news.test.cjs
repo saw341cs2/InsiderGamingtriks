@@ -1,5 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
+const { execFileSync } = require('node:child_process');
 
 const { isFpsArticle } = require('./fetch-news.cjs');
 const { generateNews } = require('./generate-news.cjs');
@@ -25,4 +26,12 @@ test('le créneau suit Europe/Paris en hiver et en été', () => {
   assert.equal(isParisPublicationTime(new Date('2026-01-15T04:30:00Z')), true);
   assert.equal(isParisPublicationTime(new Date('2026-07-15T03:30:00Z')), true);
   assert.equal(isParisPublicationTime(new Date('2026-07-15T04:30:00Z')), false);
+});
+
+test('la sortie GitHub Actions ne contient qu une propriété output', () => {
+  const output = execFileSync(process.execPath, ['scripts/should-publish-news.cjs'], {
+    encoding: 'utf8',
+    env: { ...process.env, ALLOW_MANUAL: 'true' },
+  });
+  assert.equal(output.trim(), 'publish=true');
 });
