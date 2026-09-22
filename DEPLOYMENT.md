@@ -33,9 +33,10 @@ nécessaires (aucun secret n’est stocké dans le dépôt) :
 | `MISTRAL_API_KEY` ou `GEMINI_API_KEY` | Réécriture française facultative |
 
 Au moins une source de news et, si souhaité, une clé LLM doivent être valides.
-Sans clé LLM, les articles sont publiés avec leur contenu source et le fallback
-éditorial. `workflow_dispatch` force volontairement la publication pour un
-test manuel.
+Sans clé LLM, ou si la réponse IA reste en anglais/incomplète, le générateur
+utilise trois articles du fallback éditorial français plutôt que de publier un
+texte non traduit. `workflow_dispatch` force volontairement la publication pour
+un test manuel.
 
 ## Validation locale
 

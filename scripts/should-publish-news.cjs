@@ -19,6 +19,6 @@ function isParisPublicationTime(date = new Date()) {
 
 const publish = process.env.ALLOW_MANUAL === 'true' || isParisPublicationTime();
 console.log(`publish=${publish}`);
-if (!publish) console.log('Publication ignorée: le créneau Europe/Paris est 05:30.');
+if (!publish) console.error('Publication ignorée: le créneau Europe/Paris est 05:30.');
 
 module.exports = { isParisPublicationTime, parisTimeParts };
