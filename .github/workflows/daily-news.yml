@@ -68,6 +68,7 @@ jobs:
           cp public/astuces.json dist/astuces.json || true
           cp public/videos.json dist/videos.json || true
           cp public/news-archives.json dist/news-archives.json || true
+          cp -r public/videos dist/videos || true
 
       - name: Deploy to gh-pages
         if: env.SKIP != 'true' && steps.schedule.outputs.publish == 'true'
