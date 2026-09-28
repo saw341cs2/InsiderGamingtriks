@@ -12,6 +12,7 @@ type NewsArticle = {
   image: string;
   imageCredit?: { name: string; url?: string } | null;
   dateTimePub: string;
+  publishedOn?: string;
   source: string;
   topic: string;
   categories?: string[];
@@ -54,9 +55,7 @@ const getArticleParisDateKey = (dateTimePub: string) => {
 };
 
 const NewsSection: React.FC = () => {
-  const [todayArticles, setTodayArticles] = useState<NewsArticle[]>([]);
-  const [yesterdayArticles, setYesterdayArticles] = useState<NewsArticle[]>([]);
-  const [archivedArticles, setArchivedArticles] = useState<NewsArticle[]>([]);
+  const [articleDays, setArticleDays] = useState<Array<{ date: string; articles: NewsArticle[] }>>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
@@ -91,24 +90,32 @@ const NewsSection: React.FC = () => {
         if (!article.url || seenUrls.has(article.url)) return false;
         seenUrls.add(article.url);
         return true;
+      }).map(article => {
+        const isCurrentArticle = data.articles.some(currentArticle => currentArticle.url === article.url);
+        return {
+          ...article,
+          publishedOn: article.publishedOn || (
+            isCurrentArticle ? data.generatedAt || article.dateTimePub : article.dateTimePub
+          ),
+        };
       });
-      const referenceDate = new Date();
-      const todayKey = getParisDateKey(referenceDate);
-      const yesterdayKey = getPreviousParisDateKey(referenceDate);
-      const sortNewestFirst = (articles: NewsArticle[]) => articles.sort(
-        (a, b) => new Date(b.dateTimePub).getTime() - new Date(a.dateTimePub).getTime(),
-      );
+      const groupedArticles = new Map<string, NewsArticle[]>();
+      for (const article of allArticles) {
+        const dateKey = getArticleParisDateKey(article.publishedOn || article.dateTimePub);
+        if (!dateKey) continue;
+        const group = groupedArticles.get(dateKey) || [];
+        group.push(article);
+        groupedArticles.set(dateKey, group);
+      }
 
-      setTodayArticles(sortNewestFirst(allArticles.filter(
-        article => getArticleParisDateKey(article.dateTimePub) === todayKey,
-      )).slice(0, DAILY_NEWS_COUNT));
-      setYesterdayArticles(sortNewestFirst(allArticles.filter(
-        article => getArticleParisDateKey(article.dateTimePub) === yesterdayKey,
-      )).slice(0, DAILY_NEWS_COUNT));
-      setArchivedArticles(sortNewestFirst(allArticles.filter(article => {
-        const dateKey = getArticleParisDateKey(article.dateTimePub);
-        return dateKey !== todayKey && dateKey !== yesterdayKey;
-      })));
+      setArticleDays([...groupedArticles.entries()]
+        .sort(([left], [right]) => right.localeCompare(left))
+        .map(([date, articles]) => ({
+          date,
+          articles: articles
+            .sort((a, b) => new Date(b.publishedOn || b.dateTimePub).getTime() - new Date(a.publishedOn || a.dateTimePub).getTime())
+            .slice(0, DAILY_NEWS_COUNT),
+        })));
 
       setPage(1);
     } catch (catchError) {
@@ -120,17 +127,23 @@ const NewsSection: React.FC = () => {
 
   useEffect(() => { loadNews(); }, []);
 
-  // La première page ne montre que les news datées d'aujourd'hui et d'hier.
-  const archivePages = Math.ceil(archivedArticles.length / NEWS_PER_PAGE);
-  const totalPages = 1 + archivePages;
-  const currentArticles = page === 1
-    ? [...todayArticles, ...yesterdayArticles]
-    : archivedArticles.slice((page - 2) * NEWS_PER_PAGE, (page - 1) * NEWS_PER_PAGE);
+  // La première page réserve les deux derniers jours ; les suivantes affichent
+  // les deux dates d'archive les plus récentes, sans avancer une vieille news.
+  const todayKey = getParisDateKey(new Date());
+  const yesterdayKey = getPreviousParisDateKey(new Date());
+  const today = articleDays.find(day => day.date === todayKey);
+  const yesterday = articleDays.find(day => day.date === yesterdayKey);
+  const olderDays = articleDays.filter(day => day.date !== todayKey && day.date !== yesterdayKey);
+  const totalPages = 1 + Math.ceil(olderDays.length / 2);
+  const currentDays = page === 1
+    ? [today, yesterday].filter((day): day is { date: string; articles: NewsArticle[] } => Boolean(day))
+    : olderDays.slice((page - 2) * 2, (page - 1) * 2);
+  const currentArticles = currentDays.flatMap(day => day.articles);
   const isArchivePage = page > 1;
 
   const handleArticleClick = (article: NewsArticle, index: number) => {
     localStorage.setItem('selectedNews', JSON.stringify(article));
-    navigate(`/news/${index}`);
+    navigate(`/news/${index}?url=${encodeURIComponent(article.url)}`);
   };
 
   return (
@@ -181,7 +194,7 @@ const NewsSection: React.FC = () => {
                 <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-widest text-red-400">
                   <span>{article.topic}</span>
                   <span className="text-gray-500">•</span>
-                  <span>{formatDate(article.dateTimePub)}</span>
+                  <span>{formatDate(article.publishedOn || article.dateTimePub)}</span>
                 </div>
                 <h3 className="min-h-[3rem] text-base font-bold text-white line-clamp-2">{article.title}</h3>
                 {/* Résumé si disponible (réécriture IA) */}

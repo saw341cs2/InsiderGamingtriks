@@ -16,6 +16,11 @@ français, puis ignore le créneau qui ne correspond pas à 05:30 Paris.
 - Trois articles exactement sont écrits dans `public/news.json`, puis copiés
   dans `docs/news.json` et `news.json`. Si les sources ou la réécriture IA
   échouent, le pool FPS déterministe de `generate-news.cjs` complète la sortie.
+- Chaque lot reçoit un `publishedOn` commun, distinct de la date originale de
+  la source. L’accueil regroupe trois articles par date de publication :
+  première page pour aujourd’hui et hier, pages suivantes par paires de dates
+  d’archives. Les jours sans lot publié restent vides au lieu d’être remplis
+  avec des articles plus anciens présentés comme récents.
 - L’image fournie par la source est conservée lorsqu’elle est exploitable ;
   sinon une image de secours par thème FPS est utilisée. Les images restent
   attachées à l’article lors de la réécriture.

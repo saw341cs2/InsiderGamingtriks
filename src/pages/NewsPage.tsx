@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Navbar from '@/components/gaming/Navbar';
 
 type NewsArticle = {
@@ -12,6 +12,7 @@ type NewsArticle = {
   image: string;
   imageCredit?: { name: string; url?: string } | null;
   dateTimePub: string;
+  publishedOn?: string;
   source: string;
   topic: string;
   categories?: string[];
@@ -27,16 +28,45 @@ const formatDate = (dateString: string) => {
 const NewsPage: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const selectedUrl = searchParams.get('url');
   const [article, setArticle] = useState<NewsArticle | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadArticle = async () => {
+      if (selectedUrl) {
+        const stored = localStorage.getItem('selectedNews');
+        if (stored) {
+          try {
+            const cachedArticle = JSON.parse(stored) as NewsArticle;
+            if (cachedArticle.url === selectedUrl) {
+              setArticle(cachedArticle);
+              setLoading(false);
+              return;
+            }
+          } catch {
+            localStorage.removeItem('selectedNews');
+          }
+        }
+      }
+
       try {
         const response = await fetch(new URL('news.json', document.baseURI).href);
         const data = await response.json();
         const articles = Array.isArray(data.articles) ? data.articles : [];
-        const selected = articles[Number(id)];
+        let selected = selectedUrl
+          ? articles.find((item: NewsArticle) => item.url === selectedUrl)
+          : articles[Number(id)];
+        if (selectedUrl && !selected) {
+          const archiveResponse = await fetch(new URL('news-archives.json', document.baseURI).href);
+          if (archiveResponse.ok) {
+            const archiveData = await archiveResponse.json();
+            selected = Array.isArray(archiveData.articles)
+              ? archiveData.articles.find((item: NewsArticle) => item.url === selectedUrl)
+              : undefined;
+          }
+        }
         if (selected) {
           setArticle(selected);
           localStorage.setItem('selectedNews', JSON.stringify(selected));
@@ -60,7 +90,7 @@ const NewsPage: React.FC = () => {
     };
 
     loadArticle();
-  }, [id, navigate]);
+  }, [id, navigate, selectedUrl]);
 
   if (loading && !article) return <div className="min-h-screen bg-black text-white flex items-center justify-center">Chargement de l'article...</div>;
   if (!article) return null;
@@ -89,7 +119,7 @@ const NewsPage: React.FC = () => {
             <div className="flex items-center gap-3 text-xs uppercase tracking-widest text-red-400">
               <span>{article.topic}</span>
               <span className="text-gray-500">|</span>
-              <span>{formatDate(article.dateTimePub)}</span>
+              <span>{formatDate(article.publishedOn || article.dateTimePub)}</span>
               <span className="text-gray-500">|</span>
               <span>{article.source}</span>
             </div>

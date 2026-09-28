@@ -244,19 +244,20 @@ const articlesPool = [
   ],
 ];
 
-function generateNews() {
-  const today = new Date();
+function generateNews(today = new Date()) {
   const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
+  const publishedOn = today.toISOString();
 
   const allArticles = [];
   for (let i = 0; i < 3; i++) {
     const dayIndex = ((dayOfYear - 1 - i) % articlesPool.length + articlesPool.length) % articlesPool.length;
     const pool = articlesPool[dayIndex] || articlesPool[0];
-    const date = new Date();
+    const date = new Date(today);
     date.setDate(date.getDate() - i);
     allArticles.push(...pool.map(article => ({
       ...article,
       dateTimePub: date.toISOString(),
+      publishedOn,
       source: 'InsiderGamingtriks',
     })));
   }
@@ -276,7 +277,7 @@ function generateNews() {
       review: buildFallbackReview(article),
       categories: [article.topic],
     })),
-    generatedAt: new Date().toISOString(),
+    generatedAt: publishedOn,
   };
 }
 
@@ -334,7 +335,10 @@ function archiveOldNews(freshArticles) {
   const previous = readJson(NEWS_TARGETS[0], { articles: [] });
   const previousArticles = Array.isArray(previous.articles) ? previous.articles : [];
   const freshUrls = new Set(freshArticles.map(a => a.url));
-  const droppedFromHome = previousArticles.filter(a => !freshUrls.has(a.url));
+  const previousPublishedOn = previous.generatedAt || new Date().toISOString();
+  const droppedFromHome = previousArticles
+    .filter(a => !freshUrls.has(a.url))
+    .map(article => ({ ...article, publishedOn: article.publishedOn || previousPublishedOn }));
   if (droppedFromHome.length === 0) return;
 
   const archive = readJson(ARCHIVE_TARGETS[0], { articles: [] });
