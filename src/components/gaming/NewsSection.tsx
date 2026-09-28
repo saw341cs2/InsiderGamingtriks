@@ -31,8 +31,31 @@ const formatDate = (dateString: string) => {
 
 const NEWS_PER_PAGE = 3;
 const DAILY_NEWS_COUNT = 3;
+
+const getParisDateKey = (date: Date) => {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Europe/Paris',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(date);
+  const values = Object.fromEntries(parts.filter(part => part.type !== 'literal').map(part => [part.type, part.value]));
+  return `${values.year}-${values.month}-${values.day}`;
+};
+
+const getPreviousParisDateKey = (date: Date) => {
+  const [year, month, day] = getParisDateKey(date).split('-').map(Number);
+  return getParisDateKey(new Date(Date.UTC(year, month - 1, day - 1, 12)));
+};
+
+const getArticleParisDateKey = (dateTimePub: string) => {
+  const date = new Date(dateTimePub);
+  return Number.isNaN(date.getTime()) ? null : getParisDateKey(date);
+};
+
 const NewsSection: React.FC = () => {
   const [todayArticles, setTodayArticles] = useState<NewsArticle[]>([]);
+  const [yesterdayArticles, setYesterdayArticles] = useState<NewsArticle[]>([]);
   const [archivedArticles, setArchivedArticles] = useState<NewsArticle[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -49,8 +72,8 @@ const NewsSection: React.FC = () => {
       if (!response.ok) throw new Error(`Impossible de charger les news (${response.status}).`);
       const data = (await response.json()) as NewsResponse;
       if (!Array.isArray(data.articles)) throw new Error('Format de données invalide.');
-      setTodayArticles(data.articles.slice(0, 3));
 
+      let archiveArticles: NewsArticle[] = [];
       try {
         const archiveUrl = new URL('news-archives.json', document.baseURI);
         archiveUrl.searchParams.set('t', Date.now().toString());
@@ -58,11 +81,34 @@ const NewsSection: React.FC = () => {
         if (archiveResponse.ok) {
           const archiveData = (await archiveResponse.json()) as NewsResponse;
           if (Array.isArray(archiveData.articles)) {
-            const seenUrls = new Set(data.articles.map(a => a.url));
-            setArchivedArticles(archiveData.articles.filter(a => !seenUrls.has(a.url)));
+            archiveArticles = archiveData.articles;
           }
         }
-      } catch { setArchivedArticles([]); }
+      } catch { archiveArticles = []; }
+
+      const seenUrls = new Set<string>();
+      const allArticles = [...data.articles, ...archiveArticles].filter(article => {
+        if (!article.url || seenUrls.has(article.url)) return false;
+        seenUrls.add(article.url);
+        return true;
+      });
+      const referenceDate = new Date();
+      const todayKey = getParisDateKey(referenceDate);
+      const yesterdayKey = getPreviousParisDateKey(referenceDate);
+      const sortNewestFirst = (articles: NewsArticle[]) => articles.sort(
+        (a, b) => new Date(b.dateTimePub).getTime() - new Date(a.dateTimePub).getTime(),
+      );
+
+      setTodayArticles(sortNewestFirst(allArticles.filter(
+        article => getArticleParisDateKey(article.dateTimePub) === todayKey,
+      )).slice(0, DAILY_NEWS_COUNT));
+      setYesterdayArticles(sortNewestFirst(allArticles.filter(
+        article => getArticleParisDateKey(article.dateTimePub) === yesterdayKey,
+      )).slice(0, DAILY_NEWS_COUNT));
+      setArchivedArticles(sortNewestFirst(allArticles.filter(article => {
+        const dateKey = getArticleParisDateKey(article.dateTimePub);
+        return dateKey !== todayKey && dateKey !== yesterdayKey;
+      })));
 
       setPage(1);
     } catch (catchError) {
@@ -74,14 +120,12 @@ const NewsSection: React.FC = () => {
 
   useEffect(() => { loadNews(); }, []);
 
-  // Page 1 = 3 news du jour + 3 news de la veille, pages suivantes = archives.
-  const yesterdayArticles = archivedArticles.slice(0, DAILY_NEWS_COUNT);
-  const olderArchivedArticles = archivedArticles.slice(DAILY_NEWS_COUNT);
-  const archivePages = Math.ceil(olderArchivedArticles.length / NEWS_PER_PAGE);
+  // La première page ne montre que les news datées d'aujourd'hui et d'hier.
+  const archivePages = Math.ceil(archivedArticles.length / NEWS_PER_PAGE);
   const totalPages = 1 + archivePages;
   const currentArticles = page === 1
     ? [...todayArticles, ...yesterdayArticles]
-    : olderArchivedArticles.slice((page - 2) * NEWS_PER_PAGE, (page - 1) * NEWS_PER_PAGE);
+    : archivedArticles.slice((page - 2) * NEWS_PER_PAGE, (page - 1) * NEWS_PER_PAGE);
   const isArchivePage = page > 1;
 
   const handleArticleClick = (article: NewsArticle, index: number) => {
