@@ -45,13 +45,6 @@ test('la clé de date respecte les décalages hiver/été Europe/Paris', () => {
   assert.equal(parisDateKey(new Date('2026-07-15T22:30:00Z')), '2026-07-16');
 });
 
-test('la sortie GitHub Actions ne contient qu une propriété output', () => {
-  const output = execFileSync(process.execPath, ['scripts/should-publish-news.cjs'], {
-    encoding: 'utf8',
-    env: { ...process.env, ALLOW_MANUAL: 'true' },
-  });
-  assert.equal(output.trim(), 'publish=true');
-});
 
 test('la sortie GitHub Actions ne contient qu une propriété output', () => {
   const output = execFileSync(process.execPath, ['scripts/should-publish-news.cjs'], {
