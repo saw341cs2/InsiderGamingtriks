@@ -4,7 +4,7 @@ const { execFileSync } = require('node:child_process');
 
 const { isFpsArticle, isLikelyFrench } = require('./fetch-news.cjs');
 const { generateNews } = require('./generate-news.cjs');
-const { isParisPublicationTime } = require('./should-publish-news.cjs');
+const { parisDateKey, shouldPublishNews } = require('./should-publish-news.cjs');
 
 test('filtre les FPS et rejette les autres jeux', () => {
   assert.equal(isFpsArticle('Valorant patch compétitif', 'Riot modifie les agents'), true);
@@ -31,10 +31,18 @@ test('le fallback génère exactement trois articles FPS distincts', () => {
   assert.ok(data.articles.every(article => article.image.startsWith('http')));
 });
 
-test('le créneau suit Europe/Paris en hiver et en été', () => {
-  assert.equal(isParisPublicationTime(new Date('2026-01-15T04:30:00Z')), true);
-  assert.equal(isParisPublicationTime(new Date('2026-07-15T03:30:00Z')), true);
-  assert.equal(isParisPublicationTime(new Date('2026-07-15T04:30:00Z')), false);
+test('la publication planifiée tolère le retard de GitHub et reste unique par date Paris', () => {
+  const delayedMorningRun = new Date('2026-09-28T08:03:00Z');
+  assert.equal(parisDateKey(delayedMorningRun), '2026-09-28');
+  assert.equal(shouldPublishNews({ date: delayedMorningRun, generatedAt: '2026-09-22T14:32:00Z' }), true);
+  assert.equal(shouldPublishNews({ date: delayedMorningRun, generatedAt: '2026-09-28T03:30:00Z' }), false);
+  assert.equal(shouldPublishNews({ date: new Date('2026-09-29T00:30:00Z'), generatedAt: '2026-09-28T22:00:00Z' }), false);
+  assert.equal(shouldPublishNews({ date: delayedMorningRun, generatedAt: '2026-09-28T03:30:00Z', allowManual: true }), true);
+});
+
+test('la clé de date respecte les décalages hiver/été Europe/Paris', () => {
+  assert.equal(parisDateKey(new Date('2026-01-15T23:30:00Z')), '2026-01-16');
+  assert.equal(parisDateKey(new Date('2026-07-15T22:30:00Z')), '2026-07-16');
 });
 
 test('la sortie GitHub Actions ne contient qu une propriété output', () => {

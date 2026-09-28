@@ -9,6 +9,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: daily-news-publish
+  cancel-in-progress: false
+
 jobs:
   publish-news:
     runs-on: ubuntu-latest
