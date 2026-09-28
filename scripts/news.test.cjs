@@ -52,3 +52,11 @@ test('la sortie GitHub Actions ne contient qu une propriété output', () => {
   });
   assert.equal(output.trim(), 'publish=true');
 });
+
+test('la sortie GitHub Actions ne contient qu une propriété output', () => {
+  const output = execFileSync(process.execPath, ['scripts/should-publish-news.cjs'], {
+    encoding: 'utf8',
+    env: { ...process.env, ALLOW_MANUAL: 'true' },
+  });
+  assert.equal(output.trim(), 'publish=true');
+});
