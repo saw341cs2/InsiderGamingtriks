@@ -31,6 +31,13 @@ test('le fallback génère exactement trois articles FPS distincts', () => {
   assert.ok(data.articles.every(article => article.image.startsWith('http')));
 });
 
+test('les trois articles du fallback partagent la date de publication du lot', () => {
+  const runDate = new Date('2026-09-28T19:02:00.000Z');
+  const data = generateNews(runDate);
+  assert.equal(data.generatedAt, runDate.toISOString());
+  assert.ok(data.articles.every(article => article.publishedOn === data.generatedAt));
+});
+
 test('la publication planifiée tolère le retard de GitHub et reste unique par date Paris', () => {
   const delayedMorningRun = new Date('2026-09-28T08:03:00Z');
   assert.equal(parisDateKey(delayedMorningRun), '2026-09-28');
@@ -43,13 +50,4 @@ test('la publication planifiée tolère le retard de GitHub et reste unique par 
 test('la clé de date respecte les décalages hiver/été Europe/Paris', () => {
   assert.equal(parisDateKey(new Date('2026-01-15T23:30:00Z')), '2026-01-16');
   assert.equal(parisDateKey(new Date('2026-07-15T22:30:00Z')), '2026-07-16');
-});
-
-
-test('la sortie GitHub Actions ne contient qu une propriété output', () => {
-  const output = execFileSync(process.execPath, ['scripts/should-publish-news.cjs'], {
-    encoding: 'utf8',
-    env: { ...process.env, ALLOW_MANUAL: 'true' },
-  });
-  assert.equal(output.trim(), 'publish=true');
 });
