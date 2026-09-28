@@ -2,18 +2,18 @@
   "videos": [
     {
       "id": 0,
-      "title": "Video Short - InsiderGamingTricks",
-      "game": "PC",
+      "title": "InsiderGamingTricks - Le clip",
+      "game": "FPS",
       "topic": "FPS",
-      "duration": "",
+      "duration": "0:40",
       "youtubeId": "",
       "thumbnail": "",
-      "views": "0",
-      "likes": "0",
+      "views": "",
+      "likes": "",
       "date": "Aujourd'hui",
       "youtubeUrl": "",
       "featured": false,
-      "localVideoPath": "videos/video-short.mp4"
+      "localVideoPath": "videos/InsiderTricks_video_40s.mp4"
     },
     {
       "id": 1,
