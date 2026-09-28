@@ -30,6 +30,7 @@ const formatDate = (dateString: string) => {
 };
 
 const NEWS_PER_PAGE = 3;
+const DAILY_NEWS_COUNT = 3;
 const NewsSection: React.FC = () => {
   const [todayArticles, setTodayArticles] = useState<NewsArticle[]>([]);
   const [archivedArticles, setArchivedArticles] = useState<NewsArticle[]>([]);
@@ -73,12 +74,14 @@ const NewsSection: React.FC = () => {
 
   useEffect(() => { loadNews(); }, []);
 
-  // Page 1 = 3 news du jour, pages suivantes = archives par tranches de 3
-  const archivePages = Math.ceil(archivedArticles.length / NEWS_PER_PAGE);
+  // Page 1 = 3 news du jour + 3 news de la veille, pages suivantes = archives.
+  const yesterdayArticles = archivedArticles.slice(0, DAILY_NEWS_COUNT);
+  const olderArchivedArticles = archivedArticles.slice(DAILY_NEWS_COUNT);
+  const archivePages = Math.ceil(olderArchivedArticles.length / NEWS_PER_PAGE);
   const totalPages = 1 + archivePages;
   const currentArticles = page === 1
-    ? todayArticles
-    : archivedArticles.slice((page - 2) * NEWS_PER_PAGE, (page - 1) * NEWS_PER_PAGE);
+    ? [...todayArticles, ...yesterdayArticles]
+    : olderArchivedArticles.slice((page - 2) * NEWS_PER_PAGE, (page - 1) * NEWS_PER_PAGE);
   const isArchivePage = page > 1;
 
   const handleArticleClick = (article: NewsArticle, index: number) => {
