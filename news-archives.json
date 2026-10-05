@@ -1,6 +1,22 @@
 {
   "articles": [
     {
+      "title": "🎙️ shroud revient sur Twitch : ses premiers streams analysés",
+      "body": "Michael shroud Grzesiek est de retour sur Twitch après une longue pause. Ses performances sur CS2 et Valorant impressionnent.",
+      "url": "https://insidertricks.fr/news/shroud-retour-twitch",
+      "image": "https://images.unsplash.com/photo-1603481588273-2f908a9a7a1b?w=800&h=450&fit=crop",
+      "topic": "JOUEURS",
+      "dateTimePub": "2026-10-03T09:21:35.981Z",
+      "publishedOn": "2026-10-03T09:21:35.982Z",
+      "source": "InsiderGamingtriks",
+      "summary": "Michael shroud Grzesiek est de retour sur Twitch après une longue pause. Ses performances sur CS2 et Valorant impressionnent.",
+      "content": "Michael shroud Grzesiek est de retour sur Twitch après une longue pause. Ses performances sur CS2 et Valorant impressionnent.\n\nCette actualité met en lumière un joueur dont les choix peuvent avoir des conséquences sur toute une équipe. Dans l'esport moderne, une carrière se construit autant sur les performances que sur la compatibilité avec un projet, un encadrement et une méthode de travail.\n\nLe changement évoqué devra être observé sur la durée. Les premières apparitions attirent naturellement l'attention, mais c'est la régularité en match officiel qui permettra de juger l'efficacité de cette nouvelle étape.\n\nAu-delà du résultat immédiat, cette situation rappelle l'importance de la préparation et de la confiance. Un joueur performant doit pouvoir retrouver ses automatismes tout en s'intégrant aux habitudes de ses nouveaux partenaires.\n\nLes prochains matchs apporteront les réponses les plus fiables. Notre analyse se concentrera sur le rôle réellement occupé, les décisions prises en jeu et l'impact du joueur sur la dynamique collective.",
+      "review": "Notre avis : shroud revient sur Twitch : ses premiers streams analysés mérite d'être suivi, mais il faudra attendre davantage de données avant de tirer des conclusions définitives.",
+      "categories": [
+        "JOUEURS"
+      ]
+    },
+    {
       "title": "🏅 Valorant Champions 2026 : le programme complet",
       "body": "Le tournoi Valorant Champions 2026 se déroulera à Paris. 16 équipes mondiales s'affrontent pour le titre.",
       "url": "https://insidertricks.fr/news/valorant-champions-2026",
@@ -619,5 +635,5 @@
       "originalSource": "jeuxvideo.com"
     }
   ],
-  "generatedAt": "2026-09-30T09:55:03.292Z"
+  "generatedAt": "2026-10-05T10:44:46.106Z"
 }
