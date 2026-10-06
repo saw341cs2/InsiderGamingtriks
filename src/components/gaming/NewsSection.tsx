@@ -129,14 +129,11 @@ const NewsSection: React.FC = () => {
 
   // La première page réserve les deux derniers jours ; les suivantes affichent
   // les deux dates d'archive les plus récentes, sans avancer une vieille news.
-  const todayKey = getParisDateKey(new Date());
-  const yesterdayKey = getPreviousParisDateKey(new Date());
-  const today = articleDays.find(day => day.date === todayKey);
-  const yesterday = articleDays.find(day => day.date === yesterdayKey);
-  const olderDays = articleDays.filter(day => day.date !== todayKey && day.date !== yesterdayKey);
+  const recentDays = articleDays.slice(0, 2);
+  const olderDays = articleDays.slice(2);
   const totalPages = 1 + Math.ceil(olderDays.length / 2);
   const currentDays = page === 1
-    ? [today, yesterday].filter((day): day is { date: string; articles: NewsArticle[] } => Boolean(day))
+    ? recentDays
     : olderDays.slice((page - 2) * 2, (page - 1) * 2);
   const currentArticles = currentDays.flatMap(day => day.articles);
   const isArchivePage = page > 1;
