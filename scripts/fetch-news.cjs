@@ -303,10 +303,9 @@ function archiveOldNews(publicPath) {
   }
 
   const existingUrls = new Set(archives.articles.map(a => a.url));
-  const previousPublishedOn = current.generatedAt || new Date().toISOString();
   const toArchive = (current.articles || [])
     .filter(a => !existingUrls.has(a.url))
-    .map(article => ({ ...article, publishedOn: article.publishedOn || previousPublishedOn }));
+    .map(article => ({ ...article, publishedOn: article.publishedOn || article.dateTimePub || current.generatedAt || new Date().toISOString() }));
   archives.articles = [...toArchive, ...archives.articles].slice(0, 100); // garder max 100 anciennes news
   fs.writeFileSync(archivePath, JSON.stringify(archives, null, 2), 'utf-8');
   console.log(`Archivé ${toArchive.length} news (total: ${archives.articles.length})`);
@@ -405,7 +404,10 @@ async function main() {
 
   const publicPath = path.join(__dirname, '..', 'public');
   const publishedOn = new Date().toISOString();
-  finalArticles = finalArticles.map(article => ({ ...article, publishedOn }));
+  finalArticles = finalArticles.map(article => ({
+    ...article,
+    publishedOn: article.publishedOn || article.dateTimePub || publishedOn,
+  }));
 
   // Archiver les anciennes news avant d'écraser
   archiveOldNews(publicPath);
