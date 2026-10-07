@@ -1,36 +1,53 @@
 {
   "articles": [
     {
-      "title": "🎙️ shroud revient sur Twitch : ses premiers streams analysés",
-      "body": "Michael shroud Grzesiek est de retour sur Twitch après une longue pause. Ses performances sur CS2 et Valorant impressionnent.",
-      "url": "https://insidertricks.fr/news/shroud-retour-twitch",
-      "image": "https://images.unsplash.com/photo-1603481588273-2f908a9a7a1b?w=800&h=450&fit=crop",
-      "topic": "JOUEURS",
-      "dateTimePub": "2026-10-03T09:21:35.981Z",
-      "publishedOn": "2026-10-03T09:21:35.982Z",
-      "source": "InsiderGamingtriks",
-      "summary": "Michael shroud Grzesiek est de retour sur Twitch après une longue pause. Ses performances sur CS2 et Valorant impressionnent.",
-      "content": "Michael shroud Grzesiek est de retour sur Twitch après une longue pause. Ses performances sur CS2 et Valorant impressionnent.\n\nCette actualité met en lumière un joueur dont les choix peuvent avoir des conséquences sur toute une équipe. Dans l'esport moderne, une carrière se construit autant sur les performances que sur la compatibilité avec un projet, un encadrement et une méthode de travail.\n\nLe changement évoqué devra être observé sur la durée. Les premières apparitions attirent naturellement l'attention, mais c'est la régularité en match officiel qui permettra de juger l'efficacité de cette nouvelle étape.\n\nAu-delà du résultat immédiat, cette situation rappelle l'importance de la préparation et de la confiance. Un joueur performant doit pouvoir retrouver ses automatismes tout en s'intégrant aux habitudes de ses nouveaux partenaires.\n\nLes prochains matchs apporteront les réponses les plus fiables. Notre analyse se concentrera sur le rôle réellement occupé, les décisions prises en jeu et l'impact du joueur sur la dynamique collective.",
-      "review": "Notre avis : shroud revient sur Twitch : ses premiers streams analysés mérite d'être suivi, mais il faudra attendre davantage de données avant de tirer des conclusions définitives.",
-      "categories": [
-        "JOUEURS"
-      ]
-    },
-    {
       "title": "🏅 Valorant Champions 2026 : le programme complet",
       "body": "Le tournoi Valorant Champions 2026 se déroulera à Paris. 16 équipes mondiales s'affrontent pour le titre.",
       "url": "https://insidertricks.fr/news/valorant-champions-2026",
       "image": "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&h=450&fit=crop",
       "topic": "COMPETITION",
       "dateTimePub": "2026-09-27T19:02:19.901Z",
+      "publishedOn": "2026-09-27T19:02:19.901Z",
       "source": "InsiderGamingtriks",
       "summary": "Le tournoi Valorant Champions 2026 se déroulera à Paris. 16 équipes mondiales s'affrontent pour le titre.",
       "content": "Le tournoi Valorant Champions 2026 se déroulera à Paris. 16 équipes mondiales s'affrontent pour le titre.\n\nCette actualité s'inscrit dans une scène esport où chaque résultat peut modifier l'équilibre entre les équipes. Les performances ne dépendent pas seulement du talent individuel : préparation, choix tactiques et capacité à garder son calme pèsent également lourd dans les moments décisifs.\n\nL'intérêt de ce rendez-vous réside aussi dans les détails. Une carte bien préparée, une adaptation rapide ou une lecture différente de l'adversaire peuvent faire basculer une rencontre. C'est souvent dans ces ajustements que se construit une victoire durable.\n\nPour les spectateurs, les prochaines confrontations permettront de vérifier si la tendance actuelle se confirme. Pour les joueurs amateurs, ces matchs offrent aussi des exemples utiles de communication, de placement et de gestion des rounds sous pression.\n\nLa suite de la compétition sera donc déterminante. Les résultats à venir donneront une image plus précise du niveau réel des participants et de leur capacité à répondre lorsque leurs adversaires auront eu le temps d'étudier leurs habitudes.",
       "review": "Notre avis : Valorant Champions 2026 : le programme complet mérite d'être suivi, mais il faudra attendre davantage de données avant de tirer des conclusions définitives.",
       "categories": [
         "COMPETITION"
-      ],
-      "publishedOn": "2026-09-28T19:02:19.904Z"
+      ]
+    },
+    {
+      "title": "🎯 Counter-Strike 2 : mise à jour majeure des hitboxes",
+      "body": "Valve déploie une mise à jour qui corrige les hitboxes sur plusieurs modèles de personnages, améliorant la précision des échanges en compétitif.",
+      "url": "https://insidertricks.fr/news/cs2-hitbox-update-sept27",
+      "image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop",
+      "topic": "FPS",
+      "dateTimePub": "2026-09-27T14:30:00.000Z",
+      "publishedOn": "2026-09-27T14:30:00.000Z",
+      "source": "InsiderGamingtriks",
+      "summary": "Valve corrige les hitboxes sur plusieurs modèles dans CS2, un changement attendu par la communauté compétitive.",
+      "content": "Valve déploie une mise à jour qui corrige les hitboxes sur plusieurs modèles de personnages, améliorant la précision des échanges en compétitif.\n\nCette correction était réclamée depuis plusieurs semaines par les joueurs professionnels et la communauté ranked. Les parties devraient désormais offrir une expérience plus cohérente et équitable.",
+      "review": "Notre avis : une mise à jour bienvenue qui renforce la crédibilité compétitive de CS2.",
+      "categories": [
+        "FPS",
+        "Compétitif"
+      ]
+    },
+    {
+      "title": "🚀 Apex Legends : la saison 22 introduit un nouveau Legend",
+      "body": "Respawn Entertainment annonce l'arrivée d'un nouveau Legend pour la saison 22 d'Apex Legends, avec des capacités inédites axées sur le contrôle de zone.",
+      "url": "https://insidertricks.fr/news/apex-legends-saison22-legend",
+      "image": "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&h=450&fit=crop",
+      "topic": "Battle Royale",
+      "dateTimePub": "2026-09-27T10:00:00.000Z",
+      "publishedOn": "2026-09-27T10:00:00.000Z",
+      "source": "InsiderGamingtriks",
+      "summary": "Respawn dévoile un nouveau Legend pour la saison 22 d'Apex Legends avec des capacités de contrôle de zone inédites.",
+      "content": "Respawn Entertainment annonce l'arrivée d'un nouveau Legend pour la saison 22 d'Apex Legends, avec des capacités inédites axées sur le contrôle de zone.\n\nLes premières impressions de la communauté sont positives. Les joueurs stratégiques devraient trouver dans ce nouveau personnage un outil puissant pour dominer les zones de fin de partie.",
+      "review": "Notre avis : un ajout prometteur qui pourrait redéfinir la méta de la saison 22.",
+      "categories": [
+        "Battle Royale"
+      ]
     },
     {
       "title": "🎮 Escape from Tarkov : la nouvelle map Arena dévoilée",
@@ -635,5 +652,5 @@
       "originalSource": "jeuxvideo.com"
     }
   ],
-  "generatedAt": "2026-10-05T10:44:46.106Z"
+  "generatedAt": "2026-10-07T10:28:42.829Z"
 }
