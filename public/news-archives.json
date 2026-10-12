@@ -1,6 +1,22 @@
 {
   "articles": [
     {
+      "title": "🎯 Warzone : les meilleures armes de la saison actuelle",
+      "body": "Notre tier list complète des armes Warzone. SMG, AR, sniper : tout sur le méta actuel pour dominer.",
+      "url": "https://insidertricks.fr/news/warzone-armes-meta",
+      "image": "https://images.unsplash.com/photo-1598550476439-6847785fcea6?w=800&h=450&fit=crop",
+      "topic": "FPS",
+      "dateTimePub": "2026-10-10T10:13:35.895Z",
+      "publishedOn": "2026-10-11T10:13:35.895Z",
+      "source": "InsiderGamingtriks",
+      "summary": "Notre tier list complète des armes Warzone. SMG, AR, sniper : tout sur le méta actuel pour dominer.",
+      "content": "Notre tier list complète des armes Warzone. SMG, AR, sniper : tout sur le méta actuel pour dominer.\n\nCette actualité concerne directement les joueurs de FPS, qui suivent de près les changements susceptibles de modifier leurs habitudes de jeu. Derrière l'annonce, ce sont surtout le rythme des parties, la précision et les choix de stratégie qui peuvent évoluer.\n\nPour les joueurs réguliers, le plus important sera d'observer les effets concrets en match. Une modification annoncée comme secondaire peut changer la valeur d'une arme, d'une position ou d'une routine d'entraînement. Il faudra donc prendre le temps de tester avant de modifier définitivement ses réglages.\n\nDans un environnement compétitif, l'adaptation fera la différence. Les équipes et les joueurs qui analyseront rapidement les changements pourront ajuster leur équipement, leurs déplacements et leur communication. Les prochains jours permettront de distinguer l'effet de nouveauté d'un véritable changement de méta.\n\nNotre rédaction suivra l'évolution du sujet et les retours de la communauté. En attendant, cette actualité mérite d'être surveillée par tous ceux qui veulent rester performants sans suivre aveuglément les premières réactions publiées en ligne.",
+      "review": "Notre avis : Warzone : les meilleures armes de la saison actuelle mérite d'être suivi, mais il faudra attendre davantage de données avant de tirer des conclusions définitives.",
+      "categories": [
+        "FPS"
+      ]
+    },
+    {
       "title": "🏆 Major CS2 : Les équipes qualifiées pour les playoffs",
       "body": "Le Major CS2 bat son plein. NaVi, Vitality, FaZe Clan et G2 Esports sont en lice pour le titre mondial.",
       "url": "https://insidertricks.fr/news/major-cs2-playoffs",
@@ -716,5 +732,5 @@
       "originalSource": "jeuxvideo.com"
     }
   ],
-  "generatedAt": "2026-10-11T10:13:35.896Z"
+  "generatedAt": "2026-10-12T11:12:19.430Z"
 }
