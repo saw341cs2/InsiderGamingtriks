@@ -1,0 +1,48 @@
+{
+  "videos": [
+    {
+      "id": 0,
+      "title": "Video Short - InsiderGamingTricks",
+      "game": "PC",
+      "topic": "FPS",
+      "duration": "",
+      "youtubeId": "",
+      "thumbnail": "",
+      "views": "0",
+      "likes": "0",
+      "date": "Aujourd'hui",
+      "youtubeUrl": "",
+      "featured": false,
+      "localVideoPath": "videos/video-short.mp4"
+    },
+    {
+      "id": 1,
+      "title": "Warzone : Tuto rotations pro pour finir top 1",
+      "game": "CoD",
+      "topic": "FPS",
+      "duration": "17:45",
+      "youtubeId": "ScNTWbKMZX4",
+      "thumbnail": "https://images.unsplash.com/photo-1560419015-7c427e8ae5ba?w=640&h=360&fit=crop",
+      "views": "223K",
+      "likes": "13K",
+      "date": "Aujourd'hui",
+      "youtubeUrl": "https://www.youtube.com/watch?v=ScNTWbKMZX4",
+      "featured": true
+    },
+    {
+      "id": 2,
+      "title": "Apex Legends : Guide complet pour débuter en ranked",
+      "game": "Apex",
+      "topic": "FPS",
+      "duration": "21:10",
+      "youtubeId": "ScNTWbKMZX4",
+      "thumbnail": "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=640&h=360&fit=crop",
+      "views": "256K",
+      "likes": "14K",
+      "date": "Aujourd'hui",
+      "youtubeUrl": "https://www.youtube.com/watch?v=ScNTWbKMZX4",
+      "featured": false
+    }
+  ],
+  "generatedAt": "2026-10-24T08:20:10.759Z"
+}
