@@ -244,25 +244,49 @@ const articlesPool = [
   ],
 ];
 
+const TOPIC_UNSPLASH = {
+  FPS:         ['fps+gaming', 'shooter+game', 'counter-strike', 'valorant+game', 'warzone+fps', 'esport+fps'],
+  COMPETITION: ['esport+tournament', 'gaming+competition', 'esport+arena', 'gaming+championship', 'esport+team', 'pro+gaming'],
+  MATERIEL:    ['gaming+mouse', 'gaming+keyboard', 'gaming+headset', 'gaming+monitor', 'gaming+setup', 'pc+gamer'],
+  JOUEURS:     ['pro+gamer', 'esport+player', 'gaming+streamer', 'twitch+gaming', 'gamer+setup', 'gaming+pro'],
+  JEUX:        ['video+game', 'gaming+controller', 'game+screen', 'gaming+pc', 'game+play', 'gaming+neon'],
+};
+
+function getUniqueImage(topic, globalIndex) {
+  const keywords = TOPIC_UNSPLASH[topic] || TOPIC_UNSPLASH.JEUX;
+  const keyword = keywords[globalIndex % keywords.length];
+  return `https://source.unsplash.com/800x450/?${keyword}&sig=${globalIndex}`;
+}
+
 function generateNews(today = new Date()) {
   const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
   const publishedOn = today.toISOString();
 
   const allArticles = [];
-  // Aujourd'hui : 3 articles (indices 0,1,2 du pool du jour)
+  // Aujourd'hui : 3 articles
   const todayPool = articlesPool[((dayOfYear - 1) % articlesPool.length + articlesPool.length) % articlesPool.length];
   const extraPool = articlesPool[((dayOfYear) % articlesPool.length + articlesPool.length) % articlesPool.length];
   const todayArticles = [...todayPool, ...extraPool].slice(0, 3);
-  todayArticles.forEach(article => allArticles.push({ ...article, dateTimePub: today.toISOString(), publishedOn }));
+  todayArticles.forEach((article, i) => allArticles.push({
+    ...article,
+    image: getUniqueImage(article.topic, dayOfYear * 10 + i),
+    dateTimePub: today.toISOString(),
+    publishedOn,
+  }));
 
-  // Hier : 3 articles d'un autre pool
+  // Hier : 3 articles
   const yesterday = new Date(today);
   yesterday.setDate(yesterday.getDate() - 1);
   const yesterdayIso = yesterday.toISOString();
   const yPool = articlesPool[((dayOfYear - 2) % articlesPool.length + articlesPool.length) % articlesPool.length];
   const yExtraPool = articlesPool[((dayOfYear + 1) % articlesPool.length + articlesPool.length) % articlesPool.length];
   const yesterdayArticles = [...yPool, ...yExtraPool].slice(0, 3);
-  yesterdayArticles.forEach(article => allArticles.push({ ...article, dateTimePub: yesterdayIso, publishedOn: yesterdayIso }));
+  yesterdayArticles.forEach((article, i) => allArticles.push({
+    ...article,
+    image: getUniqueImage(article.topic, dayOfYear * 10 + 3 + i),
+    dateTimePub: yesterdayIso,
+    publishedOn: yesterdayIso,
+  }));
 
   const selectedArticles = allArticles.slice(0, 6);
 

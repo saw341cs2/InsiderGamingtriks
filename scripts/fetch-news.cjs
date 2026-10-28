@@ -394,9 +394,10 @@ async function main() {
     let image = article.image;
     if (!image || usedImages.has(image)) {
       const keyword = encodeURIComponent(
-        (article.title || '').split(' ').slice(0, 3).join(' ') || (article.topic || 'gaming')
+        (article.title || '').replace(/^[^a-zA-Z]+/, '').split(' ').slice(0, 3).join(' ') || (article.topic || 'gaming')
       );
-      image = `https://source.unsplash.com/800x450/?${keyword},gaming&sig=${index}`;
+      const sig = Math.abs((article.url || '').split('').reduce((a, c) => a + c.charCodeAt(0), index * 997));
+      image = `https://source.unsplash.com/800x450/?${keyword},gaming&sig=${sig}`;
     }
     usedImages.add(image);
     return { ...article, image };
