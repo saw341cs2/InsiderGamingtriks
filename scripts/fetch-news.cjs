@@ -382,11 +382,9 @@ async function main() {
 
   if (!finalArticles || finalArticles.length === 0) {
     finalArticles = generateNews().articles;
-    console.log('ℹ️  Aucune réécriture française valide : fallback éditorial français utilisé.');
+    console.log('\u2139\ufe0f  Fallback \u00e9ditorial utilis\u00e9.');
   }
-
   if (finalArticles.length < 3) {
-    console.log('⚠️ Réécriture française incomplète : fallback éditorial français utilisé.');
     finalArticles = generateNews().articles;
   }
   finalArticles = finalArticles.slice(0, 6);

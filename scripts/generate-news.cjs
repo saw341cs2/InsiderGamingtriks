@@ -249,24 +249,25 @@ function generateNews(today = new Date()) {
   const publishedOn = today.toISOString();
 
   const allArticles = [];
-  for (let i = 0; i < 3; i++) {
-    const dayIndex = ((dayOfYear - 1 - i) % articlesPool.length + articlesPool.length) % articlesPool.length;
-    const pool = articlesPool[dayIndex] || articlesPool[0];
-    const date = new Date(today);
-    date.setDate(date.getDate() - i);
-    allArticles.push(...pool.map(article => ({
-      ...article,
-      dateTimePub: date.toISOString(),
-      publishedOn,
-      source: 'InsiderGamingtriks',
-    })));
-  }
+  // Aujourd'hui : 3 articles (indices 0,1,2 du pool du jour)
+  const todayPool = articlesPool[((dayOfYear - 1) % articlesPool.length + articlesPool.length) % articlesPool.length];
+  const extraPool = articlesPool[((dayOfYear) % articlesPool.length + articlesPool.length) % articlesPool.length];
+  const todayArticles = [...todayPool, ...extraPool].slice(0, 3);
+  todayArticles.forEach(article => allArticles.push({ ...article, dateTimePub: today.toISOString(), publishedOn }));
 
-  const fpsArticles = allArticles.filter(article => ['FPS', 'COMPETITION', 'JOUEURS'].includes(article.topic));
-  const selectedArticles = fpsArticles.slice(0, 3);
+  // Hier : 3 articles d'un autre pool
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayIso = yesterday.toISOString();
+  const yPool = articlesPool[((dayOfYear - 2) % articlesPool.length + articlesPool.length) % articlesPool.length];
+  const yExtraPool = articlesPool[((dayOfYear + 1) % articlesPool.length + articlesPool.length) % articlesPool.length];
+  const yesterdayArticles = [...yPool, ...yExtraPool].slice(0, 3);
+  yesterdayArticles.forEach(article => allArticles.push({ ...article, dateTimePub: yesterdayIso, publishedOn: yesterdayIso }));
+
+  const selectedArticles = allArticles.slice(0, 6);
 
   if (selectedArticles.length < 3) {
-    throw new Error(`Fallback incomplet: ${selectedArticles.length}/3 articles FPS`);
+    throw new Error(`Fallback incomplet: ${selectedArticles.length}/6 articles`);
   }
 
   return {
@@ -336,6 +337,8 @@ function archiveOldNews(freshArticles) {
   const previousArticles = Array.isArray(previous.articles) ? previous.articles : [];
   const freshUrls = new Set(freshArticles.map(a => a.url));
   const previousPublishedOn = previous.generatedAt || new Date().toISOString();
+  // Archiver uniquement les articles qui ne sont plus dans les news du jour
+  const todayKey = new Date().toISOString().slice(0, 10);
   const droppedFromHome = previousArticles
     .filter(a => !freshUrls.has(a.url))
     .map(article => ({ ...article, publishedOn: article.publishedOn || previousPublishedOn }));
