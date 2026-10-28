@@ -350,7 +350,7 @@ async function main() {
   // Trier par date décroissante
   gaming.sort((a, b) => new Date(b.publishedAt || b.dateTimePub || 0) - new Date(a.publishedAt || a.dateTimePub || 0));
 
-  const topArticles = gaming.slice(0, 3);
+  const topArticles = gaming.slice(0, 6);
 
   // Étape 1 : Transformer avec les métadonnées de base
   const baseArticles = topArticles.map((a, index) => {
@@ -371,8 +371,8 @@ async function main() {
         rewritten.push(result);
         console.log(`   ✅ [${rewritten.length}] ${result.title.substring(0, 60)}`);
         if (rewritten.length >= 6) break;
+      await new Promise(r => setTimeout(r, 800));
       }
-      if (i < topArticles.length - 1) await new Promise(r => setTimeout(r, 1000));
     }
     if (rewritten.length > 0) {
       finalArticles = rewritten;
@@ -389,14 +389,16 @@ async function main() {
     console.log('⚠️ Réécriture française incomplète : fallback éditorial français utilisé.');
     finalArticles = generateNews().articles;
   }
-  finalArticles = finalArticles.slice(0, 3);
+  finalArticles = finalArticles.slice(0, 6);
 
   const usedImages = new Set();
   finalArticles = finalArticles.map((article, index) => {
     let image = article.image;
     if (!image || usedImages.has(image)) {
-      const candidates = Object.values(TOPIC_IMAGES);
-      image = candidates.find(candidate => !usedImages.has(candidate)) || candidates[index % candidates.length];
+      const keyword = encodeURIComponent(
+        (article.title || '').split(' ').slice(0, 3).join(' ') || (article.topic || 'gaming')
+      );
+      image = `https://source.unsplash.com/800x450/?${keyword},gaming&sig=${index}`;
     }
     usedImages.add(image);
     return { ...article, image };
