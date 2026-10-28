@@ -164,10 +164,15 @@ const NewsSection: React.FC = () => {
   useEffect(() => { loadNews(); }, []);
 
   const todayArticles = (articleDays[0]?.articles || []).slice(0, 3);
-  const yesterdayArticles = (articleDays[1]?.articles || []).slice(0, 3);
+  const previousDay = articleDays[1];
+  const previousArticles = (previousDay?.articles || []).slice(0, 3);
   const olderDays = articleDays.slice(2);
   const totalPages = 1 + Math.ceil(olderDays.length / 2);
   const archiveArticles = olderDays.slice((page - 2) * 2, (page - 1) * 2).flatMap(day => day.articles);
+
+  const previousLabel = previousDay
+    ? new Date(previousDay.date + 'T12:00:00').toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })
+    : 'Précédent';
 
   const handleArticleClick = (article: NewsArticle, index: number) => {
     localStorage.setItem('selectedNews', JSON.stringify(article));
@@ -206,11 +211,11 @@ const NewsSection: React.FC = () => {
                 <ArticleCard key={article.url + index} article={article} index={index} onClick={handleArticleClick} />
               ))}
             </div>
-            {yesterdayArticles.length > 0 && (
+            {previousArticles.length > 0 && (
               <>
-                <Divider label="Hier" />
+                <Divider label={previousLabel} />
                 <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-stretch">
-                  {yesterdayArticles.map((article, index) => (
+                  {previousArticles.map((article, index) => (
                     <ArticleCard key={article.url + index} article={article} index={index + 3} onClick={handleArticleClick} />
                   ))}
                 </div>
