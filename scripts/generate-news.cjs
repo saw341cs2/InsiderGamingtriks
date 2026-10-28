@@ -244,18 +244,52 @@ const articlesPool = [
   ],
 ];
 
-const TOPIC_UNSPLASH = {
-  FPS:         ['fps+gaming', 'shooter+game', 'counter-strike', 'valorant+game', 'warzone+fps', 'esport+fps'],
-  COMPETITION: ['esport+tournament', 'gaming+competition', 'esport+arena', 'gaming+championship', 'esport+team', 'pro+gaming'],
-  MATERIEL:    ['gaming+mouse', 'gaming+keyboard', 'gaming+headset', 'gaming+monitor', 'gaming+setup', 'pc+gamer'],
-  JOUEURS:     ['pro+gamer', 'esport+player', 'gaming+streamer', 'twitch+gaming', 'gamer+setup', 'gaming+pro'],
-  JEUX:        ['video+game', 'gaming+controller', 'game+screen', 'gaming+pc', 'game+play', 'gaming+neon'],
+const TOPIC_IMAGES = {
+  FPS: [
+    'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop', // esport arena
+    'https://images.unsplash.com/photo-1591370874773-6702e8f12fd8?w=800&h=450&fit=crop', // gaming screen
+    'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=800&h=450&fit=crop', // fps game
+    'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&h=450&fit=crop', // gaming dark
+    'https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=800&h=450&fit=crop', // gaming setup
+    'https://images.unsplash.com/photo-1598550476439-6847785fcea6?w=800&h=450&fit=crop', // shooter
+  ],
+  COMPETITION: [
+    'https://images.unsplash.com/photo-1560253023-3ec5d502959f?w=800&h=450&fit=crop', // esport stage
+    'https://images.unsplash.com/photo-1633545495735-25df17fb9f31?w=800&h=450&fit=crop', // tournament
+    'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=450&fit=crop', // esport crowd
+    'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&h=450&fit=crop', // gaming competition
+    'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=800&h=450&fit=crop', // gaming event
+    'https://images.unsplash.com/photo-1542751110-97427bbecf20?w=800&h=450&fit=crop', // pro gaming
+  ],
+  MATERIEL: [
+    'https://images.unsplash.com/photo-1527814050087-3793815479db?w=800&h=450&fit=crop', // gaming mouse
+    'https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=800&h=450&fit=crop', // mechanical keyboard
+    'https://images.unsplash.com/photo-1599669454699-248893623440?w=800&h=450&fit=crop', // gaming headset
+    'https://images.unsplash.com/photo-1593640495253-23196b27a87f?w=800&h=450&fit=crop', // gaming monitor
+    'https://images.unsplash.com/photo-1591488320449-011701bb6704?w=800&h=450&fit=crop', // gpu card
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=450&fit=crop', // gaming gear
+  ],
+  JOUEURS: [
+    'https://images.unsplash.com/photo-1603481588273-2f908a9a7a1b?w=800&h=450&fit=crop', // streamer
+    'https://images.unsplash.com/photo-1586182987320-4f376d39d787?w=800&h=450&fit=crop', // pro player
+    'https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=800&h=450&fit=crop', // gamer
+    'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop', // esport player
+    'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&h=450&fit=crop', // gaming pc
+    'https://images.unsplash.com/photo-1616588589676-62b3bd4ff6d2?w=800&h=450&fit=crop', // gaming desk
+  ],
+  JEUX: [
+    'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=800&h=450&fit=crop', // gaming controller
+    'https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=800&h=450&fit=crop', // game screen
+    'https://images.unsplash.com/photo-1547394765-185e1e68f34e?w=800&h=450&fit=crop', // gaming neon
+    'https://images.unsplash.com/photo-1600861194942-f883de0dfe96?w=800&h=450&fit=crop', // game dark
+    'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&h=450&fit=crop', // gaming
+    'https://images.unsplash.com/photo-1591370874773-6702e8f12fd8?w=800&h=450&fit=crop', // screen game
+  ],
 };
 
 function getUniqueImage(topic, globalIndex) {
-  const keywords = TOPIC_UNSPLASH[topic] || TOPIC_UNSPLASH.JEUX;
-  const keyword = keywords[globalIndex % keywords.length];
-  return `https://source.unsplash.com/800x450/?${keyword}&sig=${globalIndex}`;
+  const pool = TOPIC_IMAGES[topic] || TOPIC_IMAGES.JEUX;
+  return pool[globalIndex % pool.length];
 }
 
 function generateNews(today = new Date()) {
