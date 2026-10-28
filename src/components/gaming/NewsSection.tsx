@@ -30,8 +30,7 @@ const formatDate = (dateString: string) => {
   return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
 };
 
-const NEWS_PER_PAGE = 3;
-const DAILY_NEWS_COUNT = 3;
+const DAILY_NEWS_COUNT = 6;
 
 const getParisDateKey = (date: Date) => {
   const parts = new Intl.DateTimeFormat('en-CA', {
@@ -40,19 +39,56 @@ const getParisDateKey = (date: Date) => {
     month: '2-digit',
     day: '2-digit',
   }).formatToParts(date);
-  const values = Object.fromEntries(parts.filter(part => part.type !== 'literal').map(part => [part.type, part.value]));
+  const values = Object.fromEntries(parts.filter(p => p.type !== 'literal').map(p => [p.type, p.value]));
   return `${values.year}-${values.month}-${values.day}`;
-};
-
-const getPreviousParisDateKey = (date: Date) => {
-  const [year, month, day] = getParisDateKey(date).split('-').map(Number);
-  return getParisDateKey(new Date(Date.UTC(year, month - 1, day - 1, 12)));
 };
 
 const getArticleParisDateKey = (dateTimePub: string) => {
   const date = new Date(dateTimePub);
   return Number.isNaN(date.getTime()) ? null : getParisDateKey(date);
 };
+
+const ArticleCard: React.FC<{
+  article: NewsArticle;
+  index: number;
+  onClick: (article: NewsArticle, index: number) => void;
+}> = ({ article, index, onClick }) => (
+  <div
+    onClick={() => onClick(article, index)}
+    className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-800 bg-gray-900 transition duration-300 hover:-translate-y-1 hover:border-red-500/30 cursor-pointer"
+  >
+    <div className="relative h-48 shrink-0 overflow-hidden bg-gray-800">
+      <img src={article.image} alt={article.title} className="h-full w-full object-cover transition duration-300 group-hover:scale-105" />
+    </div>
+    <div className="flex flex-1 flex-col gap-2 p-5">
+      <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-widest text-red-400">
+        <span>{article.topic}</span>
+        <span className="text-gray-500">•</span>
+        <span>{formatDate(article.publishedOn || article.dateTimePub)}</span>
+      </div>
+      <h3 className="min-h-[3rem] text-base font-bold text-white line-clamp-2">{article.title}</h3>
+      <p className="text-gray-400 text-sm line-clamp-3">{article.summary || article.body}</p>
+      {article.categories && article.categories.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 mt-1">
+          {article.categories.map((cat, i) => (
+            <span key={i} className="px-2 py-0.5 bg-gray-800 text-gray-300 text-[10px] font-semibold uppercase tracking-wider rounded">
+              {cat}
+            </span>
+          ))}
+        </div>
+      )}
+      <span className="mt-auto pt-2 text-xs font-semibold text-red-400">Lire l'article &rarr;</span>
+    </div>
+  </div>
+);
+
+const Divider: React.FC<{ label: string }> = ({ label }) => (
+  <div className="flex items-center gap-3 my-6">
+    <div className="flex-1 h-px bg-gray-800" />
+    <span className="text-xs text-gray-500 uppercase tracking-widest">{label}</span>
+    <div className="flex-1 h-px bg-gray-800" />
+  </div>
+);
 
 const NewsSection: React.FC = () => {
   const [articleDays, setArticleDays] = useState<Array<{ date: string; articles: NewsArticle[] }>>([]);
@@ -79,26 +115,26 @@ const NewsSection: React.FC = () => {
         const archiveResponse = await fetch(archiveUrl.href);
         if (archiveResponse.ok) {
           const archiveData = (await archiveResponse.json()) as NewsResponse;
-          if (Array.isArray(archiveData.articles)) {
-            archiveArticles = archiveData.articles;
-          }
+          if (Array.isArray(archiveData.articles)) archiveArticles = archiveData.articles;
         }
       } catch { archiveArticles = []; }
 
       const seenUrls = new Set<string>();
-      const allArticles = [...data.articles, ...archiveArticles].filter(article => {
-        if (!article.url || seenUrls.has(article.url)) return false;
-        seenUrls.add(article.url);
-        return true;
-      }).map(article => {
-        const isCurrentArticle = data.articles.some(currentArticle => currentArticle.url === article.url);
-        return {
+      const allArticles = [...data.articles, ...archiveArticles]
+        .filter(article => {
+          if (!article.url || seenUrls.has(article.url)) return false;
+          seenUrls.add(article.url);
+          return true;
+        })
+        .map(article => ({
           ...article,
           publishedOn: article.publishedOn || (
-            isCurrentArticle ? data.generatedAt || article.dateTimePub : article.dateTimePub
+            data.articles.some(a => a.url === article.url)
+              ? data.generatedAt || article.dateTimePub
+              : article.dateTimePub
           ),
-        };
-      });
+        }));
+
       const groupedArticles = new Map<string, NewsArticle[]>();
       for (const article of allArticles) {
         const dateKey = getArticleParisDateKey(article.publishedOn || article.dateTimePub);
@@ -109,7 +145,7 @@ const NewsSection: React.FC = () => {
       }
 
       setArticleDays([...groupedArticles.entries()]
-        .sort(([left], [right]) => right.localeCompare(left))
+        .sort(([a], [b]) => b.localeCompare(a))
         .map(([date, articles]) => ({
           date,
           articles: articles
@@ -127,16 +163,11 @@ const NewsSection: React.FC = () => {
 
   useEffect(() => { loadNews(); }, []);
 
-  // La première page réserve les deux derniers jours ; les suivantes affichent
-  // les deux dates d'archive les plus récentes, sans avancer une vieille news.
-  const recentDays = articleDays.slice(0, 2);
+  const todayArticles = (articleDays[0]?.articles || []).slice(0, 3);
+  const yesterdayArticles = (articleDays[1]?.articles || []).slice(0, 3);
   const olderDays = articleDays.slice(2);
   const totalPages = 1 + Math.ceil(olderDays.length / 2);
-  const currentDays = page === 1
-    ? recentDays
-    : olderDays.slice((page - 2) * 2, (page - 1) * 2);
-  const currentArticles = currentDays.flatMap(day => day.articles);
-  const isArchivePage = page > 1;
+  const archiveArticles = olderDays.slice((page - 2) * 2, (page - 1) * 2).flatMap(day => day.articles);
 
   const handleArticleClick = (article: NewsArticle, index: number) => {
     localStorage.setItem('selectedNews', JSON.stringify(article));
@@ -168,86 +199,49 @@ const NewsSection: React.FC = () => {
           </div>
         )}
 
-        {/* Séparateur archives */}
-        {isArchivePage && (
-          <div className="flex items-center gap-3 mb-6">
-            <div className="flex-1 h-px bg-gray-800" />
-            <span className="text-xs text-gray-500 uppercase tracking-widest">Archives</span>
-            <div className="flex-1 h-px bg-gray-800" />
-          </div>
+        {page === 1 ? (
+          <>
+            <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-stretch">
+              {todayArticles.map((article, index) => (
+                <ArticleCard key={article.url + index} article={article} index={index} onClick={handleArticleClick} />
+              ))}
+            </div>
+            {yesterdayArticles.length > 0 && (
+              <>
+                <Divider label="Hier" />
+                <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-stretch">
+                  {yesterdayArticles.map((article, index) => (
+                    <ArticleCard key={article.url + index} article={article} index={index + 3} onClick={handleArticleClick} />
+                  ))}
+                </div>
+              </>
+            )}
+          </>
+        ) : (
+          <>
+            <Divider label="Archives" />
+            <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-stretch">
+              {archiveArticles.map((article, index) => (
+                <ArticleCard key={article.url + index} article={article} index={index} onClick={handleArticleClick} />
+              ))}
+            </div>
+          </>
         )}
 
-        <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-stretch">
-          {currentArticles.map((article, index) => (
-            <div
-              key={article.url + index}
-              onClick={() => handleArticleClick(article, index)}
-              className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-800 bg-gray-900 transition duration-300 hover:-translate-y-1 hover:border-red-500/30 cursor-pointer"
-            >
-              <div className="relative h-48 shrink-0 overflow-hidden bg-gray-800">
-                <img src={article.image} alt={article.title} className="h-full w-full object-cover transition duration-300 group-hover:scale-105" />
-              </div>
-              <div className="flex flex-1 flex-col gap-2 p-5">
-                <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-widest text-red-400">
-                  <span>{article.topic}</span>
-                  <span className="text-gray-500">•</span>
-                  <span>{formatDate(article.publishedOn || article.dateTimePub)}</span>
-                </div>
-                <h3 className="min-h-[3rem] text-base font-bold text-white line-clamp-2">{article.title}</h3>
-                {/* Résumé si disponible (réécriture IA) */}
-                {article.summary && (
-                  <p className="text-gray-400 text-sm line-clamp-3">{article.summary}</p>
-                )}
-                {/* Fallback sur body si pas de résumé */}
-                {!article.summary && (
-                  <p className="text-gray-400 text-sm line-clamp-3">{article.body}</p>
-                )}
-                {/* Badges catégories si disponibles */}
-                {article.categories && article.categories.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mt-1">
-                    {article.categories.map((cat, i) => (
-                      <span key={i} className="px-2 py-0.5 bg-gray-800 text-gray-300 text-[10px] font-semibold uppercase tracking-wider rounded">
-                        {cat}
-                      </span>
-                    ))}
-                  </div>
-                )}
-                <span className="mt-auto pt-2 text-xs font-semibold text-red-400">Lire l'article →</span>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-center gap-3 mt-8">
-            <button
-              onClick={() => setPage(p => Math.max(1, p - 1))}
-              disabled={page === 1}
-              className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700 disabled:opacity-30 transition-all"
-            >
+            <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}
+              className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700 disabled:opacity-30 transition-all">
               <ChevronLeft className="w-5 h-5" />
             </button>
-
             {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
-              <button
-                key={p}
-                onClick={() => setPage(p)}
-                className={`w-9 h-9 rounded-lg text-sm font-bold transition-all ${
-                  page === p
-                    ? 'bg-red-600 text-white'
-                    : 'bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700'
-                }`}
-              >
+              <button key={p} onClick={() => setPage(p)}
+                className={`w-9 h-9 rounded-lg text-sm font-bold transition-all ${page === p ? 'bg-red-600 text-white' : 'bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700'}`}>
                 {p}
               </button>
             ))}
-
-            <button
-              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-              disabled={page === totalPages}
-              className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700 disabled:opacity-30 transition-all"
-            >
+            <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}
+              className="p-2 rounded-lg bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700 disabled:opacity-30 transition-all">
               <ChevronRight className="w-5 h-5" />
             </button>
           </div>
