@@ -10,7 +10,9 @@
       "publishedOn": "2026-10-18T10:00:00.000Z",
       "source": "InsiderGamingtriks",
       "summary": "Riot Games déploie le patch 10.0 de Valorant avec des changements majeurs sur les agents et les armes.",
-      "categories": ["FPS"]
+      "categories": [
+        "FPS"
+      ]
     },
     {
       "title": "🏆 CS2 : NaVi remporte le tournoi BLAST Premier Fall 2026",
@@ -22,7 +24,9 @@
       "publishedOn": "2026-10-18T09:00:00.000Z",
       "source": "InsiderGamingtriks",
       "summary": "Natus Vincere s'impose face à FaZe Clan en finale du BLAST Premier Fall 2026 dans un match épique.",
-      "categories": ["COMPETITION"]
+      "categories": [
+        "COMPETITION"
+      ]
     },
     {
       "title": "🎙️ shroud revient sur Twitch : ses premiers streams analysés",
