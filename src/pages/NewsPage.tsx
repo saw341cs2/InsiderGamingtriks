@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useSEO } from '@/hooks/use-seo';
 import Navbar from '@/components/gaming/Navbar';
 
 type NewsArticle = {
@@ -32,6 +33,15 @@ const NewsPage: React.FC = () => {
   const selectedUrl = searchParams.get('url');
   const [article, setArticle] = useState<NewsArticle | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const seoTitle = article
+    ? `${article.title} | Insider Gaming Tricks`
+    : 'Actualités Gaming | Insider Gaming Tricks';
+  const seoDescription = article
+    ? (article.summary || article.body || '').substring(0, 160)
+    : 'Retrouve les dernières actualités gaming sur Counter-Strike 2, Battlefield et Valorant.';
+
+  useSEO(seoTitle, seoDescription, undefined, false, `/news/${id ?? ''}`, 'article');
 
   useEffect(() => {
     const loadArticle = async () => {

@@ -12,7 +12,7 @@ export default function MembresPage() {
 
   useSEO(
     'Nos Membres | Insider Gaming Tricks',
-    'Découvre les membres de la communauté Insider Gaming Tricks.',
+    'Découvre les membres de la communauté Insider Gaming Tricks : joueurs CS2, Battlefield et Call of Duty. Rejoins une communauté gaming française passionnée de FPS et de compétition.',
     'membres communauté gaming, joueurs CS2',
     false,
     '/membres',

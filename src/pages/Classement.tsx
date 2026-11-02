@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSEO } from '@/hooks/use-seo';
 import { supabase } from '@/lib/supabase';
 
 interface ClassementEntry {
@@ -12,6 +13,14 @@ interface ClassementEntry {
 export default function Classement() {
   const [entries, setEntries] = useState<ClassementEntry[]>([]);
   const [loading, setLoading] = useState(true);
+
+  useSEO(
+    'Classement AimRush | Insider Gaming Tricks',
+    'Classement mensuel AimRush : les meilleurs scores de la communauté Insider Gaming Tricks. Joue et grimpe dans le classement !',
+    'classement gaming, meilleurs joueurs FPS, scores AimRush, compétition CS2, classement mensuel',
+    false,
+    '/classement',
+  );
 
   useEffect(() => {
     const fetchLeaderboard = async () => {

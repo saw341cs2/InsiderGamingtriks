@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSEO } from '@/hooks/use-seo';
 import Navbar from '@/components/gaming/Navbar';
 
 type Astuce = {
@@ -21,6 +22,15 @@ type Astuce = {
 const AstucePage: React.FC = () => {
   const navigate = useNavigate();
   const [astuce, setAstuce] = useState<Astuce | null>(null);
+
+  const seoTitle = astuce
+    ? `${astuce.title} — ${astuce.game} | Insider Gaming Tricks`
+    : 'Astuce FPS | Insider Gaming Tricks';
+  const seoDescription = astuce
+    ? (astuce.summary || astuce.description || '').substring(0, 160)
+    : 'Guide et astuce FPS sur Counter-Strike 2, Battlefield et Call of Duty.';
+
+  useSEO(seoTitle, seoDescription, undefined, false, '/astuces');
 
   useEffect(() => {
     const stored = localStorage.getItem('selectedAstuce');

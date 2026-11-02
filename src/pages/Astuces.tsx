@@ -13,7 +13,7 @@ export default function AstucesPage() {
   useSEO(
     'Astuces CS2, Battlefield, Call of Duty | Insider Gaming Tricks',
     'Toutes nos astuces gaming : configs, réglages, guides et techniques pour progresser sur CS2, Battlefield et Call of Duty.',
-    'astuces CS2, guides gaming, configuration jeu, astuces FPS, Battlefield, Call of Duty',
+    'astuces CS2, guides gaming, configuration jeu, astuces FPS, Battlefield, Call of Duty, Valorant, aim training, progression FPS',
     false,
     '/astuces',
   );

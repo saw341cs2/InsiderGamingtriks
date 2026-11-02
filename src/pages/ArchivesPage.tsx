@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSEO } from '@/hooks/use-seo';
 import Navbar from '@/components/gaming/Navbar';
 import { Star, Eye, Clock, Crosshair, Target, Bomb } from 'lucide-react';
 
@@ -53,6 +54,14 @@ const ArchivesPage: React.FC = () => {
   const [articles, setArticles] = useState<NewsArticle[]>([]);
   const [astuces, setAstuces] = useState<Astuce[]>([]);
   const [loading, setLoading] = useState(true);
+
+  useSEO(
+    'Archives & Historique | Insider Gaming Tricks',
+    'Retrouve toutes les news gaming et astuces FPS publiées sur Insider Gaming Tricks : Counter-Strike 2, Battlefield, Call of Duty et plus.',
+    'archives gaming, historique news FPS, anciennes astuces CS2, Battlefield, Call of Duty, Valorant',
+    false,
+    '/archives',
+  );
 
   useEffect(() => {
     const loadAll = async () => {

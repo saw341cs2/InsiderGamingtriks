@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
 
+Disallow: /profile
+Disallow: /confirmation
+
 Sitemap: https://insidertricks.fr/sitemap.xml

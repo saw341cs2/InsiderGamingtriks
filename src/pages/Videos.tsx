@@ -13,7 +13,7 @@ export default function VideosPage() {
   useSEO(
     'Vidéos Gaming CS2, Battlefield, Call of Duty | Insider Gaming Tricks',
     'Retrouve toutes nos vidéos YouTube : gameplay, tutoriels et astuces pour CS2, Battlefield et Call of Duty.',
-    'vidéos gaming, gameplay CS2, tutoriels FPS, YouTube gaming',
+    'vidéos gaming, gameplay CS2, tutoriels FPS, YouTube gaming, Battlefield, Call of Duty, Valorant, guides vidéo',
     false,
     '/videos',
   );

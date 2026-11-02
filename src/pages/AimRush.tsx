@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSEO } from '@/hooks/use-seo';
 import { useAppContext } from '@/contexts/AppContext';
 import { supabase } from '@/lib/supabase';
 
@@ -15,6 +16,14 @@ const TARGET_SIZE = 60;
 export default function AimRush() {
   const { user, loading } = useAppContext();
   const navigate = useNavigate();
+
+  useSEO(
+    'AimRush - Entraînement Visée FPS | Insider Gaming Tricks',
+    'Entraîne ta visée avec AimRush, le jeu gratuit d’Insider Gaming Tricks. Grimpe au classement et gagne ton abonnement Premium !',
+    'aim trainer gratuit, entraînement visée FPS, jeu tir gratuit, améliorer aim CS2, aim training Valorant, jeu concours gaming',
+    false,
+    '/aimrush',
+  );
   const [gameState, setGameState] = useState<'idle' | 'playing' | 'finished'>('idle');
   const [timeLeft, setTimeLeft] = useState(GAME_DURATION);
   const [score, setScore] = useState(0);

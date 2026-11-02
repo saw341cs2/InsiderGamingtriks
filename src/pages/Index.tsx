@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSectionNavigate } from '@/hooks/useSectionNavigate';
+import { useSEO } from '@/hooks/use-seo';
 import Navbar from '@/components/gaming/Navbar';
 import HeroSection from '@/components/gaming/HeroSection';
 import LatestTipsBar from '@/components/gaming/LatestTipsBar';
@@ -25,6 +26,14 @@ export default function Index() {
   const [activeSection, setActiveSection] = useState('accueil');
   const navigate = useNavigate();
   const goToSection = useSectionNavigate();
+
+  useSEO(
+    'InsiderGamingTricks - Astuces Gaming, News & Communauté',
+    'InsiderTricks : astuces, guides et actualités FPS sur Counter-Strike 2, Battlefield et Valorant. Rejoins la communauté gaming française, améliore ton gameplay et reste informé des dernières news.',
+    undefined,
+    false,
+    '/',
+  );
 
   const handleNavigate = (section: string) => {
     setActiveSection(section);

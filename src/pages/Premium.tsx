@@ -13,7 +13,7 @@ export default function PremiumPage() {
   useSEO(
     'Offres Premium | Insider Gaming Tricks',
     'Débloque les astuces premium, les guides vidéo exclusifs et le support prioritaire avec un abonnement Insider Gaming Tricks.',
-    'abonnement premium gaming, astuces exclusives CS2',
+    'abonnement premium gaming, astuces exclusives CS2, guides FPS premium, Battlefield, Call of Duty, Valorant, contenu exclusif gaming',
     false,
     '/premium',
   );

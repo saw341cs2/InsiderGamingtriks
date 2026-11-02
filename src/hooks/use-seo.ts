@@ -28,12 +28,14 @@ export function useSEO(
   keywords?: string,
   noIndex?: boolean,
   path: string = '/',
+  ogType: string = 'website',
 ) {
   useEffect(() => {
     document.title = title;
     setMetaTag('name', 'description', description);
     setMetaTag('property', 'og:title', title);
     setMetaTag('property', 'og:description', description);
+    setMetaTag('property', 'og:type', ogType);
     setMetaTag('name', 'twitter:title', title);
     setMetaTag('name', 'twitter:description', description);
     if (keywords) {
@@ -48,5 +50,5 @@ export function useSEO(
         setMetaTag('name', 'robots', 'index, follow');
       }
     };
-  }, [title, description, keywords, noIndex, path]);
+  }, [title, description, keywords, noIndex, path, ogType]);
 }

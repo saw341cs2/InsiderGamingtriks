@@ -12,8 +12,8 @@ export default function CommunautePage() {
 
   useSEO(
     'Communauté Gaming | Insider Gaming Tricks',
-    'Rejoins la communauté Insider Gaming Tricks : discussions, actualités et échanges entre joueurs de CS2, Battlefield et Call of Duty.',
-    'communauté gaming, discussion FPS, joueurs CS2',
+    'Rejoins la communauté Insider Gaming Tricks : discussions, actualités et échanges entre joueurs de CS2, Battlefield et Call of Duty. Partage tes astuces FPS et progresse avec nous.',
+    'communauté gaming, discussion FPS, joueurs CS2, forum gaming, Battlefield, Call of Duty, Valorant',
     false,
     '/communaute',
   );
