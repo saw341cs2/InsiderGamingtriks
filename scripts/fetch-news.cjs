@@ -1,16 +1,4 @@
-function extractRssImage(item) {
-  const patterns = [
-    /<media:content[^>]+url=["']([^"']+)["']/i,
-    /<media:thumbnail[^>]+url=["']([^"']+)["']/i,
-    /<enclosure[^>]+url=["']([^"']+)["']/i,
-    /<img[^>]+src=["']([^"']+)["']/i,
-  ];
-  for (const pattern of patterns) {
-    const match = item.match(pattern);
-    if (match && isRealImage(match[1]) && !/\.(mp4|webm|mp3)(\?|$)/i.test(match[1])) return match[1];
-  }
-  return null;
-}const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
 const { generateNews } = require('./generate-news.cjs');
 
@@ -19,7 +7,7 @@ const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
 const MAX_NEWS = 6;          // nombre de news affichées
 const MIN_NEWS = 3;          // en dessous, on complète avec les news récentes déjà publiées
 const MAX_ARCHIVE_DAYS = 10; // ancienneté max des news reprises depuis les archives
-image: extractRssImage(item),
+
 // =====================================================================
 // IMAGES : on veut toujours l'image qui correspond à la news.
 //
@@ -91,7 +79,7 @@ const TOPIC_CARDS = {
 };
 
 function normalizeText(text) {
-  return String(text || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  return String(text || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
 
 // Mot entier uniquement ("cod" ne doit pas matcher "codes")
@@ -123,9 +111,15 @@ function imageForText(title, summary = '', topic = '') {
   return makeCard(label, accent);
 }
 
-// Vraie image d'article = lien http(s) qui n'est pas une de nos images de remplissage
+// Images à écarter : logos, icônes, avatars, images par défaut...
+const BAD_IMAGE = /logo|favicon|avatar|placeholder|default[-_.]|sprite|gravatar|news\.google|googleusercontent|\.svg(\?|$)/i;
+
+// Vraie image d'article = lien http(s) qui n'est ni une de nos images de remplissage, ni un logo
 function isRealImage(url) {
-  return typeof url === 'string' && /^https?:\/\//i.test(url) && !/steamstatic\.com|images\.unsplash\.com/i.test(url);
+  return typeof url === 'string'
+    && /^https?:\/\//i.test(url)
+    && !/steamstatic\.com|images\.unsplash\.com/i.test(url)
+    && !BAD_IMAGE.test(url);
 }
 
 function fixImages(articles) {
@@ -190,7 +184,7 @@ async function enrichWithOfficialImages(articles) {
     let current = article;
     if (isExternalUrl(article.url)) {
       const og = await fetchOgImage(article.url);
-      if (og) {
+      if (og && isRealImage(og)) {
         current = { ...article, image: og, imageCredit: null };
         console.log(`   🖼️  Image officielle trouvée : ${String(article.title || '').substring(0, 45)}`);
       } else {
@@ -450,6 +444,22 @@ function isFpsArticle(title, description) {
   return FPS_KEYWORDS.some(kw => text.includes(kw));
 }
 
+// Cherche la vraie image d'un item RSS : media:content > media:thumbnail > enclosure > première <img>
+function extractRssImage(item) {
+  const decoded = decodeHTMLEntities(item);
+  const patterns = [
+    /<media:content[^>]+url=["']([^"']+)["']/i,
+    /<media:thumbnail[^>]+url=["']([^"']+)["']/i,
+    /<enclosure[^>]+url=["']([^"']+)["']/i,
+    /<img[^>]+src=["']([^"']+)["']/i,
+  ];
+  for (const pattern of patterns) {
+    const match = decoded.match(pattern);
+    if (match && isRealImage(match[1]) && !/\.(mp4|webm|mp3)(\?|$)/i.test(match[1])) return match[1];
+  }
+  return null;
+}
+
 async function fetchFromRSS() {
   // Un flux qui ne répond pas est simplement ignoré
   const rssUrls = [
@@ -475,9 +485,6 @@ async function fetchFromRSS() {
         const descMatch = item.match(/<description>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/description>/i);
         const linkMatch = item.match(/<link>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/link>/i);
         const dateMatch = item.match(/<pubDate>(.*?)<\/pubDate>/i);
-        // Chercher l'image dans media:content, enclosure ou og:image
-        const imgMatch = item.match(/url="(https?:\/\/[^"]+\.(?:jpg|jpeg|png|webp)[^"]*)"/i) ||
-                         item.match(/<enclosure[^>]+url="(https?:\/\/[^"]+)"/i);
         if (titleMatch && linkMatch) {
           const title = decodeHTMLEntities(titleMatch[1].trim());
           const description = decodeHTMLEntities((descMatch ? descMatch[1] : '').replace(/<[^>]*>/g, '').trim());
@@ -486,7 +493,7 @@ async function fetchFromRSS() {
             title,
             description,
             url: linkMatch[1].trim(),
-            image: imgMatch ? decodeHTMLEntities(imgMatch[1]) : null,
+            image: extractRssImage(item),
             publishedAt: dateMatch ? new Date(dateMatch[1]).toISOString() : new Date().toISOString(),
             source: new URL(rssUrl).hostname.replace('www.', ''),
           });
