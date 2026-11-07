@@ -4,48 +4,124 @@ const { generateNews } = require('./generate-news.cjs');
 
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
-const TOPIC_IMAGES = {
-  FPS:        [
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/730/header.jpg',
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/1938090/header.jpg',
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/1240440/header.jpg',
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/1517290/header.jpg',
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/359550/header.jpg',
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/1172470/header.jpg',
-  ],
-  COMPETITION: [
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/730/header.jpg',
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/1240440/header.jpg',
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/1172470/header.jpg',
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/359550/header.jpg',
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/1938090/header.jpg',
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/1517290/header.jpg',
-  ],
-  MATERIEL: [
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/594650/header.jpg',
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/359550/header.jpg',
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/1966720/header.jpg',
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/1238840/header.jpg',
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/218620/header.jpg',
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/1085660/header.jpg',
-  ],
-  JOUEURS: [
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/730/header.jpg',
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/1240440/header.jpg',
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/1172470/header.jpg',
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/1938090/header.jpg',
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/359550/header.jpg',
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/2519060/header.jpg',
-  ],
-  JEUX: [
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/2519060/header.jpg',
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/1172470/header.jpg',
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/2357570/header.jpg',
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/1966720/header.jpg',
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/594650/header.jpg',
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/1938090/header.jpg',
-  ],
+// =====================================================================
+// IMAGES : l'image est choisie selon le SUJET réel de l'article
+// (et plus selon la position de l'article dans la liste).
+//
+// Ordre de décision :
+//   1. Si l'article a sa vraie image (flux RSS / API) -> on la garde.
+//   2. Sinon on cherche de quoi parle l'article (dans le TITRE d'abord) :
+//        matériel (casque, souris...) puis jeu (CS2, Warzone...) puis esport.
+//   3. Jeu présent sur Steam -> sa jaquette officielle.
+//      Sinon (Valorant, Tarkov, matériel...) -> une carte avec le nom du sujet.
+//
+// Pour changer une image : modifie la ligne du sujet dans les listes ci-dessous.
+// =====================================================================
+
+const steam = id => `https://cdn.cloudflare.steamstatic.com/steam/apps/${id}/header.jpg`;
+
+// Carte 800x450 générée (aucun lien externe, ne peut jamais être cassée)
+function makeCard(label, accent) {
+  const size = Math.max(48, Math.min(110, Math.floor(680 / (label.length * 0.72))));
+  const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">'
+    + '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0b0f1a"/><stop offset="1" stop-color="' + accent + '"/></linearGradient></defs>'
+    + '<rect width="800" height="450" fill="url(#g)"/>'
+    + '<text x="400" y="240" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-size="' + size + '" font-weight="900" fill="#ffffff">' + label + '</text>'
+    + '<text x="400" y="300" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" letter-spacing="6" fill="#ffffff" fill-opacity="0.7">INSIDERTRICKS</text>'
+    + '</svg>';
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+
+// Matériel (le premier de la liste qui correspond gagne : "tapis de souris" avant "souris")
+const HARDWARE_RULES = [
+  { label: 'TAPIS',   accent: '#be185d', words: ['tapis de souris', 'mousepad', 'mouse pad', 'tapis'] },
+  { label: 'SOURIS',  accent: '#0369a1', words: ['souris', 'mouse', 'mice'] },
+  { label: 'CLAVIER', accent: '#15803d', words: ['clavier', 'claviers', 'keyboard', 'keyboards'] },
+  { label: 'CASQUE',  accent: '#6d28d9', words: ['casque', 'casques', 'headset', 'headsets', 'headphones'] },
+  { label: 'ÉCRAN',   accent: '#b45309', words: ['moniteur', 'moniteurs', 'monitor', 'monitors', 'ecran', 'ecrans', '144hz', '240hz', '360hz', '540hz'] },
+  { label: 'GPU',     accent: '#4d7c0f', words: ['gpu', 'rtx', 'radeon', 'geforce', 'carte graphique', 'cartes graphiques', 'graphics card'] },
+  { label: 'CPU',     accent: '#b91c1c', words: ['cpu', 'processeur', 'processeurs', 'ryzen'] },
+  { label: 'AUDIO',   accent: '#0f766e', words: ['dac', 'micro', 'microphone', 'ampli'] },
+];
+
+// Jeux : "steam" = jaquette Steam officielle, "accent" = carte générée (jeu absent de Steam)
+const GAME_RULES = [
+  { label: 'BATTLEFIELD 2042', steam: 1517290, words: ['battlefield 2042', 'bf 2042', 'bf2042'] },
+  { label: 'BATTLEFIELD',      steam: 2807960, words: ['battlefield', 'bf6', 'bf 6'] },
+  { label: 'CALL OF DUTY',     steam: 1938090, words: ['warzone', 'call of duty', 'black ops', 'modern warfare', 'cod', 'bo6', 'bo7', 'mw3', 'mw4'] },
+  { label: 'CS2',              steam: 730,     words: ['cs2', 'counter-strike', 'counter strike', 'csgo', 'cs go', 'cs:go', 'iem', 'faceit', 'esl pro league', 'blast premier', 'zywoo', 's1mple', 'donk', 'niko', 'm0nesy'] },
+  { label: 'VALORANT',         accent: '#ff4655', words: ['valorant', 'vct'] },
+  { label: 'APEX LEGENDS',     steam: 1172470, words: ['apex legends', 'apex'] },
+  { label: 'RAINBOW SIX',      steam: 359550,  words: ['rainbow six', 'r6 siege', 'r6'] },
+  { label: 'OVERWATCH 2',      steam: 2357570, words: ['overwatch'] },
+  { label: 'HALO',             steam: 1240440, words: ['halo', 'halo infinite'] },
+  { label: 'HUNT SHOWDOWN',    steam: 594650,  words: ['hunt showdown', 'hunt: showdown'] },
+  { label: 'DESTINY 2',        steam: 1085660, words: ['destiny 2', 'destiny'] },
+  { label: 'TARKOV',           accent: '#b45309', words: ['tarkov'] },
+  { label: 'THE FINALS',       accent: '#e11d48', words: ['the finals'] },
+  { label: 'DELTA FORCE',      accent: '#4d7c0f', words: ['delta force'] },
+];
+
+const ESPORT_RULES = [
+  { label: 'ESPORT', accent: '#c2410c', words: ['esport', 'esports', 'tournoi', 'championnat', 'dota', 'league of legends'] },
+];
+
+// Si aucun sujet précis n'est reconnu : carte selon la catégorie
+const TOPIC_CARDS = {
+  MATERIEL:    ['MATÉRIEL', '#334155'],
+  JOUEURS:     ['JOUEURS', '#7c2d12'],
+  GAMERS:      ['JOUEURS', '#7c2d12'],
+  COMPETITION: ['ESPORT', '#c2410c'],
+  ESPORT:      ['ESPORT', '#c2410c'],
+  DEFAULT:     ['FPS', '#1d4ed8'],
 };
+
+function normalizeText(text) {
+  return String(text || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+}
+
+// Mot entier uniquement ("cod" ne doit pas matcher "codes")
+function hasWord(text, word) {
+  const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp('(^|[^a-z0-9])' + escaped + '([^a-z0-9]|$)').test(text);
+}
+
+function matchRule(text, rules) {
+  return rules.find(rule => rule.words.some(word => hasWord(text, word)));
+}
+
+function ruleToImage(rule) {
+  return rule.steam ? steam(rule.steam) : makeCard(rule.label, rule.accent);
+}
+
+function imageForText(title, summary = '', topic = '') {
+  const inTitle = normalizeText(title);
+  const inAll = normalizeText(`${title} ${summary}`);
+  // Le titre dit de quoi parle l'article : on le regarde en premier (matériel > jeu > esport).
+  // Dans le résumé, un jeu cité prime sur un mot de matériel cité en passant.
+  const rule =
+    matchRule(inTitle, HARDWARE_RULES) || matchRule(inTitle, GAME_RULES) || matchRule(inTitle, ESPORT_RULES) ||
+    matchRule(inAll, GAME_RULES) || matchRule(inAll, HARDWARE_RULES) || matchRule(inAll, ESPORT_RULES);
+  if (rule) return ruleToImage(rule);
+  const [label, accent] = TOPIC_CARDS[String(topic).toUpperCase()] || TOPIC_CARDS.DEFAULT;
+  return makeCard(label, accent);
+}
+
+// Vraie image d'article = lien http(s) qui n'est pas une de nos images de remplissage
+function isRealImage(url) {
+  return typeof url === 'string' && /^https?:\/\//i.test(url) && !/steamstatic\.com|images\.unsplash\.com/i.test(url);
+}
+
+function fixImages(articles) {
+  return articles.map(article => {
+    if (isRealImage(article.image)) return article;
+    const summary = article.summary || article.body || '';
+    // imageCredit retiré : l'ancien crédit photo ne correspond plus à la nouvelle image
+    return { ...article, image: imageForText(article.title || '', summary, article.topic), imageCredit: null };
+  });
+}
+
+// =====================================================================
 
 const AI_SYSTEM_PROMPT = `Tu es un journaliste gaming pour Insider Gaming Tricks, site français.
 Réécris l'article source en français, de façon originale, style dynamique gaming.
@@ -137,15 +213,20 @@ DESCRIPTION : ${(article.description || article.body || '').substring(0, 500)}`;
     return null;
   }
   const cats = Array.isArray(parsed.categories) ? parsed.categories : ['JEUX'];
+  const topic = cats[0]?.toUpperCase() || 'JEUX';
   return {
     title: parsed.title,
     summary: parsed.summary || '',
     content: parsed.content || '',
     review: parsed.review || '',
     categories: cats,
-    topic: cats[0]?.toUpperCase() || 'JEUX',
+    topic,
     url: article.url || '#',
-    image: (article.image && article.image.startsWith('http')) ? article.image : null,
+    // Vraie image de l'article si elle existe, sinon image choisie d'après le sujet
+    // (on regarde aussi le titre/description d'origine, qui nomment le jeu)
+    image: isRealImage(article.image)
+      ? article.image
+      : imageForText(article.title || '', `${article.description || ''} ${parsed.title} ${parsed.summary}`, topic),
     dateTimePub: article.publishedAt || article.dateTimePub || new Date().toISOString(),
     source: 'InsiderGamingtriks',
     originalSource: article.source || '',
@@ -193,8 +274,7 @@ function transformArticle(article, topic, index = 0) {
   if (!body) body = title;
   if (body.length > 1600) body = body.substring(0, 1597) + '...';
 
-  const topicImages = TOPIC_IMAGES[topic.toUpperCase()] || TOPIC_IMAGES.JEUX;
-  const image = (article.image && article.image.startsWith('http')) ? article.image : (topicImages[index % topicImages.length]);
+  const image = isRealImage(article.image) ? article.image : imageForText(title, body, topic);
 
   return {
     title,
@@ -345,6 +425,36 @@ function archiveOldNews(publicPath) {
   console.log(`Archivé ${toArchive.length} news (total: ${archives.articles.length})`);
 }
 
+// Étape finale commune (news réelles ET news de secours) : bonnes images, archivage, écriture
+function publish(articles) {
+  let finalArticles = fixImages(articles.slice(0, 6));
+
+  const publicPath = path.join(__dirname, '..', 'public');
+  const publishedOn = new Date().toISOString();
+  finalArticles = finalArticles.map(article => ({
+    ...article,
+    publishedOn: article.publishedOn || article.dateTimePub || publishedOn,
+  }));
+
+  // Archiver les anciennes news avant d'écraser
+  archiveOldNews(publicPath);
+
+  const output = { articles: finalArticles, generatedAt: publishedOn };
+  fs.writeFileSync(path.join(publicPath, 'news.json'), JSON.stringify(output, null, 2), 'utf-8');
+
+  const docsPath = path.join(__dirname, '..', 'docs');
+  if (fs.existsSync(docsPath)) {
+    fs.writeFileSync(path.join(docsPath, 'news.json'), JSON.stringify(output, null, 2), 'utf-8');
+  }
+  const rootNewsPath = path.join(__dirname, '..', 'news.json');
+  if (fs.existsSync(rootNewsPath)) {
+    fs.writeFileSync(rootNewsPath, JSON.stringify(output, null, 2), 'utf-8');
+  }
+
+  console.log(`\n=== ${finalArticles.length} news générées ===`);
+  finalArticles.forEach((a, i) => console.log(`${i + 1}. [${(a.categories || [a.topic || 'JEUX']).join(', ')}] ${a.title.substring(0, 60)}`));
+}
+
 async function main() {
   console.log('=== Récupération des news gaming ===');
 
@@ -373,11 +483,10 @@ async function main() {
   const gaming = unique.filter(a => isFpsArticle(a.title, a.description || a.content || ''));
   console.log(`Articles FPS: ${gaming.length}`);
 
-  // Si pas assez d'articles gaming, utiliser generate-news comme fallback
+  // Si pas assez d'articles FPS, on publie le stock de secours (avec les bonnes images)
   if (gaming.length < 3) {
     console.log('Pas assez de news FPS, utilisation du fallback...');
-    const gen = require('./generate-news.cjs');
-    await gen.main();
+    publish(generateNews().articles);
     return;
   }
 
@@ -385,12 +494,6 @@ async function main() {
   gaming.sort((a, b) => new Date(b.publishedAt || b.dateTimePub || 0) - new Date(a.publishedAt || a.dateTimePub || 0));
 
   const topArticles = gaming.slice(0, 6);
-
-  // Étape 1 : Transformer avec les métadonnées de base
-  const baseArticles = topArticles.map((a, index) => {
-    const topic = categorizeArticle(a.title, a.description || a.content || '');
-    return transformArticle(a, topic, index);
-  });
 
   // Étape 2 : Réécriture IA directe (Mistral puis Gemini en fallback)
   const hasAI = process.env.MISTRAL_API_KEY || process.env.GEMINI_API_KEY;
@@ -416,44 +519,13 @@ async function main() {
 
   if (!finalArticles || finalArticles.length === 0) {
     finalArticles = generateNews().articles;
-    console.log('\u2139\ufe0f  Fallback \u00e9ditorial utilis\u00e9.');
+    console.log('ℹ️  Fallback éditorial utilisé.');
   }
   if (finalArticles.length < 3) {
     finalArticles = generateNews().articles;
   }
-  finalArticles = finalArticles.slice(0, 6);
 
-  const usedImages = new Set();
-  finalArticles = finalArticles.map((article, index) => {
-    let image = article.image;
-    if (!image || usedImages.has(image)) {
-      const pool = TOPIC_IMAGES[article.topic] || TOPIC_IMAGES.JEUX;
-      image = pool.find(img => !usedImages.has(img)) || pool[index % pool.length];
-    }
-    usedImages.add(image);
-    return { ...article, image };
-  });
-
-  const publicPath = path.join(__dirname, '..', 'public');
-  const publishedOn = new Date().toISOString();
-  finalArticles = finalArticles.map(article => ({
-    ...article,
-    publishedOn: article.publishedOn || article.dateTimePub || publishedOn,
-  }));
-
-  // Archiver les anciennes news avant d'écraser
-  archiveOldNews(publicPath);
-
-  const output = { articles: finalArticles, generatedAt: publishedOn };
-  fs.writeFileSync(path.join(publicPath, 'news.json'), JSON.stringify(output, null, 2), 'utf-8');
-
-  const docsPath = path.join(__dirname, '..', 'docs');
-  if (fs.existsSync(docsPath)) {
-    fs.writeFileSync(path.join(docsPath, 'news.json'), JSON.stringify(output, null, 2), 'utf-8');
-  }
-
-  console.log(`\n=== ${finalArticles.length} news générées ===`);
-  finalArticles.forEach((a, i) => console.log(`${i + 1}. [${(a.categories || [a.topic || 'JEUX']).join(', ')}] ${a.title.substring(0, 60)}`));
+  publish(finalArticles);
 }
 
 if (require.main === module) main().catch(error => {
@@ -461,4 +533,4 @@ if (require.main === module) main().catch(error => {
   process.exitCode = 1;
 });
 
-module.exports = { isFpsArticle, isLikelyFrench, keywordMatches, categorizeArticle, transformArticle };
+module.exports = { isFpsArticle, isLikelyFrench, keywordMatches, categorizeArticle, transformArticle, imageForText, fixImages };
