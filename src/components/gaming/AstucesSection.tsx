@@ -290,7 +290,7 @@ const AstucesSection: React.FC<AstucesSectionProps> = ({ onNavigate }) => {
         {!loading && filtered.length > 0 && (
           <div className="text-center mt-10">
             <a
-              href="/InsiderGamingtriks/archives"
+              href="/archives"
               className="inline-flex items-center gap-2 px-6 py-3 bg-gray-800 hover:bg-gray-700 border border-gray-700 text-white font-bold rounded-xl transition-all"
             >
               Voir toutes les astuces & anciennes news →
