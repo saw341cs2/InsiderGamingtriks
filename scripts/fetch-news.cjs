@@ -19,7 +19,7 @@ const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
 const MAX_NEWS = 6;          // nombre de news affichées
 const MIN_NEWS = 3;          // en dessous, on complète avec les news récentes déjà publiées
 const MAX_ARCHIVE_DAYS = 10; // ancienneté max des news reprises depuis les archives
-
+image: extractRssImage(item),
 // =====================================================================
 // IMAGES : on veut toujours l'image qui correspond à la news.
 //
