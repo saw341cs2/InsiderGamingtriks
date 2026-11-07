@@ -3,31 +3,32 @@
 const fs = require('fs');
 const path = require('path');
 
-// source.unsplash.com par mot-clé : image toujours cohérente avec le sujet
+// Images Steam CDN officielles — stables, pertinentes, toujours disponibles
 const IMG = {
-  cod:        'https://source.unsplash.com/800x450/?call+of+duty,fps+game',
-  warzone:    'https://source.unsplash.com/800x450/?warzone,fps+shooter',
-  cs2:        'https://source.unsplash.com/800x450/?counter+strike,esport',
-  valorant:   'https://source.unsplash.com/800x450/?valorant,fps+esport',
-  apex:       'https://source.unsplash.com/800x450/?apex+legends,battle+royale',
-  battlefield:'https://source.unsplash.com/800x450/?battlefield,fps+war',
-  r6:         'https://source.unsplash.com/800x450/?rainbow+six,tactical+shooter',
-  overwatch:  'https://source.unsplash.com/800x450/?overwatch,esport+game',
-  tarkov:     'https://source.unsplash.com/800x450/?escape+tarkov,fps+game',
-  hunt:       'https://source.unsplash.com/800x450/?hunt+showdown,fps+game',
-  gta:        'https://source.unsplash.com/800x450/?gta,open+world+game',
-  esport:     'https://source.unsplash.com/800x450/?esport,gaming+competition',
-  joueur:     'https://source.unsplash.com/800x450/?esport+player,pro+gamer',
-  casque:     'https://source.unsplash.com/800x450/?gaming+headset,headphones',
-  souris:     'https://source.unsplash.com/800x450/?gaming+mouse,peripherals',
-  moniteur:   'https://source.unsplash.com/800x450/?gaming+monitor,screen',
-  gpu:        'https://source.unsplash.com/800x450/?graphics+card,gpu',
-  dac:        'https://source.unsplash.com/800x450/?gaming+headset,audio',
-  tapis:      'https://source.unsplash.com/800x450/?gaming+mousepad,desk',
-  clavier:    'https://source.unsplash.com/800x450/?gaming+keyboard,mechanical',
-  major:      'https://source.unsplash.com/800x450/?esport+tournament,gaming+arena',
-  ewc:        'https://source.unsplash.com/800x450/?esport+world+cup,gaming+event',
-  iem:        'https://source.unsplash.com/800x450/?esport+tournament,gaming+stage',
+  cs2:        'https://cdn.cloudflare.steamstatic.com/steam/apps/730/header.jpg',
+  warzone:    'https://cdn.cloudflare.steamstatic.com/steam/apps/1938090/header.jpg',
+  apex:       'https://cdn.cloudflare.steamstatic.com/steam/apps/1172470/header.jpg',
+  r6:         'https://cdn.cloudflare.steamstatic.com/steam/apps/359550/header.jpg',
+  battlefield:'https://cdn.cloudflare.steamstatic.com/steam/apps/1517290/header.jpg',
+  tarkov:     'https://cdn.cloudflare.steamstatic.com/steam/apps/552990/header.jpg',
+  hunt:       'https://cdn.cloudflare.steamstatic.com/steam/apps/594650/header.jpg',
+  destiny:    'https://cdn.cloudflare.steamstatic.com/steam/apps/1085660/header.jpg',
+  overwatch:  'https://cdn.cloudflare.steamstatic.com/steam/apps/2357570/header.jpg',
+  valorant:   'https://cdn.cloudflare.steamstatic.com/steam/apps/1240440/header.jpg',
+  cod:        'https://cdn.cloudflare.steamstatic.com/steam/apps/1938090/header.jpg',
+  esport:     'https://cdn.cloudflare.steamstatic.com/steam/apps/730/header.jpg',
+  joueur:     'https://cdn.cloudflare.steamstatic.com/steam/apps/1172470/header.jpg',
+  casque:     'https://cdn.cloudflare.steamstatic.com/steam/apps/594650/header.jpg',
+  souris:     'https://cdn.cloudflare.steamstatic.com/steam/apps/359550/header.jpg',
+  moniteur:   'https://cdn.cloudflare.steamstatic.com/steam/apps/1966720/header.jpg',
+  gpu:        'https://cdn.cloudflare.steamstatic.com/steam/apps/1238840/header.jpg',
+  clavier:    'https://cdn.cloudflare.steamstatic.com/steam/apps/218620/header.jpg',
+  tapis:      'https://cdn.cloudflare.steamstatic.com/steam/apps/1085660/header.jpg',
+  dac:        'https://cdn.cloudflare.steamstatic.com/steam/apps/594650/header.jpg',
+  major:      'https://cdn.cloudflare.steamstatic.com/steam/apps/730/header.jpg',
+  iem:        'https://cdn.cloudflare.steamstatic.com/steam/apps/730/header.jpg',
+  ewc:        'https://cdn.cloudflare.steamstatic.com/steam/apps/1172470/header.jpg',
+  gta:        'https://cdn.cloudflare.steamstatic.com/steam/apps/1966720/header.jpg',
 };
 
 const articlesPool = [
@@ -272,10 +273,10 @@ const articlesPool = [
 ];
 
 const TOPIC_IMAGES = {
-  FPS:        [IMG.cs2, IMG.warzone, IMG.valorant, IMG.battlefield, IMG.r6, IMG.esport],
+  FPS:        [IMG.cs2, IMG.warzone, IMG.valorant, IMG.battlefield, IMG.r6, IMG.apex],
   COMPETITION:[IMG.major, IMG.iem, IMG.ewc, IMG.esport, IMG.valorant, IMG.cs2],
   MATERIEL:   [IMG.casque, IMG.souris, IMG.moniteur, IMG.gpu, IMG.clavier, IMG.tapis],
-  JOUEURS:    [IMG.joueur, IMG.esport, IMG.cs2, IMG.valorant, IMG.joueur, IMG.esport],
+  JOUEURS:    [IMG.joueur, IMG.esport, IMG.cs2, IMG.valorant, IMG.apex, IMG.r6],
   JEUX:       [IMG.cod, IMG.apex, IMG.overwatch, IMG.gta, IMG.hunt, IMG.warzone],
 };
 
@@ -294,7 +295,6 @@ function generateNews(today = new Date()) {
   const todayArticles = [...todayPool, ...extraPool].slice(0, 3);
   todayArticles.forEach((article, i) => allArticles.push({
     ...article,
-    image: article.image,
     dateTimePub: today.toISOString(),
     publishedOn,
   }));
@@ -307,7 +307,6 @@ function generateNews(today = new Date()) {
   const yesterdayArticles = [...yPool, ...yExtraPool].slice(0, 3);
   yesterdayArticles.forEach((article, i) => allArticles.push({
     ...article,
-    image: article.image,
     dateTimePub: yesterdayIso,
     publishedOn: yesterdayIso,
   }));
