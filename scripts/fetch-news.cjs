@@ -4,30 +4,32 @@ const { generateNews } = require('./generate-news.cjs');
 
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
+const MAX_NEWS = 6;          // nombre de news affichées
+const MIN_NEWS = 3;          // en dessous, on complète avec les news récentes déjà publiées
+const MAX_ARCHIVE_DAYS = 10; // ancienneté max des news reprises depuis les archives
+
 // =====================================================================
-// IMAGES : l'image est choisie selon le SUJET réel de l'article
-// (et plus selon la position de l'article dans la liste).
+// IMAGES : on veut toujours l'image qui correspond à la news.
 //
-// Ordre de décision :
-//   1. Si l'article a sa vraie image (flux RSS / API) -> on la garde.
-//   2. Sinon on cherche de quoi parle l'article (dans le TITRE d'abord) :
-//        matériel (casque, souris...) puis jeu (CS2, Warzone...) puis esport.
-//   3. Jeu présent sur Steam -> sa jaquette officielle.
-//      Sinon (Valorant, Tarkov, matériel...) -> une carte avec le nom du sujet.
-//
-// Pour changer une image : modifie la ligne du sujet dans les listes ci-dessous.
+// Ordre de décision (voir publish()) :
+//   1. L'image officielle de l'article (balise og:image de sa page) -> LA meilleure.
+//   2. Sinon l'image fournie par le flux RSS / l'API.
+//   3. Sinon, d'après le SUJET du titre : jaquette Steam du jeu, ou carte du sujet.
+//   4. Si deux news ont exactement la même image, la 2e passe à l'étape 3.
 // =====================================================================
 
 const steam = id => `https://cdn.cloudflare.steamstatic.com/steam/apps/${id}/header.jpg`;
 
-// Carte 800x450 générée (aucun lien externe, ne peut jamais être cassée)
+// Carte 800x450 générée (aucun lien externe) : dernier recours seulement
 function makeCard(label, accent) {
-  const size = Math.max(48, Math.min(110, Math.floor(680 / (label.length * 0.72))));
+  const size = Math.max(44, Math.min(96, Math.floor(640 / (label.length * 0.72))));
   const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">'
-    + '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0b0f1a"/><stop offset="1" stop-color="' + accent + '"/></linearGradient></defs>'
+    + '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0b0f1a"/><stop offset="1" stop-color="#1f2937"/></linearGradient></defs>'
     + '<rect width="800" height="450" fill="url(#g)"/>'
-    + '<text x="400" y="240" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-size="' + size + '" font-weight="900" fill="#ffffff">' + label + '</text>'
-    + '<text x="400" y="300" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" letter-spacing="6" fill="#ffffff" fill-opacity="0.7">INSIDERTRICKS</text>'
+    + '<polygon points="540,0 800,0 800,450 380,450" fill="' + accent + '" fill-opacity="0.35"/>'
+    + '<rect x="60" y="292" width="110" height="8" fill="' + accent + '"/>'
+    + '<text x="60" y="262" text-anchor="start" font-family="Arial Black, Arial, sans-serif" font-size="' + size + '" font-weight="900" fill="#ffffff">' + label + '</text>'
+    + '<text x="60" y="345" text-anchor="start" font-family="Arial, sans-serif" font-size="22" letter-spacing="6" fill="#ffffff" fill-opacity="0.65">INSIDERTRICKS</text>'
     + '</svg>';
   return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
 }
@@ -94,14 +96,16 @@ function ruleToImage(rule) {
   return rule.steam ? steam(rule.steam) : makeCard(rule.label, rule.accent);
 }
 
-function imageForText(title, summary = '', topic = '') {
+// De quoi parle l'article ? (le titre d'abord : matériel > jeu > esport ; puis le résumé : jeu > matériel > esport)
+function detectRule(title, summary = '') {
   const inTitle = normalizeText(title);
   const inAll = normalizeText(`${title} ${summary}`);
-  // Le titre dit de quoi parle l'article : on le regarde en premier (matériel > jeu > esport).
-  // Dans le résumé, un jeu cité prime sur un mot de matériel cité en passant.
-  const rule =
-    matchRule(inTitle, HARDWARE_RULES) || matchRule(inTitle, GAME_RULES) || matchRule(inTitle, ESPORT_RULES) ||
+  return matchRule(inTitle, HARDWARE_RULES) || matchRule(inTitle, GAME_RULES) || matchRule(inTitle, ESPORT_RULES) ||
     matchRule(inAll, GAME_RULES) || matchRule(inAll, HARDWARE_RULES) || matchRule(inAll, ESPORT_RULES);
+}
+
+function imageForText(title, summary = '', topic = '') {
+  const rule = detectRule(title, summary);
   if (rule) return ruleToImage(rule);
   const [label, accent] = TOPIC_CARDS[String(topic).toUpperCase()] || TOPIC_CARDS.DEFAULT;
   return makeCard(label, accent);
@@ -119,6 +123,71 @@ function fixImages(articles) {
     // imageCredit retiré : l'ancien crédit photo ne correspond plus à la nouvelle image
     return { ...article, image: imageForText(article.title || '', summary, article.topic), imageCredit: null };
   });
+}
+
+// Deux news avec exactement la même image : la 2e prend l'image de son propre sujet
+function dedupeImages(articles) {
+  const seen = new Set();
+  return articles.map(article => {
+    if (!seen.has(article.image)) { seen.add(article.image); return article; }
+    const alt = imageForText(article.title || '', article.summary || article.body || '', article.topic);
+    if (alt !== article.image && !seen.has(alt)) { seen.add(alt); return { ...article, image: alt, imageCredit: null }; }
+    return article;
+  });
+}
+
+// Image officielle de l'article : balise <meta property="og:image"> de sa page
+function extractOgImage(html, baseUrl) {
+  const tags = html.match(/<meta\b[^>]*>/gi) || [];
+  const found = {};
+  for (const tag of tags) {
+    const key = (tag.match(/\b(?:property|name)\s*=\s*["']([^"']+)["']/i) || [])[1];
+    const content = (tag.match(/\bcontent\s*=\s*["']([^"']+)["']/i) || [])[1];
+    if (!key || !content) continue;
+    const k = key.toLowerCase();
+    if (!found[k]) found[k] = content;
+  }
+  const raw = found['og:image'] || found['og:image:secure_url'] || found['og:image:url'] || found['twitter:image'] || found['twitter:image:src'];
+  if (!raw) return null;
+  try {
+    const absolute = new URL(decodeHTMLEntities(raw.trim()), baseUrl).href;
+    return /^https?:\/\//i.test(absolute) ? absolute : null;
+  } catch { return null; }
+}
+
+async function fetchOgImage(pageUrl) {
+  try {
+    const res = await fetch(pageUrl, {
+      headers: { 'User-Agent': USER_AGENT, 'Accept': 'text/html,application/xhtml+xml' },
+      redirect: 'follow',
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) return null;
+    const html = (await res.text()).slice(0, 400000);
+    return extractOgImage(html, res.url || pageUrl);
+  } catch { return null; }
+}
+
+function isExternalUrl(url) {
+  return /^https?:\/\//i.test(url || '') && !/insidertricks\.fr/i.test(url);
+}
+
+async function enrichWithOfficialImages(articles) {
+  const out = [];
+  for (const article of articles) {
+    let current = article;
+    if (isExternalUrl(article.url)) {
+      const og = await fetchOgImage(article.url);
+      if (og) {
+        current = { ...article, image: og, imageCredit: null };
+        console.log(`   🖼️  Image officielle trouvée : ${String(article.title || '').substring(0, 45)}`);
+      } else {
+        console.log(`   ⚠️ Pas d'image officielle : ${String(article.title || '').substring(0, 45)}`);
+      }
+    }
+    out.push(current);
+  }
+  return out;
 }
 
 // =====================================================================
@@ -222,8 +291,8 @@ DESCRIPTION : ${(article.description || article.body || '').substring(0, 500)}`;
     categories: cats,
     topic,
     url: article.url || '#',
-    // Vraie image de l'article si elle existe, sinon image choisie d'après le sujet
-    // (on regarde aussi le titre/description d'origine, qui nomment le jeu)
+    // Image du flux si elle existe ; sinon image du sujet (on regarde aussi le titre d'origine, qui nomme le jeu).
+    // publish() cherchera ensuite l'image officielle de l'article.
     image: isRealImage(article.image)
       ? article.image
       : imageForText(article.title || '', `${article.description || ''} ${parsed.title} ${parsed.summary}`, topic),
@@ -261,11 +330,18 @@ function categorizeArticle(title, description) {
   return 'jeux';
 }
 
+// Remplace les codes HTML (esperluette-amp, esperluette-lt, etc.) par les vrais caractères.
+// Le caractere esperluette est construit a part (AMP) pour que le code reste a l'abri d'un copier-coller.
+const AMP = '&';
 function decodeHTMLEntities(text) {
   if (!text) return '';
-  return text
-    .replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>')
-    .replace(/"/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, ' ');
+  return String(text)
+    .replace(new RegExp(AMP + 'nbsp;', 'g'), ' ')
+    .replace(new RegExp(AMP + '#39;', 'g'), "'")
+    .replace(new RegExp(AMP + 'quot;', 'g'), '"')
+    .replace(new RegExp(AMP + 'lt;', 'g'), '<')
+    .replace(new RegExp(AMP + 'gt;', 'g'), '>')
+    .replace(new RegExp(AMP + 'amp;', 'g'), AMP);
 }
 
 function transformArticle(article, topic, index = 0) {
@@ -310,6 +386,7 @@ async function fetchFromNewsAPI() {
 
 async function fetchFromGNews() {
   const apiKey = process.env.GNEWS_API_KEY;
+  if (!apiKey) { console.log('GNews: pas de clé API'); return []; }
   try {
     const queries = ['cs2 counter-strike valorant', 'battlefield call of duty warzone', 'esport fps tournoi', 'souris clavier gaming promo', 'apex legends overwatch pro player'];
     let all = [];
@@ -319,7 +396,6 @@ async function fetchFromGNews() {
       const data = await res.json();
       if (data.articles) all = [...all, ...data.articles.map(a => ({ ...a, image: a.image }))];
     }
-    // Requêtes en anglais aussi pour plus de contenu FPS
     console.log(`GNews: ${all.length} articles`);
     return all;
   } catch (e) { console.log('GNews erreur:', e.message); return []; }
@@ -363,12 +439,17 @@ function isFpsArticle(title, description) {
 }
 
 async function fetchFromRSS() {
+  // Un flux qui ne répond pas est simplement ignoré
   const rssUrls = [
     'https://www.jeuxvideo.com/rss/rss.xml',
     'https://www.vlr.gg/rss',
     'https://dotesports.com/feed',
     'https://www.rockpapershotgun.com/feed',
     'https://www.eurogamer.net/feed',
+    'https://www.pcgamer.com/rss/',
+    'https://www.gamesradar.com/rss/',
+    'https://dexerto.com/feed/',
+    'https://www.hltv.org/rss/news',
   ];
   let all = [];
   for (const rssUrl of rssUrls) {
@@ -377,7 +458,7 @@ async function fetchFromRSS() {
       if (!res.ok) continue;
       const text = await res.text();
       const items = text.match(/<item[\s\S]*?>[\s\S]*?<\/item>/g) || [];
-      for (const item of items.slice(0, 8)) {
+      for (const item of items.slice(0, 25)) {
         const titleMatch = item.match(/<title>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/title>/i);
         const descMatch = item.match(/<description>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/description>/i);
         const linkMatch = item.match(/<link>(?:<!\[CDATA\[)?([\s\S]*?)(?:\]\]>)?<\/link>/i);
@@ -393,7 +474,7 @@ async function fetchFromRSS() {
             title,
             description,
             url: linkMatch[1].trim(),
-            image: imgMatch ? imgMatch[1] : null,
+            image: imgMatch ? decodeHTMLEntities(imgMatch[1]) : null,
             publishedAt: dateMatch ? new Date(dateMatch[1]).toISOString() : new Date().toISOString(),
             source: new URL(rssUrl).hostname.replace('www.', ''),
           });
@@ -403,6 +484,26 @@ async function fetchFromRSS() {
     } catch (e) { console.log(`RSS erreur ${rssUrl}:`, e.message); }
   }
   return all;
+}
+
+// Sujet d'une news (jeu / matériel / esport), pour ne pas publier 3 news sur le même jeu d'affilée
+function subjectKey(title, description, topic) {
+  const rule = detectRule(title || '', description || '');
+  return rule ? rule.label : String(topic || 'FPS').toUpperCase();
+}
+
+// 1 news par sujet d'abord (les plus récentes), puis le reste
+function diversify(articles) {
+  const picked = [];
+  const rest = [];
+  const seen = new Set();
+  for (const article of articles) {
+    const key = subjectKey(article.title, article.description || article.body || '', categorizeArticle(article.title || '', article.description || ''));
+    if (seen.has(key)) { rest.push(article); continue; }
+    seen.add(key);
+    picked.push(article);
+  }
+  return [...picked, ...rest];
 }
 
 function archiveOldNews(publicPath) {
@@ -425,9 +526,36 @@ function archiveOldNews(publicPath) {
   console.log(`Archivé ${toArchive.length} news (total: ${archives.articles.length})`);
 }
 
-// Étape finale commune (news réelles ET news de secours) : bonnes images, archivage, écriture
-function publish(articles) {
-  let finalArticles = fixImages(articles.slice(0, 6));
+// Quand il manque de news fraîches : on reprend de VRAIES news récentes déjà publiées
+// (vrai lien, déjà en français) plutôt que d'inventer du contenu.
+function recycleFromArchive(publicPath, current, count) {
+  const archivePath = path.join(publicPath, 'news-archives.json');
+  if (count <= 0 || !fs.existsSync(archivePath)) return [];
+  let archives;
+  try { archives = JSON.parse(fs.readFileSync(archivePath, 'utf-8')); } catch { return []; }
+  const usedUrls = new Set(current.map(a => a.url));
+  const oldest = Date.now() - MAX_ARCHIVE_DAYS * 86400000;
+  const picked = [];
+  for (const article of archives.articles || []) {
+    if (picked.length >= count) break;
+    if (!isExternalUrl(article.url) || usedUrls.has(article.url)) continue;
+    const date = new Date(article.dateTimePub || article.publishedOn || 0).getTime();
+    if (!date || date < oldest) continue;
+    if (!isLikelyFrench(`${article.title || ''} ${article.summary || ''}`)) continue;
+    usedUrls.add(article.url);
+    picked.push(article);
+  }
+  if (picked.length > 0) console.log(`♻️  ${picked.length} vraie(s) news récente(s) reprise(s) depuis les archives`);
+  return picked;
+}
+
+// Étape finale commune : images, archivage, écriture
+async function publish(articles) {
+  let finalArticles = articles.slice(0, MAX_NEWS);
+
+  console.log('🖼️  Recherche des images officielles...');
+  finalArticles = await enrichWithOfficialImages(finalArticles);
+  finalArticles = dedupeImages(fixImages(finalArticles));
 
   const publicPath = path.join(__dirname, '..', 'public');
   const publishedOn = new Date().toISOString();
@@ -479,53 +607,44 @@ async function main() {
     return true;
   });
 
-  // Filtrer uniquement les articles FPS
+  // Filtrer uniquement les articles FPS, les plus récents d'abord
   const gaming = unique.filter(a => isFpsArticle(a.title, a.description || a.content || ''));
   console.log(`Articles FPS: ${gaming.length}`);
-
-  // Si pas assez d'articles FPS, on publie le stock de secours (avec les bonnes images)
-  if (gaming.length < 3) {
-    console.log('Pas assez de news FPS, utilisation du fallback...');
-    publish(generateNews().articles);
-    return;
-  }
-
-  // Trier par date décroissante
   gaming.sort((a, b) => new Date(b.publishedAt || b.dateTimePub || 0) - new Date(a.publishedAt || a.dateTimePub || 0));
 
-  const topArticles = gaming.slice(0, 6);
-
-  // Étape 2 : Réécriture IA directe (Mistral puis Gemini en fallback)
+  // Réécriture IA directe (Mistral puis Gemini en fallback), en variant les sujets
   const hasAI = process.env.MISTRAL_API_KEY || process.env.GEMINI_API_KEY;
-  let finalArticles;
+  let finalArticles = [];
 
-  if (hasAI) {
+  if (gaming.length > 0 && hasAI) {
     console.log('🔄 Réécriture IA en cours...');
-    const rewritten = [];
-    for (let i = 0; i < topArticles.length; i++) {
-      const result = await rewriteArticleWithAI(topArticles[i]);
+    const candidates = diversify(gaming).slice(0, MAX_NEWS + 2); // petite marge si l'IA échoue sur un article
+    for (let i = 0; i < candidates.length; i++) {
+      const result = await rewriteArticleWithAI(candidates[i]);
       if (result) {
-        rewritten.push(result);
-        console.log(`   ✅ [${rewritten.length}] ${result.title.substring(0, 60)}`);
-        if (rewritten.length >= 6) break;
-      await new Promise(r => setTimeout(r, 800));
+        finalArticles.push(result);
+        console.log(`   ✅ [${finalArticles.length}] ${result.title.substring(0, 60)}`);
+        if (finalArticles.length >= MAX_NEWS) break;
       }
+      await new Promise(r => setTimeout(r, 800));
     }
-    if (rewritten.length > 0) {
-      finalArticles = rewritten;
-      console.log(`✅ ${finalArticles.length} articles réécrits en français`);
-    }
+    console.log(`✅ ${finalArticles.length} articles réécrits en français`);
+  } else if (!hasAI) {
+    console.log('ℹ️  Aucune clé IA (MISTRAL_API_KEY / GEMINI_API_KEY) : pas de réécriture.');
   }
 
-  if (!finalArticles || finalArticles.length === 0) {
-    finalArticles = generateNews().articles;
-    console.log('ℹ️  Fallback éditorial utilisé.');
+  // Pas assez de news fraîches : on reprend de vraies news récentes des archives
+  if (finalArticles.length < MIN_NEWS) {
+    finalArticles = [...finalArticles, ...recycleFromArchive(path.join(__dirname, '..', 'public'), finalArticles, MIN_NEWS - finalArticles.length)];
   }
-  if (finalArticles.length < 3) {
+
+  // Dernier recours seulement : le stock de secours
+  if (finalArticles.length === 0) {
+    console.log('⚠️  Aucune vraie news disponible : stock de secours utilisé.');
     finalArticles = generateNews().articles;
   }
 
-  publish(finalArticles);
+  await publish(finalArticles);
 }
 
 if (require.main === module) main().catch(error => {
@@ -533,4 +652,4 @@ if (require.main === module) main().catch(error => {
   process.exitCode = 1;
 });
 
-module.exports = { isFpsArticle, isLikelyFrench, keywordMatches, categorizeArticle, transformArticle, imageForText, fixImages };
+module.exports = { isFpsArticle, isLikelyFrench, keywordMatches, categorizeArticle, transformArticle, imageForText, fixImages, dedupeImages, diversify, extractOgImage, decodeHTMLEntities };
