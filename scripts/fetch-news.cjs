@@ -1,4 +1,16 @@
-const fs = require('fs');
+function extractRssImage(item) {
+  const patterns = [
+    /<media:content[^>]+url=["']([^"']+)["']/i,
+    /<media:thumbnail[^>]+url=["']([^"']+)["']/i,
+    /<enclosure[^>]+url=["']([^"']+)["']/i,
+    /<img[^>]+src=["']([^"']+)["']/i,
+  ];
+  for (const pattern of patterns) {
+    const match = item.match(pattern);
+    if (match && isRealImage(match[1]) && !/\.(mp4|webm|mp3)(\?|$)/i.test(match[1])) return match[1];
+  }
+  return null;
+}const fs = require('fs');
 const path = require('path');
 const { generateNews } = require('./generate-news.cjs');
 
