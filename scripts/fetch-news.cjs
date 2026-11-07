@@ -5,45 +5,45 @@ const { generateNews } = require('./generate-news.cjs');
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
 const TOPIC_IMAGES = {
-  FPS: [
-    'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1591370874773-6702e8f12fd8?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1598550476439-6847785fcea6?w=800&h=450&fit=crop',
+  FPS:        [
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/730/header.jpg',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/1938090/header.jpg',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/1240440/header.jpg',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/1517290/header.jpg',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/359550/header.jpg',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/1172470/header.jpg',
   ],
   COMPETITION: [
-    'https://images.unsplash.com/photo-1560253023-3ec5d502959f?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1633545495735-25df17fb9f31?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1542751110-97427bbecf20?w=800&h=450&fit=crop',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/730/header.jpg',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/1240440/header.jpg',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/1172470/header.jpg',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/359550/header.jpg',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/1938090/header.jpg',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/1517290/header.jpg',
   ],
   MATERIEL: [
-    'https://images.unsplash.com/photo-1527814050087-3793815479db?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1541140532154-b024d705b90a?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1599669454699-248893623440?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1593640495253-23196b27a87f?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1591488320449-011701bb6704?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=450&fit=crop',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/594650/header.jpg',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/359550/header.jpg',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/1966720/header.jpg',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/1238840/header.jpg',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/218620/header.jpg',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/1085660/header.jpg',
   ],
   JOUEURS: [
-    'https://images.unsplash.com/photo-1603481588273-2f908a9a7a1b?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1586182987320-4f376d39d787?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1542751371-adc38448a05e?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1616588589676-62b3bd4ff6d2?w=800&h=450&fit=crop',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/730/header.jpg',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/1240440/header.jpg',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/1172470/header.jpg',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/1938090/header.jpg',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/359550/header.jpg',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/1517290/header.jpg',
   ],
   JEUX: [
-    'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1600861194942-f883de0dfe96?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1591370874773-6702e8f12fd8?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1560253023-3ec5d502959f?w=800&h=450&fit=crop',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/2519060/header.jpg',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/1172470/header.jpg',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/2357570/header.jpg',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/1966720/header.jpg',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/594650/header.jpg',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/1938090/header.jpg',
   ],
 };
 
@@ -145,7 +145,7 @@ DESCRIPTION : ${(article.description || article.body || '').substring(0, 500)}`;
     categories: cats,
     topic: cats[0]?.toUpperCase() || 'JEUX',
     url: article.url || '#',
-    image: null, // sera assignée par le pool TOPIC_IMAGES dans la boucle finale
+    image: (article.image && article.image.startsWith('http')) ? article.image : null,
     dateTimePub: article.publishedAt || article.dateTimePub || new Date().toISOString(),
     source: 'InsiderGamingtriks',
     originalSource: article.source || '',
@@ -194,7 +194,7 @@ function transformArticle(article, topic, index = 0) {
   if (body.length > 1600) body = body.substring(0, 1597) + '...';
 
   const topicImages = TOPIC_IMAGES[topic.toUpperCase()] || TOPIC_IMAGES.JEUX;
-  const image = topicImages[index % topicImages.length];
+  const image = (article.image && article.image.startsWith('http')) ? article.image : (topicImages[index % topicImages.length]);
 
   return {
     title,
