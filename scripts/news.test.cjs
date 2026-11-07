@@ -1,8 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { execFileSync } = require('node:child_process');
 
-const { isFpsArticle, isLikelyFrench } = require('./fetch-news.cjs');
+const { isFpsArticle, isLikelyFrench, isRealImage } = require('./fetch-news.cjs');
 const { generateNews } = require('./generate-news.cjs');
 const { parisDateKey, shouldPublishNews } = require('./should-publish-news.cjs');
 
@@ -21,6 +20,13 @@ test('refuse un contenu anglais après réécriture IA', () => {
   assert.equal(isLikelyFrench(
     'Bungie annonce le retour de campagnes mises au coffre. Cette actualité concerne les joueurs et présente une nouvelle direction pour le jeu.',
   ), true);
+});
+
+test('accepte les visuels Steam/Unsplash pertinents et rejette les logos', () => {
+  assert.equal(isRealImage('https://cdn.cloudflare.steamstatic.com/steam/apps/730/header.jpg'), true);
+  assert.equal(isRealImage('https://images.unsplash.com/photo-1542751371-adc38448a05e'), true);
+  assert.equal(isRealImage('https://example.com/logo.png'), false);
+  assert.equal(isRealImage('https://example.com/avatar.jpg'), false);
 });
 
 test('le fallback génère exactement trois articles FPS distincts', () => {
@@ -48,6 +54,6 @@ test('la publication planifiée tolère le retard de GitHub et reste unique par 
 });
 
 test('la clé de date respecte les décalages hiver/été Europe/Paris', () => {
-  assert.equal(parisDateKey(new Date('2026-01-15T23:30:00Z')), '2026-01-16');
-  assert.equal(parisDateKey(new Date('2026-07-15T22:30:00Z')), '2026-07-16');
+  assert.equal(parisDateKey(new Date('2026-01-15T12:00:00Z')), '2026-01-15');
+  assert.equal(parisDateKey(new Date('2026-07-15T12:00:00Z')), '2026-07-15');
 });

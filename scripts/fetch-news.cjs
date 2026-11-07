@@ -51,7 +51,7 @@ const GAME_RULES = [
   { label: 'BATTLEFIELD 2042', steam: 1517290, words: ['battlefield 2042', 'bf 2042', 'bf2042'] },
   { label: 'BATTLEFIELD',      steam: 2807960, words: ['battlefield', 'bf6', 'bf 6'] },
   { label: 'CALL OF DUTY',     steam: 1938090, words: ['warzone', 'call of duty', 'black ops', 'modern warfare', 'cod', 'bo6', 'bo7', 'mw3', 'mw4'] },
-  { label: 'CS2',              steam: 730,     words: ['cs2', 'counter-strike', 'counter strike', 'csgo', 'cs go', 'cs:go', 'iem', 'faceit', 'esl pro league', 'blast premier', 'zywoo', 's1mple', 'donk', 'niko', 'm0nesy'] },
+  { label: 'CS2',              steam: 730,     words: ['cs2', 'counter-strike', 'counter strike', 'csgo', 'cs go', 'cs:go', 'iem', 'faceit', 'esl pro league', 'blast premier', 'zywoo', 's1mple', 'team liquid', 'fnatic', 'g2', 'vitality', 'navi', 'naVi', 'faZe'] },
   { label: 'VALORANT',         accent: '#ff4655', words: ['valorant', 'vct'] },
   { label: 'APEX LEGENDS',     steam: 1172470, words: ['apex legends', 'apex'] },
   { label: 'RAINBOW SIX',      steam: 359550,  words: ['rainbow six', 'r6 siege', 'r6'] },
@@ -112,13 +112,13 @@ function imageForText(title, summary = '', topic = '') {
 }
 
 // Images à écarter : logos, icônes, avatars, images par défaut...
-const BAD_IMAGE = /logo|favicon|avatar|placeholder|default[-_.]|sprite|gravatar|news\.google|googleusercontent|\.svg(\?|$)/i;
+const BAD_IMAGE = /logo|favicon|avatar|placeholder|default[-_.]|sprite|gravatar|news\.google|googleusercontent|\.svg(\?|$)|\/(logo|icon|icons|avatar|branding)\//i;
 
-// Vraie image d'article = lien http(s) qui n'est ni une de nos images de remplissage, ni un logo
+// Vraie image d'article = lien http(s) qui n'est ni une image de remplissage, ni un logo.
+// On accepte les images Steam/Unsplash pertinentes pour le sujet.
 function isRealImage(url) {
   return typeof url === 'string'
     && /^https?:\/\//i.test(url)
-    && !/steamstatic\.com|images\.unsplash\.com/i.test(url)
     && !BAD_IMAGE.test(url);
 }
 
@@ -671,4 +671,4 @@ if (require.main === module) main().catch(error => {
   process.exitCode = 1;
 });
 
-module.exports = { isFpsArticle, isLikelyFrench, keywordMatches, categorizeArticle, transformArticle, imageForText, fixImages, dedupeImages, diversify, extractOgImage, decodeHTMLEntities };
+module.exports = { isFpsArticle, isLikelyFrench, keywordMatches, categorizeArticle, transformArticle, imageForText, fixImages, dedupeImages, diversify, extractOgImage, decodeHTMLEntities, isRealImage };
