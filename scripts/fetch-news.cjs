@@ -35,7 +35,7 @@ const TOPIC_IMAGES = {
     'https://cdn.cloudflare.steamstatic.com/steam/apps/1172470/header.jpg',
     'https://cdn.cloudflare.steamstatic.com/steam/apps/1938090/header.jpg',
     'https://cdn.cloudflare.steamstatic.com/steam/apps/359550/header.jpg',
-    'https://cdn.cloudflare.steamstatic.com/steam/apps/1517290/header.jpg',
+    'https://cdn.cloudflare.steamstatic.com/steam/apps/2519060/header.jpg',
   ],
   JEUX: [
     'https://cdn.cloudflare.steamstatic.com/steam/apps/2519060/header.jpg',

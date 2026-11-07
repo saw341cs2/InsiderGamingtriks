@@ -106,7 +106,7 @@ const articlesPool = [
       title: "🌟 ZywOo : le meilleur joueur CS2 du monde en 2026 ?",
       body: "Mathieu ZywOo Herbaut continue d'impressionner la scène mondiale. Analyse complète de ses stats et son style de jeu.",
       url: "https://insidertricks.fr/news/zywoo-meilleur-2026",
-      image: IMG.joueur,
+      image: IMG.cs2,
       topic: "JOUEURS"
     },
     {
