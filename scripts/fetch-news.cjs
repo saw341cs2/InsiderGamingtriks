@@ -40,10 +40,10 @@ const TOPIC_IMAGES = {
   JEUX: [
     'https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=800&h=450&fit=crop',
     'https://images.unsplash.com/photo-1612287230202-1ff1d85d1bdf?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1547394765-185e1e68f34e?w=800&h=450&fit=crop',
     'https://images.unsplash.com/photo-1600861194942-f883de0dfe96?w=800&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&h=450&fit=crop',
     'https://images.unsplash.com/photo-1591370874773-6702e8f12fd8?w=800&h=450&fit=crop',
+    'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&h=450&fit=crop',
+    'https://images.unsplash.com/photo-1560253023-3ec5d502959f?w=800&h=450&fit=crop',
   ],
 };
 
@@ -145,7 +145,7 @@ DESCRIPTION : ${(article.description || article.body || '').substring(0, 500)}`;
     categories: cats,
     topic: cats[0]?.toUpperCase() || 'JEUX',
     url: article.url || '#',
-    image: (article.image && article.image.startsWith('http')) ? article.image : (TOPIC_IMAGES[cats[0]?.toUpperCase()] || TOPIC_IMAGES.JEUX),
+    image: null, // sera assignée par le pool TOPIC_IMAGES dans la boucle finale
     dateTimePub: article.publishedAt || article.dateTimePub || new Date().toISOString(),
     source: 'InsiderGamingtriks',
     originalSource: article.source || '',
@@ -194,7 +194,7 @@ function transformArticle(article, topic, index = 0) {
   if (body.length > 1600) body = body.substring(0, 1597) + '...';
 
   const topicImages = TOPIC_IMAGES[topic.toUpperCase()] || TOPIC_IMAGES.JEUX;
-  const image = (article.image && article.image.startsWith('http')) ? article.image : topicImages;
+  const image = topicImages[index % topicImages.length];
 
   return {
     title,
