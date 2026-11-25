@@ -1,17 +1,16 @@
 const fs = require('fs');
 const path = require('path');
-const { generateNews } = require('./generate-news.cjs');
 
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
 const MAX_NEWS = 6;          // nombre de news affichées
-const MIN_NEWS = 3;          // en dessous, on complète avec les news récentes déjà publiées
+const MIN_NEWS = 3;          // minimum d'articles du jour avant le complément depuis les archives
 const MAX_ARCHIVE_DAYS = 10; // ancienneté max des news reprises depuis les archives
 
 // Les images viennent uniquement de l’article source (RSS/API ou balise Open Graph).
 
 // Images à écarter : logos, icônes, avatars, images par défaut...
-const BAD_IMAGE = /logo|favicon|avatar|placeholder|default[-_.]|sprite|gravatar|news\.google|googleusercontent|\.svg(\?|$)/i;
+const BAD_IMAGE = /logo|favicon|avatar|placeholder|default[-_.]|sprite|gravatar|news\.google|googleusercontent|vlr\.gg\/img\/vlr\/card\.png|\.svg(\?|$)/i;
 
 // Vraie image d'article = lien http(s) qui n'est ni une de nos images de remplissage, ni un logo
 function isRealImage(url) {
@@ -80,6 +79,10 @@ async function enrichWithOfficialImages(articles) {
   const out = [];
   for (const article of articles) {
     let current = article;
+    if (isRealImage(article.image)) {
+      out.push(current);
+      continue;
+    }
     if (isExternalUrl(article.url)) {
       const og = await fetchOgImage(article.url);
       if (og && isRealImage(og)) {
@@ -137,14 +140,23 @@ async function callMistral(prompt) {
   const key = process.env.MISTRAL_API_KEY;
   if (!key) return null;
   for (let attempt = 1; attempt <= 2; attempt++) {
-    const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
-      body: JSON.stringify({ model: 'mistral-small-latest', messages: [{ role: 'system', content: AI_SYSTEM_PROMPT }, { role: 'user', content: prompt }], temperature: 0.8, max_tokens: 1200, response_format: { type: 'json_object' } }),
-      signal: AbortSignal.timeout(25000),
-    });
+    let res;
+    try {
+      res = await fetch('https://api.mistral.ai/v1/chat/completions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
+        body: JSON.stringify({ model: 'mistral-small-latest', messages: [{ role: 'system', content: AI_SYSTEM_PROMPT }, { role: 'user', content: prompt }], temperature: 0.8, max_tokens: 1200, response_format: { type: 'json_object' } }),
+        signal: AbortSignal.timeout(25000),
+      });
+    } catch (error) {
+      console.warn(`   ⚠️ Erreur réseau Mistral (${error.name || 'inconnue'})`);
+      return null;
+    }
     if (res.status === 429) { await new Promise(r => setTimeout(r, attempt * 5000)); continue; }
-    if (!res.ok) return null;
+    if (!res.ok) {
+      console.warn(`   ⚠️ Mistral HTTP ${res.status}`);
+      return null;
+    }
     const data = await res.json();
     return data.choices?.[0]?.message?.content;
   }
@@ -163,12 +175,21 @@ async function callGemini(prompt) {
         body: JSON.stringify({ contents: [{ parts: [{ text: AI_SYSTEM_PROMPT + '\n\n' + prompt }] }], generationConfig: { temperature: 0.8, maxOutputTokens: 1200 } }),
         signal: AbortSignal.timeout(25000),
       });
-      if (res.status === 404) continue;
-      if (!res.ok) return null;
+      if (res.status === 404) {
+        console.warn(`   ⚠️ Gemini HTTP 404 (${model}), essai du modèle suivant`);
+        continue;
+      }
+      if (!res.ok) {
+        console.warn(`   ⚠️ Gemini HTTP ${res.status} (${model})`);
+        return null;
+      }
       const data = await res.json();
       const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
       if (text) { console.log(`   Gemini OK (${model})`); return text; }
-    } catch { continue; }
+    } catch (error) {
+      console.warn(`   ⚠️ Erreur réseau Gemini (${model}, ${error.name || 'inconnue'})`);
+      continue;
+    }
   }
   return null;
 }
@@ -264,18 +285,42 @@ function transformArticle(article, topic, index = 0) {
   };
 }
 
-function prepareArticlesWithoutAI(articles, existingArticles = []) {
-  const existingUrls = new Set(existingArticles.map(article => article.url));
-  const frenchArticles = articles.filter(article =>
+function prepareArticlesWithoutAI(
+  articles,
+  existingArticles = [],
+  { requireFrench = true, excludeUrls = [] } = {},
+) {
+  const existingUrls = new Set([
+    ...existingArticles.map(article => article.url || article.link),
+    ...excludeUrls,
+  ].filter(Boolean));
+  const eligibleArticles = articles.filter(article =>
     !existingUrls.has(article.url || article.link) &&
-      isLikelyFrench(`${article.title || ''} ${article.description || article.content || ''}`),
+      isFpsArticle(article.title || '', '') &&
+      (!requireFrench || isLikelyFrench(`${article.title || ''} ${article.description || article.content || ''}`)),
   );
-  return diversify(frenchArticles)
+  return diversify(eligibleArticles)
     .slice(0, Math.max(0, MAX_NEWS - existingArticles.length))
     .map(article => transformArticle(
       article,
       categorizeArticle(article.title || '', article.description || article.content || ''),
     ));
+}
+
+function selectImageBackedArticles(articles, existingArticles = [], limit = MAX_NEWS) {
+  if (limit <= 0) return [];
+  const usedUrls = new Set(existingArticles.map(article => article.url || article.link).filter(Boolean));
+  const usedImages = new Set(existingArticles.map(article => article.image).filter(isRealImage));
+  const selected = [];
+  for (const article of articles) {
+    const url = article.url || article.link;
+    if (!isRealImage(article.image) || (url && usedUrls.has(url)) || usedImages.has(article.image)) continue;
+    selected.push(article);
+    if (url) usedUrls.add(url);
+    usedImages.add(article.image);
+    if (selected.length >= limit) break;
+  }
+  return selected;
 }
 
 async function fetchFromNewsAPI() {
@@ -336,7 +381,8 @@ const FPS_KEYWORDS = [
   'cs2', 'cs:go', 'counter-strike', 'valorant', 'warzone', 'call of duty', 'black ops',
   'battlefield', 'apex legends', 'halo infinite', 'halo', 'overwatch', 'rainbow six siege',
   'r6 siege', 'hunt showdown', 'escape from tarkov', 'delta force', 'xdefiant', 'the finals',
-  'doom', 'quake', 'destiny 2', 'tarkov', 'vct', 'faceit', 'blast premier', 'iem',
+  'doom eternal', 'doom: the dark ages', 'doom 2016', 'quake', 'destiny 2', 'tarkov',
+  'vct', 'faceit', 'blast premier', 'iem',
 ];
 
 const EXCLUDE_KEYWORDS = [
@@ -348,8 +394,8 @@ const EXCLUDE_KEYWORDS = [
 
 function isFpsArticle(title, description) {
   const text = `${title} ${description}`.toLowerCase();
-  if (EXCLUDE_KEYWORDS.some(kw => text.includes(kw))) return false;
-  return FPS_KEYWORDS.some(kw => text.includes(kw));
+  if (EXCLUDE_KEYWORDS.some(kw => keywordMatches(text, kw))) return false;
+  return FPS_KEYWORDS.some(kw => keywordMatches(text, kw));
 }
 
 // Cherche la vraie image d'un item RSS : media:content > media:thumbnail > enclosure > première <img>
@@ -366,6 +412,13 @@ function extractRssImage(item) {
     if (match && isRealImage(match[1]) && !/\.(mp4|webm|mp3)(\?|$)/i.test(match[1])) return match[1];
   }
   return null;
+}
+
+function parsePublishedAt(value, fallbackDate = new Date()) {
+  const parsedDate = value ? new Date(value) : null;
+  return parsedDate && !Number.isNaN(parsedDate.getTime())
+    ? parsedDate.toISOString()
+    : fallbackDate.toISOString();
 }
 
 async function fetchFromRSS() {
@@ -402,7 +455,7 @@ async function fetchFromRSS() {
             description,
             url: linkMatch[1].trim(),
             image: extractRssImage(item),
-            publishedAt: dateMatch ? new Date(dateMatch[1]).toISOString() : new Date().toISOString(),
+            publishedAt: parsePublishedAt(dateMatch ? dateMatch[1] : ''),
             source: new URL(rssUrl).hostname.replace('www.', ''),
           });
         }
@@ -454,22 +507,31 @@ function archiveOldNews(publicPath) {
   console.log(`Archivé ${toArchive.length} news (total: ${archives.articles.length})`);
 }
 
-// Quand il manque de news fraîches : on reprend de VRAIES news récentes déjà publiées
-// (vrai lien, déjà en français) plutôt que d'inventer du contenu.
+// Complète le lot avec de vraies news récentes déjà publiées, jamais avec des sujets inventés.
 function recycleFromArchive(publicPath, current, count) {
   const archivePath = path.join(publicPath, 'news-archives.json');
-  if (count <= 0 || !fs.existsSync(archivePath)) return [];
-  let archives;
-  try { archives = JSON.parse(fs.readFileSync(archivePath, 'utf-8')); } catch { return []; }
+  const newsPath = path.join(publicPath, 'news.json');
+  if (count <= 0) return [];
+
+  const candidates = [];
+  if (fs.existsSync(newsPath)) {
+    const news = JSON.parse(fs.readFileSync(newsPath, 'utf-8'));
+    candidates.push(...(news.articles || []));
+  }
+  if (fs.existsSync(archivePath)) {
+    const archives = JSON.parse(fs.readFileSync(archivePath, 'utf-8'));
+    candidates.push(...(archives.articles || []));
+  }
+
   const usedUrls = new Set(current.map(a => a.url));
   const oldest = Date.now() - MAX_ARCHIVE_DAYS * 86400000;
   const picked = [];
-  for (const article of archives.articles || []) {
+  for (const article of candidates) {
     if (picked.length >= count) break;
     if (!isExternalUrl(article.url) || usedUrls.has(article.url)) continue;
-    const date = new Date(article.dateTimePub || article.publishedOn || 0).getTime();
+    const date = new Date(article.publishedOn || article.dateTimePub || 0).getTime();
     if (!date || date < oldest) continue;
-    if (!isLikelyFrench(`${article.title || ''} ${article.summary || ''}`)) continue;
+    if (!isFpsArticle(article.title || '', '')) continue;
     usedUrls.add(article.url);
     picked.push(article);
   }
@@ -489,7 +551,7 @@ async function publish(articles) {
   const publishedOn = new Date().toISOString();
   finalArticles = finalArticles.map(article => ({
     ...article,
-    publishedOn: article.publishedOn || article.dateTimePub || publishedOn,
+    publishedOn: article.publishedOn || publishedOn,
   }));
 
   // Archiver les anciennes news avant d'écraser
@@ -558,28 +620,64 @@ async function main() {
     }
     console.log(`✅ ${finalArticles.length} articles réécrits en français`);
   } else if (!hasAI) {
-    console.log('ℹ️  Aucune clé IA : publication des articles sources français sans réécriture.');
-    finalArticles = prepareArticlesWithoutAI(gaming);
+    console.log("ℹ️  Aucune clé IA : sélection d'articles sources avec image, sans réécriture.");
   }
 
-  if (hasAI && finalArticles.length < MIN_NEWS) {
-    const sourceArticles = prepareArticlesWithoutAI(gaming, finalArticles);
-    const missingArticles = sourceArticles.slice(0, MIN_NEWS - finalArticles.length);
+  if (finalArticles.length > 0) {
+    const enrichedArticles = await enrichWithOfficialImages(finalArticles);
+    finalArticles = selectImageBackedArticles(enrichedArticles);
+  }
+
+  let attemptedFrenchSources = [];
+  if (finalArticles.length < MIN_NEWS) {
+    attemptedFrenchSources = prepareArticlesWithoutAI(gaming, finalArticles);
+    const sourceArticles = await enrichWithOfficialImages(attemptedFrenchSources);
+    const missingArticles = selectImageBackedArticles(
+      sourceArticles,
+      finalArticles,
+      MIN_NEWS - finalArticles.length,
+    );
     if (missingArticles.length > 0) {
-      console.log(`📰 ${missingArticles.length} article(s) français publié(s) directement depuis les sources.`);
+      console.log(`📰 ${missingArticles.length} article(s) français avec image source publiés directement.`);
       finalArticles = [...finalArticles, ...missingArticles];
     }
   }
 
-  // Pas assez de news fraîches : on reprend de vraies news récentes des archives
   if (finalArticles.length < MIN_NEWS) {
-    finalArticles = [...finalArticles, ...recycleFromArchive(path.join(__dirname, '..', 'public'), finalArticles, MIN_NEWS - finalArticles.length)];
+    const sourceCandidates = prepareArticlesWithoutAI(gaming, finalArticles, {
+      requireFrench: false,
+      excludeUrls: attemptedFrenchSources.map(article => article.url),
+    });
+    const enrichedSources = await enrichWithOfficialImages(sourceCandidates);
+    const missingArticles = selectImageBackedArticles(
+      enrichedSources,
+      finalArticles,
+      MIN_NEWS - finalArticles.length,
+    );
+    if (missingArticles.length > 0) {
+      console.log(`📰 ${missingArticles.length} article(s) source publiés avec leur image d'origine.`);
+      finalArticles = [...finalArticles, ...missingArticles];
+    }
   }
 
-  // Dernier recours seulement : le stock de secours
+  if (finalArticles.length < MAX_NEWS) {
+    const archivedArticles = recycleFromArchive(
+      path.join(__dirname, '..', 'public'),
+      finalArticles,
+      MAX_NEWS - finalArticles.length,
+    );
+    const enrichedArchive = await enrichWithOfficialImages(archivedArticles);
+    const imageBackedArchive = selectImageBackedArticles(
+      enrichedArchive,
+      finalArticles,
+      MAX_NEWS - finalArticles.length,
+    );
+    finalArticles = [...finalArticles, ...imageBackedArchive];
+  }
+
   if (finalArticles.length === 0) {
-    console.log('⚠️  Aucune vraie news disponible : stock de secours utilisé.');
-    finalArticles = generateNews().articles;
+    console.error('⚠️ Aucune actualité avec une image source vérifiable ; publication conservée sans modification.');
+    return;
   }
 
   await publish(finalArticles);
@@ -590,4 +688,4 @@ if (require.main === module) main().catch(error => {
   process.exitCode = 1;
 });
 
-module.exports = { isFpsArticle, isLikelyFrench, keywordMatches, categorizeArticle, transformArticle, prepareArticlesWithoutAI, isRealImage, fixImages, dedupeImages, diversify, extractOgImage, decodeHTMLEntities };
+module.exports = { isFpsArticle, isLikelyFrench, keywordMatches, categorizeArticle, transformArticle, prepareArticlesWithoutAI, selectImageBackedArticles, recycleFromArchive, isRealImage, fixImages, dedupeImages, diversify, extractOgImage, enrichWithOfficialImages, parsePublishedAt, decodeHTMLEntities };
