@@ -2,7 +2,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { execFileSync } = require('node:child_process');
 
-const { isFpsArticle, isLikelyFrench } = require('./fetch-news.cjs');
+const { isFpsArticle, isLikelyFrench, isRealImage, fixImages, dedupeImages } = require('./fetch-news.cjs');
 const { generateNews } = require('./generate-news.cjs');
 const { parisDateKey, shouldPublishNews } = require('./should-publish-news.cjs');
 
@@ -23,19 +23,45 @@ test('refuse un contenu anglais après réécriture IA', () => {
   ), true);
 });
 
-test('le fallback génère exactement trois articles FPS distincts', () => {
+test('le fallback génère six articles sur deux jours sans images inventées', () => {
   const data = generateNews();
-  assert.equal(data.articles.length, 3);
-  assert.ok(data.articles.every(article => ['FPS', 'COMPETITION', 'JOUEURS'].includes(article.topic)));
-  assert.equal(new Set(data.articles.map(article => article.url)).size, 3);
-  assert.ok(data.articles.every(article => article.image.startsWith('http')));
+  assert.equal(data.articles.length, 6);
+  assert.equal(new Set(data.articles.map(article => article.url)).size, 6);
+  assert.ok(data.articles.every(article => article.image === null));
+  assert.ok(data.articles.slice(0, 3).every(article => article.publishedOn === data.generatedAt));
+  assert.notEqual(data.articles[3].publishedOn, data.generatedAt);
 });
 
-test('les trois articles du fallback partagent la date de publication du lot', () => {
+test('accepte les images d’article mais écarte les jaquettes et visuels génériques', () => {
+  assert.equal(isRealImage('https://media.example.com/articles/tournament-final.jpg'), true);
+  assert.equal(isRealImage('https://cdn.cloudflare.steamstatic.com/steam/apps/730/header.jpg'), false);
+  assert.equal(isRealImage('https://images.unsplash.com/photo-123'), false);
+  assert.equal(isRealImage('data:image/svg+xml,<svg></svg>'), false);
+  assert.equal(isRealImage('not-a-url'), false);
+});
+
+test('ne devine pas de remplacement et écarte une image répétée', () => {
+  const image = 'https://media.example.com/articles/shared.jpg';
+  const [withImage, withoutSourceImage] = fixImages([
+    { title: 'Une news', image },
+    { title: 'Sans source', image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/730/header.jpg' },
+  ]);
+  assert.equal(withImage.image, image);
+  assert.equal(withoutSourceImage.image, null);
+
+  const [first, duplicate] = dedupeImages([withImage, withImage]);
+  assert.equal(first.image, image);
+  assert.equal(duplicate.image, null);
+});
+
+test('le fallback date les trois premiers articles au jour de génération', () => {
   const runDate = new Date('2026-09-28T19:02:00.000Z');
   const data = generateNews(runDate);
   assert.equal(data.generatedAt, runDate.toISOString());
-  assert.ok(data.articles.every(article => article.publishedOn === data.generatedAt));
+  assert.ok(data.articles.slice(0, 3).every(article => article.publishedOn === data.generatedAt));
+  const yesterday = new Date(runDate);
+  yesterday.setDate(yesterday.getDate() - 1);
+  assert.ok(data.articles.slice(3).every(article => article.publishedOn === yesterday.toISOString()));
 });
 
 test('la publication planifiée tolère le retard de GitHub et reste unique par date Paris', () => {

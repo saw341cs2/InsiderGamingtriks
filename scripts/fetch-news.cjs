@@ -8,108 +8,7 @@ const MAX_NEWS = 6;          // nombre de news affichées
 const MIN_NEWS = 3;          // en dessous, on complète avec les news récentes déjà publiées
 const MAX_ARCHIVE_DAYS = 10; // ancienneté max des news reprises depuis les archives
 
-// =====================================================================
-// IMAGES : on veut toujours l'image qui correspond à la news.
-//
-// Ordre de décision (voir publish()) :
-//   1. L'image officielle de l'article (balise og:image de sa page) -> LA meilleure.
-//   2. Sinon l'image fournie par le flux RSS / l'API.
-//   3. Sinon, d'après le SUJET du titre : jaquette Steam du jeu, ou carte du sujet.
-//   4. Si deux news ont exactement la même image, la 2e passe à l'étape 3.
-// =====================================================================
-
-const steam = id => `https://cdn.cloudflare.steamstatic.com/steam/apps/${id}/header.jpg`;
-
-// Carte 800x450 générée (aucun lien externe) : dernier recours seulement
-function makeCard(label, accent) {
-  const size = Math.max(44, Math.min(96, Math.floor(640 / (label.length * 0.72))));
-  const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">'
-    + '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0b0f1a"/><stop offset="1" stop-color="#1f2937"/></linearGradient></defs>'
-    + '<rect width="800" height="450" fill="url(#g)"/>'
-    + '<polygon points="540,0 800,0 800,450 380,450" fill="' + accent + '" fill-opacity="0.35"/>'
-    + '<rect x="60" y="292" width="110" height="8" fill="' + accent + '"/>'
-    + '<text x="60" y="262" text-anchor="start" font-family="Arial Black, Arial, sans-serif" font-size="' + size + '" font-weight="900" fill="#ffffff">' + label + '</text>'
-    + '<text x="60" y="345" text-anchor="start" font-family="Arial, sans-serif" font-size="22" letter-spacing="6" fill="#ffffff" fill-opacity="0.65">INSIDERTRICKS</text>'
-    + '</svg>';
-  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-}
-
-// Matériel (le premier de la liste qui correspond gagne : "tapis de souris" avant "souris")
-const HARDWARE_RULES = [
-  { label: 'TAPIS',   accent: '#be185d', words: ['tapis de souris', 'mousepad', 'mouse pad', 'tapis'] },
-  { label: 'SOURIS',  accent: '#0369a1', words: ['souris', 'mouse', 'mice'] },
-  { label: 'CLAVIER', accent: '#15803d', words: ['clavier', 'claviers', 'keyboard', 'keyboards'] },
-  { label: 'CASQUE',  accent: '#6d28d9', words: ['casque', 'casques', 'headset', 'headsets', 'headphones'] },
-  { label: 'ÉCRAN',   accent: '#b45309', words: ['moniteur', 'moniteurs', 'monitor', 'monitors', 'ecran', 'ecrans', '144hz', '240hz', '360hz', '540hz'] },
-  { label: 'GPU',     accent: '#4d7c0f', words: ['gpu', 'rtx', 'radeon', 'geforce', 'carte graphique', 'cartes graphiques', 'graphics card'] },
-  { label: 'CPU',     accent: '#b91c1c', words: ['cpu', 'processeur', 'processeurs', 'ryzen'] },
-  { label: 'AUDIO',   accent: '#0f766e', words: ['dac', 'micro', 'microphone', 'ampli'] },
-];
-
-// Jeux : "steam" = jaquette Steam officielle, "accent" = carte générée (jeu absent de Steam)
-const GAME_RULES = [
-  { label: 'BATTLEFIELD 2042', steam: 1517290, words: ['battlefield 2042', 'bf 2042', 'bf2042'] },
-  { label: 'BATTLEFIELD',      steam: 2807960, words: ['battlefield', 'bf6', 'bf 6'] },
-  { label: 'CALL OF DUTY',     steam: 1938090, words: ['warzone', 'call of duty', 'black ops', 'modern warfare', 'cod', 'bo6', 'bo7', 'mw3', 'mw4'] },
-  { label: 'CS2',              steam: 730,     words: ['cs2', 'counter-strike', 'counter strike', 'csgo', 'cs go', 'cs:go', 'iem', 'faceit', 'esl pro league', 'blast premier', 'zywoo', 's1mple', 'donk', 'niko', 'm0nesy'] },
-  { label: 'VALORANT',         accent: '#ff4655', words: ['valorant', 'vct'] },
-  { label: 'APEX LEGENDS',     steam: 1172470, words: ['apex legends', 'apex'] },
-  { label: 'RAINBOW SIX',      steam: 359550,  words: ['rainbow six', 'r6 siege', 'r6'] },
-  { label: 'OVERWATCH 2',      steam: 2357570, words: ['overwatch'] },
-  { label: 'HALO',             steam: 1240440, words: ['halo', 'halo infinite'] },
-  { label: 'HUNT SHOWDOWN',    steam: 594650,  words: ['hunt showdown', 'hunt: showdown'] },
-  { label: 'DESTINY 2',        steam: 1085660, words: ['destiny 2', 'destiny'] },
-  { label: 'TARKOV',           accent: '#b45309', words: ['tarkov'] },
-  { label: 'THE FINALS',       accent: '#e11d48', words: ['the finals'] },
-  { label: 'DELTA FORCE',      accent: '#4d7c0f', words: ['delta force'] },
-];
-
-const ESPORT_RULES = [
-  { label: 'ESPORT', accent: '#c2410c', words: ['esport', 'esports', 'tournoi', 'championnat', 'dota', 'league of legends'] },
-];
-
-// Si aucun sujet précis n'est reconnu : carte selon la catégorie
-const TOPIC_CARDS = {
-  MATERIEL:    ['MATÉRIEL', '#334155'],
-  JOUEURS:     ['JOUEURS', '#7c2d12'],
-  GAMERS:      ['JOUEURS', '#7c2d12'],
-  COMPETITION: ['ESPORT', '#c2410c'],
-  ESPORT:      ['ESPORT', '#c2410c'],
-  DEFAULT:     ['FPS', '#1d4ed8'],
-};
-
-function normalizeText(text) {
-  return String(text || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-}
-
-// Mot entier uniquement ("cod" ne doit pas matcher "codes")
-function hasWord(text, word) {
-  const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return new RegExp('(^|[^a-z0-9])' + escaped + '([^a-z0-9]|$)').test(text);
-}
-
-function matchRule(text, rules) {
-  return rules.find(rule => rule.words.some(word => hasWord(text, word)));
-}
-
-function ruleToImage(rule) {
-  return rule.steam ? steam(rule.steam) : makeCard(rule.label, rule.accent);
-}
-
-// De quoi parle l'article ? (le titre d'abord : matériel > jeu > esport ; puis le résumé : jeu > matériel > esport)
-function detectRule(title, summary = '') {
-  const inTitle = normalizeText(title);
-  const inAll = normalizeText(`${title} ${summary}`);
-  return matchRule(inTitle, HARDWARE_RULES) || matchRule(inTitle, GAME_RULES) || matchRule(inTitle, ESPORT_RULES) ||
-    matchRule(inAll, GAME_RULES) || matchRule(inAll, HARDWARE_RULES) || matchRule(inAll, ESPORT_RULES);
-}
-
-function imageForText(title, summary = '', topic = '') {
-  const rule = detectRule(title, summary);
-  if (rule) return ruleToImage(rule);
-  const [label, accent] = TOPIC_CARDS[String(topic).toUpperCase()] || TOPIC_CARDS.DEFAULT;
-  return makeCard(label, accent);
-}
+// Les images viennent uniquement de l’article source (RSS/API ou balise Open Graph).
 
 // Images à écarter : logos, icônes, avatars, images par défaut...
 const BAD_IMAGE = /logo|favicon|avatar|placeholder|default[-_.]|sprite|gravatar|news\.google|googleusercontent|\.svg(\?|$)/i;
@@ -125,20 +24,19 @@ function isRealImage(url) {
 function fixImages(articles) {
   return articles.map(article => {
     if (isRealImage(article.image)) return article;
-    const summary = article.summary || article.body || '';
-    // imageCredit retiré : l'ancien crédit photo ne correspond plus à la nouvelle image
-    return { ...article, image: imageForText(article.title || '', summary, article.topic), imageCredit: null };
+    return { ...article, image: null, imageCredit: null };
   });
 }
 
-// Deux news avec exactement la même image : la 2e prend l'image de son propre sujet
+// Une image dupliquée ne prouve pas qu'elle illustre plusieurs articles.
 function dedupeImages(articles) {
   const seen = new Set();
   return articles.map(article => {
-    if (!seen.has(article.image)) { seen.add(article.image); return article; }
-    const alt = imageForText(article.title || '', article.summary || article.body || '', article.topic);
-    if (alt !== article.image && !seen.has(alt)) { seen.add(alt); return { ...article, image: alt, imageCredit: null }; }
-    return article;
+    if (!isRealImage(article.image) || !seen.has(article.image)) {
+      if (isRealImage(article.image)) seen.add(article.image);
+      return article;
+    }
+    return { ...article, image: null, imageCredit: null };
   });
 }
 
@@ -297,11 +195,7 @@ DESCRIPTION : ${(article.description || article.body || '').substring(0, 500)}`;
     categories: cats,
     topic,
     url: article.url || '#',
-    // Image du flux si elle existe ; sinon image du sujet (on regarde aussi le titre d'origine, qui nomme le jeu).
-    // publish() cherchera ensuite l'image officielle de l'article.
-    image: isRealImage(article.image)
-      ? article.image
-      : imageForText(article.title || '', `${article.description || ''} ${parsed.title} ${parsed.summary}`, topic),
+    image: isRealImage(article.image) ? article.image : null,
     dateTimePub: article.publishedAt || article.dateTimePub || new Date().toISOString(),
     source: 'InsiderGamingtriks',
     originalSource: article.source || '',
@@ -356,7 +250,7 @@ function transformArticle(article, topic, index = 0) {
   if (!body) body = title;
   if (body.length > 1600) body = body.substring(0, 1597) + '...';
 
-  const image = isRealImage(article.image) ? article.image : imageForText(title, body, topic);
+  const image = isRealImage(article.image) ? article.image : null;
 
   return {
     title,
@@ -671,4 +565,4 @@ if (require.main === module) main().catch(error => {
   process.exitCode = 1;
 });
 
-module.exports = { isFpsArticle, isLikelyFrench, keywordMatches, categorizeArticle, transformArticle, imageForText, fixImages, dedupeImages, diversify, extractOgImage, decodeHTMLEntities };
+module.exports = { isFpsArticle, isLikelyFrench, keywordMatches, categorizeArticle, transformArticle, isRealImage, fixImages, dedupeImages, diversify, extractOgImage, decodeHTMLEntities };

@@ -3,34 +3,6 @@
 const fs = require('fs');
 const path = require('path');
 
-// Images Steam CDN officielles — stables, pertinentes, toujours disponibles
-const IMG = {
-  cs2:        'https://cdn.cloudflare.steamstatic.com/steam/apps/730/header.jpg',
-  warzone:    'https://cdn.cloudflare.steamstatic.com/steam/apps/1938090/header.jpg',
-  apex:       'https://cdn.cloudflare.steamstatic.com/steam/apps/1172470/header.jpg',
-  r6:         'https://cdn.cloudflare.steamstatic.com/steam/apps/359550/header.jpg',
-  battlefield:'https://cdn.cloudflare.steamstatic.com/steam/apps/1517290/header.jpg',
-  tarkov:     'https://cdn.cloudflare.steamstatic.com/steam/apps/552990/header.jpg',
-  hunt:       'https://cdn.cloudflare.steamstatic.com/steam/apps/594650/header.jpg',
-  destiny:    'https://cdn.cloudflare.steamstatic.com/steam/apps/1085660/header.jpg',
-  overwatch:  'https://cdn.cloudflare.steamstatic.com/steam/apps/2357570/header.jpg',
-  valorant:   'https://cdn.cloudflare.steamstatic.com/steam/apps/1240440/header.jpg',
-  cod:        'https://cdn.cloudflare.steamstatic.com/steam/apps/2519060/header.jpg',
-  esport:     'https://cdn.cloudflare.steamstatic.com/steam/apps/1172470/header.jpg',
-  joueur:     'https://cdn.cloudflare.steamstatic.com/steam/apps/359550/header.jpg',
-  casque:     'https://cdn.cloudflare.steamstatic.com/steam/apps/594650/header.jpg',
-  souris:     'https://cdn.cloudflare.steamstatic.com/steam/apps/359550/header.jpg',
-  moniteur:   'https://cdn.cloudflare.steamstatic.com/steam/apps/1966720/header.jpg',
-  gpu:        'https://cdn.cloudflare.steamstatic.com/steam/apps/1238840/header.jpg',
-  clavier:    'https://cdn.cloudflare.steamstatic.com/steam/apps/218620/header.jpg',
-  tapis:      'https://cdn.cloudflare.steamstatic.com/steam/apps/1240440/header.jpg',
-  dac:        'https://cdn.cloudflare.steamstatic.com/steam/apps/594650/header.jpg',
-  major:      'https://cdn.cloudflare.steamstatic.com/steam/apps/1240440/header.jpg',
-  iem:        'https://cdn.cloudflare.steamstatic.com/steam/apps/730/header.jpg',
-  ewc:        'https://cdn.cloudflare.steamstatic.com/steam/apps/1172470/header.jpg',
-  gta:        'https://cdn.cloudflare.steamstatic.com/steam/apps/1966720/header.jpg',
-};
-
 const articlesPool = [
   // Jour 1
   [
@@ -38,14 +10,12 @@ const articlesPool = [
       title: "🔫 CS2 : Le nouveau patch change complètement le méta",
       body: "Valve vient de déployer une mise à jour majeure sur CS2. Nouvelles smokes, équilibrage des armes et corrections de bugs.",
       url: "https://insidertricks.fr/news/cs2-patch-meta",
-      image: IMG.cs2,
       topic: "FPS"
     },
     {
       title: "🖱️ Top 5 des souris gaming pour les FPS en 2026",
       body: "Logitech, Razer, SteelSeries : on a testé les meilleures souris pour dominer en FPS. Notre classement complet.",
       url: "https://insidertricks.fr/news/top-souris-fps-2026",
-      image: IMG.souris,
       topic: "MATERIEL"
     }
   ],
@@ -55,14 +25,12 @@ const articlesPool = [
       title: "🏆 Major CS2 : Les équipes qualifiées pour les playoffs",
       body: "Le Major CS2 bat son plein. NaVi, Vitality, FaZe Clan et G2 Esports sont en lice pour le titre mondial.",
       url: "https://insidertricks.fr/news/major-cs2-playoffs",
-      image: IMG.major,
       topic: "COMPETITION"
     },
     {
       title: "⭐ s1mple revient en compétition : ce qu'on sait",
       body: "Le légendaire joueur ukrainien s1mple serait en discussions avec plusieurs équipes top tier pour un retour.",
       url: "https://insidertricks.fr/news/s1mple-retour",
-      image: IMG.joueur,
       topic: "JOUEURS"
     }
   ],
@@ -72,14 +40,12 @@ const articlesPool = [
       title: "🎮 Call of Duty 2027 : premières infos officielles",
       body: "Activision confirme le prochain opus de Call of Duty. Nouveau moteur graphique, mode Battle Royale entièrement refondu.",
       url: "https://insidertricks.fr/news/cod-2027-infos",
-      image: IMG.cod,
       topic: "JEUX"
     },
     {
       title: "🎯 Warzone : les meilleures armes de la saison actuelle",
       body: "Notre tier list complète des armes Warzone. SMG, AR, sniper : tout sur le méta actuel pour dominer.",
       url: "https://insidertricks.fr/news/warzone-armes-meta",
-      image: IMG.warzone,
       topic: "FPS"
     }
   ],
@@ -89,14 +55,12 @@ const articlesPool = [
       title: "🎧 Test : le casque HyperX Cloud Alpha 2026 vaut-il son prix ?",
       body: "On a testé le nouveau casque HyperX Cloud Alpha pendant 2 semaines. Son de qualité, micro précis, confort optimal.",
       url: "https://insidertricks.fr/news/test-hyperx-cloud-2026",
-      image: IMG.casque,
       topic: "MATERIEL"
     },
     {
       title: "🏅 Valorant Champions 2026 : le programme complet",
       body: "Le tournoi Valorant Champions 2026 se déroulera à Paris. 16 équipes mondiales s'affrontent pour le titre.",
       url: "https://insidertricks.fr/news/valorant-champions-2026",
-      image: IMG.valorant,
       topic: "COMPETITION"
     }
   ],
@@ -106,14 +70,12 @@ const articlesPool = [
       title: "🌟 ZywOo : le meilleur joueur CS2 du monde en 2026 ?",
       body: "Mathieu ZywOo Herbaut continue d'impressionner la scène mondiale. Analyse complète de ses stats et son style de jeu.",
       url: "https://insidertricks.fr/news/zywoo-meilleur-2026",
-      image: IMG.cs2,
       topic: "JOUEURS"
     },
     {
       title: "💥 Battlefield 2025 : nouveau mode de jeu dévoilé",
       body: "EA et DICE annoncent un nouveau mode 128 joueurs pour Battlefield. Destruction améliorée et nouvelles cartes.",
       url: "https://insidertricks.fr/news/battlefield-nouveau-mode",
-      image: IMG.battlefield,
       topic: "FPS"
     }
   ],
@@ -123,14 +85,12 @@ const articlesPool = [
       title: "🖥️ Meilleurs moniteurs gaming 144Hz en 2026 : notre sélection",
       body: "On a comparé les meilleurs écrans gaming 144Hz et 240Hz du marché. IPS, VA ou TN : lequel choisir pour les FPS ?",
       url: "https://insidertricks.fr/news/moniteurs-gaming-2026",
-      image: IMG.moniteur,
       topic: "MATERIEL"
     },
     {
       title: "🎮 Apex Legends : la nouvelle légende change tout",
       body: "Respawn Entertainment dévoile la nouvelle légende de la saison. Ses capacités vont bouleverser le méta compétitif.",
       url: "https://insidertricks.fr/news/apex-nouvelle-legende",
-      image: IMG.apex,
       topic: "JEUX"
     }
   ],
@@ -140,14 +100,12 @@ const articlesPool = [
       title: "🏆 Fnatic remporte l'IEM Cologne 2026 face à NaVi",
       body: "Fnatic s'impose en finale de l'IEM Cologne dans un match épique en 3 maps. Retour au sommet pour la légende britannique.",
       url: "https://insidertricks.fr/news/fnatic-iem-cologne-2026",
-      image: IMG.iem,
       topic: "COMPETITION"
     },
     {
       title: "⌨️ Guide : choisir son clavier mécanique pour le gaming",
       body: "Cherry MX Red, Blue ou Brown ? On t'explique tout sur les switchs mécaniques pour trouver le clavier parfait.",
       url: "https://insidertricks.fr/news/guide-clavier-mecanique",
-      image: IMG.clavier,
       topic: "MATERIEL"
     }
   ],
@@ -157,14 +115,12 @@ const articlesPool = [
       title: "🎯 Valorant : patch 9.0 — tous les changements d'agents",
       body: "Riot Games déploie le patch 9.0 de Valorant. Nerfs, buffs et reworks : voici tout ce qui change pour les agents.",
       url: "https://insidertricks.fr/news/valorant-patch-9",
-      image: IMG.valorant,
       topic: "FPS"
     },
     {
       title: "🌍 Rainbow Six Siege : la nouvelle opération dévoilée",
       body: "Ubisoft présente la nouvelle opération de Rainbow Six Siege avec deux nouveaux opérateurs et une map remasterisée.",
       url: "https://insidertricks.fr/news/r6-nouvelle-operation",
-      image: IMG.r6,
       topic: "FPS"
     }
   ],
@@ -174,14 +130,12 @@ const articlesPool = [
       title: "💻 RTX 5090 vs RX 9900 XTX : le duel des GPU gaming",
       body: "On a comparé les deux monstres du marché GPU. Performances en 4K, ray tracing et rapport qualité/prix analysés.",
       url: "https://insidertricks.fr/news/rtx5090-vs-rx9900",
-      image: IMG.gpu,
       topic: "MATERIEL"
     },
     {
       title: "🎮 Overwatch 2 : la saison 15 apporte des changements majeurs",
       body: "Blizzard annonce des changements profonds pour la saison 15 d'Overwatch 2. Nouveau mode de jeu et héros retravaillé.",
       url: "https://insidertricks.fr/news/overwatch2-saison15",
-      image: IMG.overwatch,
       topic: "JEUX"
     }
   ],
@@ -191,14 +145,12 @@ const articlesPool = [
       title: "🏅 EWC 2026 : l'Esport World Cup bat tous les records",
       body: "L'Esport World Cup 2026 à Riyad affiche un prize pool record de 60 millions de dollars. Les meilleures équipes mondiales présentes.",
       url: "https://insidertricks.fr/news/ewc-2026-record",
-      image: IMG.ewc,
       topic: "COMPETITION"
     },
     {
       title: "🎙️ shroud revient sur Twitch : ses premiers streams analysés",
       body: "Michael shroud Grzesiek est de retour sur Twitch après une longue pause. Ses performances sur CS2 et Valorant impressionnent.",
       url: "https://insidertricks.fr/news/shroud-retour-twitch",
-      image: IMG.joueur,
       topic: "JOUEURS"
     }
   ],
@@ -208,14 +160,12 @@ const articlesPool = [
       title: "🔧 Comment optimiser CS2 pour avoir plus de FPS",
       body: "Guide complet pour booster tes FPS sur CS2. Paramètres graphiques, launch options et config Windows optimale.",
       url: "https://insidertricks.fr/news/optimiser-cs2-fps",
-      image: IMG.cs2,
       topic: "FPS"
     },
     {
       title: "🎮 GTA VI : ce qu'on sait sur le mode multijoueur",
       body: "Rockstar Games lève le voile sur GTA Online VI. Nouvelles mécaniques, map étendue et mode compétitif inédit.",
       url: "https://insidertricks.fr/news/gta6-multijoueur",
-      image: IMG.gta,
       topic: "JEUX"
     }
   ],
@@ -225,14 +175,12 @@ const articlesPool = [
       title: "🎧 Comparatif : les meilleurs DAC/AMP pour gamer en 2026",
       body: "Tu veux le meilleur son possible pour entendre les pas ennemis ? On compare les meilleurs DAC/AMP du marché.",
       url: "https://insidertricks.fr/news/dac-amp-gaming-2026",
-      image: IMG.dac,
       topic: "MATERIEL"
     },
     {
       title: "🏆 NiKo rejoint une nouvelle équipe : les détails",
       body: "Nikola NiKo Kovač quitte G2 Esports et signe dans une nouvelle organisation. Analyse de ce transfert qui secoue la scène.",
       url: "https://insidertricks.fr/news/niko-nouveau-transfert",
-      image: IMG.joueur,
       topic: "JOUEURS"
     }
   ],
@@ -242,14 +190,12 @@ const articlesPool = [
       title: "🎮 Escape from Tarkov : la nouvelle map Arena dévoilée",
       body: "Battlestate Games présente Arena, une nouvelle map compétitive pour Escape from Tarkov. Format 5v5 et ranked intégré.",
       url: "https://insidertricks.fr/news/tarkov-arena-map",
-      image: IMG.tarkov,
       topic: "FPS"
     },
     {
       title: "📊 Classement mondial FPS 2026 : les meilleurs joueurs",
       body: "Notre classement des 10 meilleurs joueurs FPS du monde en 2026. CS2, Valorant, R6 : qui domine la scène mondiale ?",
       url: "https://insidertricks.fr/news/classement-mondial-fps-2026",
-      image: IMG.esport,
       topic: "COMPETITION"
     }
   ],
@@ -259,31 +205,16 @@ const articlesPool = [
       title: "🖱️ Guide tapis de souris gaming : grand format ou petit ?",
       body: "Quel tapis de souris choisir pour le gaming compétitif ? On compare les formats, matières et marques du marché.",
       url: "https://insidertricks.fr/news/guide-tapis-souris-gaming",
-      image: IMG.tapis,
       topic: "MATERIEL"
     },
     {
       title: "🎮 Hunt Showdown 2 : le FPS extraction qui monte",
       body: "Hunt Showdown 2 s'impose comme le FPS extraction incontournable. Analyse du gameplay, des mécaniques et du méta actuel.",
       url: "https://insidertricks.fr/news/hunt-showdown-2-analyse",
-      image: IMG.hunt,
       topic: "FPS"
     }
   ],
 ];
-
-const TOPIC_IMAGES = {
-  FPS:        [IMG.cs2, IMG.warzone, IMG.valorant, IMG.battlefield, IMG.r6, IMG.apex],
-  COMPETITION:[IMG.major, IMG.iem, IMG.ewc, IMG.esport, IMG.valorant, IMG.cs2],
-  MATERIEL:   [IMG.casque, IMG.souris, IMG.moniteur, IMG.gpu, IMG.clavier, IMG.tapis],
-  JOUEURS:    [IMG.joueur, IMG.esport, IMG.cs2, IMG.valorant, IMG.apex, IMG.r6],
-  JEUX:       [IMG.cod, IMG.apex, IMG.overwatch, IMG.gta, IMG.hunt, IMG.warzone],
-};
-
-function getUniqueImage(topic, globalIndex) {
-  const pool = TOPIC_IMAGES[topic] || TOPIC_IMAGES.JEUX;
-  return pool[globalIndex % pool.length];
-}
 
 function generateNews(today = new Date()) {
   const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
@@ -320,6 +251,7 @@ function generateNews(today = new Date()) {
   return {
     articles: selectedArticles.map(article => ({
       ...article,
+      image: null,
       summary: article.body,
       content: buildFallbackContent(article),
       review: buildFallbackReview(article),
