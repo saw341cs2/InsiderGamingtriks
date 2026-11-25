@@ -13,17 +13,20 @@ français, puis ignore le créneau qui ne correspond pas à 05:30 Paris.
   Battlefield, Valorant, Call of Duty, Apex, etc.) et exclut les autres jeux et
   le matériel seul.
 - Les doublons sont retirés par URL et par titre normalisé.
-- Trois articles exactement sont écrits dans `public/news.json`, puis copiés
-  dans `docs/news.json` et `news.json`. Si les sources ou la réécriture IA
-  échouent, le pool FPS déterministe de `generate-news.cjs` complète la sortie.
-- Chaque lot reçoit un `publishedOn` commun, distinct de la date originale de
-  la source. L’accueil regroupe trois articles par date de publication :
+- Jusqu'à six articles sont écrits dans `public/news.json`, puis copiés dans
+  `docs/news.json` et `news.json`. La sélection commence par les articles du
+  jour, puis complète avec de vrais articles récents des archives.
+- Les articles du jour reçoivent un `publishedOn` commun, distinct de leur
+  `dateTimePub` d'origine. Les articles archivés conservent leur date de
+  publication précédente. L'accueil regroupe trois articles par date :
   première page pour aujourd’hui et hier, pages suivantes par paires de dates
   d’archives. Les jours sans lot publié restent vides au lieu d’être remplis
   avec des articles plus anciens présentés comme récents.
-- L’image fournie par la source est conservée lorsqu’elle est exploitable ;
-  sinon une image de secours par thème FPS est utilisée. Les images restent
-  attachées à l’article lors de la réécriture.
+- L’image de l'article source est conservée, ou récupérée depuis ses balises
+  Open Graph. Les logos, vignettes génériques et images répétées sont écartés.
+  Si la réécriture IA échoue, l'article source peut être publié dans sa langue
+  d'origine, mais uniquement avec une image source vérifiable. Aucun titre,
+  article ou visuel de secours inventé n'est publié.
 
 ## Configuration GitHub
 
@@ -37,11 +40,10 @@ nécessaires (aucun secret n’est stocké dans le dépôt) :
 | `NEWSDATA_API_KEY` | Sources NewsDataIO |
 | `MISTRAL_API_KEY` ou `GEMINI_API_KEY` | Réécriture française facultative |
 
-Au moins une source de news et, si souhaité, une clé LLM doivent être valides.
-Sans clé LLM, ou si la réponse IA reste en anglais/incomplète, le générateur
-utilise trois articles du fallback éditorial français plutôt que de publier un
-texte non traduit. `workflow_dispatch` force volontairement la publication pour
-un test manuel.
+Les flux RSS publics sont utilisés sans clé ; les clés des agrégateurs et du
+LLM sont facultatives. Si aucune source ne fournit d'article pertinent avec une
+image exploitable, le fichier publié reste inchangé. `workflow_dispatch` force
+volontairement la publication pour un test manuel.
 
 ## Validation locale
 
@@ -51,5 +53,5 @@ npm test
 npm run build
 ```
 
-`npm test` couvre le filtre FPS, le fallback à trois articles, la déduplication
-indirecte et les changements d’heure Europe/Paris.
+`npm test` couvre le filtre FPS, le fallback sur les articles source avec images,
+la déduplication et les changements d’heure Europe/Paris.

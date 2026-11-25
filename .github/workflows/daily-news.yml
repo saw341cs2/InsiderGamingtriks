@@ -47,7 +47,7 @@ jobs:
           GNEWS_API_KEY: ${{ secrets.GNEWS_API_KEY }}
           NEWSDATA_API_KEY: ${{ secrets.NEWSDATA_API_KEY }}
           NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
-        run: node scripts/fetch-news.cjs || node scripts/generate-news.cjs
+        run: node scripts/fetch-news.cjs
 
       - name: Generate videos
         if: env.SKIP != 'true' && steps.schedule.outputs.publish == 'true'
