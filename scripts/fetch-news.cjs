@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { findOfficialImage } = require('./image-overrides.cjs');
 
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
@@ -7,7 +8,21 @@ const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
 // les 3 news de la veille depuis news-archives.json.
 const MAX_NEWS = 3;
 
-// Les images viennent uniquement de l’article source (RSS/API ou balise Open Graph).
+// Les images viennent d'abord du visuel officiel du jeu (scripts/image-overrides.cjs),
+// sinon de l'article source (RSS/API ou balise Open Graph).
+function applyOfficialImages(articles) {
+  const seen = new Set();
+  return articles.map(article => {
+    const official = findOfficialImage(article.title);
+    if (!official) return article;
+    if (seen.has(official)) {
+      console.log(`   ↩️  Visuel officiel déjà utilisé dans le lot, image d'article conservée : ${String(article.title || '').substring(0, 45)}`);
+      return article;
+    }
+    seen.add(official);
+    return { ...article, image: official, imageCredit: null };
+  });
+}
 
 // Images à écarter : logos, icônes, avatars, images par défaut...
 const BAD_IMAGE = /logo|favicon|avatar|placeholder|default[-_.]|sprite|gravatar|news\.google|googleusercontent|vlr\.gg\/img\/vlr\/card\.png|\.svg(\?|$)/i;
@@ -552,6 +567,7 @@ async function publish(articles) {
   let finalArticles = articles.slice(0, MAX_NEWS);
 
   console.log('🖼️  Recherche et vérification des images officielles...');
+  finalArticles = applyOfficialImages(finalArticles);
   finalArticles = await enrichWithOfficialImages(finalArticles);
   finalArticles = await removeBrokenImages(finalArticles);
   finalArticles = dedupeImages(fixImages(finalArticles));
@@ -664,4 +680,4 @@ if (require.main === module) main().catch(error => {
   process.exitCode = 1;
 });
 
-module.exports = { isFpsArticle, isLikelyFrench, keywordMatches, categorizeArticle, transformArticle, prepareArticlesWithoutAI, selectImageBackedArticles, isRealImage, fixImages, dedupeImages, diversify, extractOgImage, enrichWithOfficialImages, removeBrokenImages, parsePublishedAt, decodeHTMLEntities };
+module.exports = { isFpsArticle, isLikelyFrench, keywordMatches, categorizeArticle, transformArticle, prepareArticlesWithoutAI, selectImageBackedArticles, isRealImage, fixImages, dedupeImages, diversify, extractOgImage, enrichWithOfficialImages, removeBrokenImages, applyOfficialImages, findOfficialImage, parsePublishedAt, decodeHTMLEntities };

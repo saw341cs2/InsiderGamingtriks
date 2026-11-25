@@ -14,6 +14,7 @@ const {
   prepareArticlesWithoutAI,
   selectImageBackedArticles,
   enrichWithOfficialImages,
+  applyOfficialImages,
   parsePublishedAt,
 } = require('./fetch-news.cjs');
 const { generateNews } = require('./generate-news.cjs');
@@ -169,6 +170,32 @@ test('un article français de la veille est repris tel quel côté archives', ()
   };
   assert.equal(isRealImage(article.image), true);
   assert.equal(isLikelyFrench(`${article.title} ${article.summary}`), true);
+});
+
+test('les news des grands jeux utilisent le visuel officiel du jeu', () => {
+  const [gta, cod, autr] = applyOfficialImages([
+    {
+      title: "GTA 6 : la course aux portages PC non officiels raillée par un ex-développeur",
+      image: 'https://media.example.com/articles/gta.jpg',
+    },
+    {
+      title: 'Call of Duty aurait perdu 44 % de ses joueurs',
+      image: 'https://media.example.com/articles/cod.jpg',
+    },
+    { title: 'Une news sur un jeu inconnu', image: 'https://media.example.com/articles/autre.jpg' },
+  ]);
+  assert.ok(gta.image.startsWith('https://www.rockstargames.com/VI/'));
+  assert.ok(cod.image.startsWith('https://www.callofduty.com/'));
+  assert.equal(autr.image, 'https://media.example.com/articles/autre.jpg');
+});
+
+test('deux news du même jeu ne partagent pas le même visuel officiel', () => {
+  const [first, second] = applyOfficialImages([
+    { title: 'GTA 6 enflamme les joueurs', image: 'https://media.example.com/articles/gta1.jpg' },
+    { title: 'Nouvelle bande-annonce de GTA 6', image: 'https://media.example.com/articles/gta2.jpg' },
+  ]);
+  assert.ok(first.image.startsWith('https://www.rockstargames.com/VI/'));
+  assert.equal(second.image, 'https://media.example.com/articles/gta2.jpg');
 });
 
 test('le fallback date les trois premiers articles au jour de génération', () => {
