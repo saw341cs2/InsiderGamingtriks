@@ -264,12 +264,14 @@ function transformArticle(article, topic, index = 0) {
   };
 }
 
-function prepareArticlesWithoutAI(articles) {
+function prepareArticlesWithoutAI(articles, existingArticles = []) {
+  const existingUrls = new Set(existingArticles.map(article => article.url));
   const frenchArticles = articles.filter(article =>
-    isLikelyFrench(`${article.title || ''} ${article.description || article.content || ''}`),
+    !existingUrls.has(article.url || article.link) &&
+      isLikelyFrench(`${article.title || ''} ${article.description || article.content || ''}`),
   );
   return diversify(frenchArticles)
-    .slice(0, MAX_NEWS)
+    .slice(0, Math.max(0, MAX_NEWS - existingArticles.length))
     .map(article => transformArticle(
       article,
       categorizeArticle(article.title || '', article.description || article.content || ''),
@@ -558,6 +560,15 @@ async function main() {
   } else if (!hasAI) {
     console.log('ℹ️  Aucune clé IA : publication des articles sources français sans réécriture.');
     finalArticles = prepareArticlesWithoutAI(gaming);
+  }
+
+  if (hasAI && finalArticles.length < MIN_NEWS) {
+    const sourceArticles = prepareArticlesWithoutAI(gaming, finalArticles);
+    const missingArticles = sourceArticles.slice(0, MIN_NEWS - finalArticles.length);
+    if (missingArticles.length > 0) {
+      console.log(`📰 ${missingArticles.length} article(s) français publié(s) directement depuis les sources.`);
+      finalArticles = [...finalArticles, ...missingArticles];
+    }
   }
 
   // Pas assez de news fraîches : on reprend de vraies news récentes des archives
