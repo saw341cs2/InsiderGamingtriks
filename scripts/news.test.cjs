@@ -15,7 +15,6 @@ const {
   selectImageBackedArticles,
   enrichWithOfficialImages,
   parsePublishedAt,
-  recycleFromArchive,
 } = require('./fetch-news.cjs');
 const { generateNews } = require('./generate-news.cjs');
 const { parisDateKey, shouldPublishNews } = require('./should-publish-news.cjs');
@@ -105,22 +104,16 @@ test('sans clé IA, publie les articles français avec leur image de source', ()
   ], articles), []);
 });
 
-test('fallback garde un article source même si sa traduction IA est indisponible', () => {
-  const image = 'https://media.example.com/articles/cs2-update.jpg';
-  const [article] = prepareArticlesWithoutAI([
+test('ne publie jamais un article source en anglais, même sans IA', () => {
+  assert.deepEqual(prepareArticlesWithoutAI([
     {
       title: 'Counter-Strike update shakes up the competitive scene',
       description: 'Valve reveals a major change for players before the next tournament.',
       url: 'https://news.example.com/cs2-update',
-      image,
+      image: 'https://media.example.com/articles/cs2-update.jpg',
       source: 'News source',
     },
-  ], [], { requireFrench: false });
-
-  assert.equal(article.title, 'Counter-Strike update shakes up the competitive scene');
-  assert.equal(article.url, 'https://news.example.com/cs2-update');
-  assert.equal(article.image, image);
-  assert.equal(article.originalSource, 'News source');
+  ]), []);
 });
 
 test('fallback rejette les articles non FPS dont seule la description mentionne un FPS', () => {
@@ -132,7 +125,7 @@ test('fallback rejette les articles non FPS dont seule la description mentionne 
       image: 'https://media.example.com/articles/avengers.jpg',
       source: 'News source',
     },
-  ], [], { requireFrench: false }), []);
+  ]), []);
 });
 
 test('le fallback ne sélectionne que des images source valides et distinctes', () => {
@@ -164,25 +157,18 @@ test('une date RSS invalide ne rejette pas tout le flux', () => {
   assert.equal(parsePublishedAt('2026-11-24T12:00:00.000Z', fallbackDate), '2026-11-24T12:00:00.000Z');
 });
 
-test("les articles source de la veille peuvent être repris même s'ils sont en anglais", () => {
-  const archivePath = fs.mkdtempSync(path.join(os.tmpdir(), 'news-archive-'));
-  try {
-    const article = {
-      title: 'Valorant announces a new competitive roster',
-      summary: 'A new team lineup is announced ahead of the next tournament.',
-      url: 'https://news.example.com/valorant-roster',
-      image: 'https://media.example.com/articles/valorant-roster.jpg',
-      dateTimePub: new Date().toISOString(),
-    };
-    fs.writeFileSync(
-      path.join(archivePath, 'news.json'),
-      JSON.stringify({ articles: [article] }),
-    );
-
-    assert.deepEqual(recycleFromArchive(archivePath, [], 1), [article]);
-  } finally {
-    fs.rmSync(archivePath, { recursive: true, force: true });
-  }
+test('un article français de la veille est repris tel quel côté archives', () => {
+  // Les news de la veille affichées par le site viennent des archives :
+  // elles sont prises telles quelles, en français, avec leur image d'origine.
+  const article = {
+    title: 'Valorant annonce une nouvelle équipe compétitive',
+    summary: 'Une nouvelle composition est annoncée avant le prochain tournoi.',
+    url: 'https://news.example.com/valorant-roster',
+    image: 'https://media.example.com/articles/valorant-roster.jpg',
+    dateTimePub: new Date().toISOString(),
+  };
+  assert.equal(isRealImage(article.image), true);
+  assert.equal(isLikelyFrench(`${article.title} ${article.summary}`), true);
 });
 
 test('le fallback date les trois premiers articles au jour de génération', () => {
@@ -195,13 +181,26 @@ test('le fallback date les trois premiers articles au jour de génération', () 
   assert.ok(data.articles.slice(3).every(article => article.publishedOn === yesterday.toISOString()));
 });
 
-test('la publication planifiée tolère le retard de GitHub et reste unique par date Paris', () => {
+test('la publication planifiée n’intervient qu’à partir de 05:30 Europe/Paris', () => {
   const delayedMorningRun = new Date('2026-09-28T08:03:00Z');
   assert.equal(parisDateKey(delayedMorningRun), '2026-09-28');
   assert.equal(shouldPublishNews({ date: delayedMorningRun, generatedAt: '2026-09-22T14:32:00Z' }), true);
   assert.equal(shouldPublishNews({ date: delayedMorningRun, generatedAt: '2026-09-28T03:30:00Z' }), false);
   assert.equal(shouldPublishNews({ date: new Date('2026-09-29T00:30:00Z'), generatedAt: '2026-09-28T22:00:00Z' }), false);
   assert.equal(shouldPublishNews({ date: delayedMorningRun, generatedAt: '2026-09-28T03:30:00Z', allowManual: true }), true);
+});
+
+test('le créneau 05:30 Europe/Paris fonctionne hiver comme été', () => {
+  // Hiver : le premier créneau UTC (03:30) tombe à 04:30 à Paris, donc refusé.
+  assert.equal(shouldPublishNews({ date: new Date('2026-01-15T03:30:00Z'), generatedAt: '2026-01-10T08:00:00Z' }), false);
+  // Hiver : 04:30 UTC = 05:30 à Paris, autorisé.
+  assert.equal(shouldPublishNews({ date: new Date('2026-01-15T04:30:00Z'), generatedAt: '2026-01-10T08:00:00Z' }), true);
+  // Été : 03:30 UTC = 05:30 à Paris, autorisé.
+  assert.equal(shouldPublishNews({ date: new Date('2026-07-15T03:30:00Z'), generatedAt: '2026-07-10T08:00:00Z' }), true);
+  // Été : 05:29 à Paris (03:29 UTC), refusé.
+  assert.equal(shouldPublishNews({ date: new Date('2026-07-15T03:29:00Z'), generatedAt: '2026-07-10T08:00:00Z' }), false);
+  // Manuel (workflow_dispatch) : toujours autorisé.
+  assert.equal(shouldPublishNews({ date: new Date('2026-01-15T03:30:00Z'), generatedAt: '2026-01-10T08:00:00Z', allowManual: true }), true);
 });
 
 test('la clé de date respecte les décalages hiver/été Europe/Paris', () => {

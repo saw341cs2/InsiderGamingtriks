@@ -3,9 +3,9 @@ const path = require('path');
 
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
-const MAX_NEWS = 6;          // nombre de news affichées
-const MIN_NEWS = 3;          // minimum d'articles du jour avant le complément depuis les archives
-const MAX_ARCHIVE_DAYS = 10; // ancienneté max des news reprises depuis les archives
+// 3 news du jour. La section "veille" du site affiche automatiquement
+// les 3 news de la veille depuis news-archives.json.
+const MAX_NEWS = 3;
 
 // Les images viennent uniquement de l’article source (RSS/API ou balise Open Graph).
 
@@ -285,10 +285,11 @@ function transformArticle(article, topic, index = 0) {
   };
 }
 
+// Sans IA, on ne publie que des articles déjà en français, jamais d'anglais.
 function prepareArticlesWithoutAI(
   articles,
   existingArticles = [],
-  { requireFrench = true, excludeUrls = [] } = {},
+  { excludeUrls = [] } = {},
 ) {
   const existingUrls = new Set([
     ...existingArticles.map(article => article.url || article.link),
@@ -297,7 +298,7 @@ function prepareArticlesWithoutAI(
   const eligibleArticles = articles.filter(article =>
     !existingUrls.has(article.url || article.link) &&
       isFpsArticle(article.title || '', '') &&
-      (!requireFrench || isLikelyFrench(`${article.title || ''} ${article.description || article.content || ''}`)),
+      isLikelyFrench(`${article.title || ''} ${article.description || article.content || ''}`),
   );
   return diversify(eligibleArticles)
     .slice(0, Math.max(0, MAX_NEWS - existingArticles.length))
@@ -507,44 +508,52 @@ function archiveOldNews(publicPath) {
   console.log(`Archivé ${toArchive.length} news (total: ${archives.articles.length})`);
 }
 
-// Complète le lot avec de vraies news récentes déjà publiées, jamais avec des sujets inventés.
-function recycleFromArchive(publicPath, current, count) {
-  const archivePath = path.join(publicPath, 'news-archives.json');
-  const newsPath = path.join(publicPath, 'news.json');
-  if (count <= 0) return [];
+// Vérifie qu'une image d'article charge réellement (HTTP 200 + type image).
+// Une image cassée ou une page HTML renvoyée à la place d'une image est écartée.
+async function isImageReachable(url) {
+  try {
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: { 'User-Agent': USER_AGENT, 'Range': 'bytes=0-255' },
+      redirect: 'follow',
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) return false;
+    const contentType = String(res.headers.get('content-type') || '');
+    if (contentType && !contentType.startsWith('image/')) return false;
+    return true;
+  } catch { return false; }
+}
 
-  const candidates = [];
-  if (fs.existsSync(newsPath)) {
-    const news = JSON.parse(fs.readFileSync(newsPath, 'utf-8'));
-    candidates.push(...(news.articles || []));
+// Écarte les images cassées : image source d'abord, puis balise og:image de l'article.
+async function removeBrokenImages(articles) {
+  const out = [];
+  for (const article of articles) {
+    if (!isRealImage(article.image)) { out.push(article); continue; }
+    if (await isImageReachable(article.image)) { out.push(article); continue; }
+    let replacement = null;
+    if (isExternalUrl(article.url)) {
+      replacement = await fetchOgImage(article.url);
+      if (replacement && !(await isImageReachable(replacement))) replacement = null;
+    }
+    if (replacement) {
+      out.push({ ...article, image: replacement, imageCredit: null });
+      console.log(`   🖼️  Image cassée remplacée par l'image officielle : ${String(article.title || '').substring(0, 45)}`);
+    } else {
+      out.push({ ...article, image: null, imageCredit: null });
+      console.log(`   ⚠️ Image cassée écartée : ${String(article.title || '').substring(0, 45)}`);
+    }
   }
-  if (fs.existsSync(archivePath)) {
-    const archives = JSON.parse(fs.readFileSync(archivePath, 'utf-8'));
-    candidates.push(...(archives.articles || []));
-  }
-
-  const usedUrls = new Set(current.map(a => a.url));
-  const oldest = Date.now() - MAX_ARCHIVE_DAYS * 86400000;
-  const picked = [];
-  for (const article of candidates) {
-    if (picked.length >= count) break;
-    if (!isExternalUrl(article.url) || usedUrls.has(article.url)) continue;
-    const date = new Date(article.publishedOn || article.dateTimePub || 0).getTime();
-    if (!date || date < oldest) continue;
-    if (!isFpsArticle(article.title || '', '')) continue;
-    usedUrls.add(article.url);
-    picked.push(article);
-  }
-  if (picked.length > 0) console.log(`♻️  ${picked.length} vraie(s) news récente(s) reprise(s) depuis les archives`);
-  return picked;
+  return out;
 }
 
 // Étape finale commune : images, archivage, écriture
 async function publish(articles) {
   let finalArticles = articles.slice(0, MAX_NEWS);
 
-  console.log('🖼️  Recherche des images officielles...');
+  console.log('🖼️  Recherche et vérification des images officielles...');
   finalArticles = await enrichWithOfficialImages(finalArticles);
+  finalArticles = await removeBrokenImages(finalArticles);
   finalArticles = dedupeImages(fixImages(finalArticles));
 
   const publicPath = path.join(__dirname, '..', 'public');
@@ -602,40 +611,39 @@ async function main() {
   console.log(`Articles FPS: ${gaming.length}`);
   gaming.sort((a, b) => new Date(b.publishedAt || b.dateTimePub || 0) - new Date(a.publishedAt || a.dateTimePub || 0));
 
-  // Réécriture IA directe (Mistral puis Gemini en fallback), en variant les sujets
+  // Réécriture IA directe (Mistral puis Gemini en fallback), en variant les sujets.
+  // Aucun article n'est publié en anglais : si la traduction échoue, on passe au suivant.
   const hasAI = process.env.MISTRAL_API_KEY || process.env.GEMINI_API_KEY;
   let finalArticles = [];
 
-  if (gaming.length > 0 && hasAI) {
-    console.log('🔄 Réécriture IA en cours...');
-    const candidates = diversify(gaming).slice(0, MAX_NEWS + 2); // petite marge si l'IA échoue sur un article
-    for (let i = 0; i < candidates.length; i++) {
-      const result = await rewriteArticleWithAI(candidates[i]);
+  if (hasAI) {
+    console.log('🔄 Réécriture IA en cours (français uniquement)...');
+    const candidates = diversify(gaming).slice(0, MAX_NEWS + 6); // marge en cas d'échecs IA
+    for (const candidate of candidates) {
+      if (finalArticles.length >= MAX_NEWS) break;
+      const result = await rewriteArticleWithAI(candidate);
       if (result) {
         finalArticles.push(result);
         console.log(`   ✅ [${finalArticles.length}] ${result.title.substring(0, 60)}`);
-        if (finalArticles.length >= MAX_NEWS) break;
+      } else {
+        console.log(`   ⛔ Article écarté (pas de traduction française fiable) : ${String(candidate.title || '').substring(0, 50)}`);
       }
       await new Promise(r => setTimeout(r, 800));
     }
     console.log(`✅ ${finalArticles.length} articles réécrits en français`);
-  } else if (!hasAI) {
-    console.log("ℹ️  Aucune clé IA : sélection d'articles sources avec image, sans réécriture.");
+  } else {
+    console.log("ℹ️  Aucune clé IA : sélection d'articles sources français avec image, sans réécriture.");
+    finalArticles = prepareArticlesWithoutAI(gaming);
   }
 
-  if (finalArticles.length > 0) {
-    const enrichedArticles = await enrichWithOfficialImages(finalArticles);
-    finalArticles = selectImageBackedArticles(enrichedArticles);
-  }
-
-  let attemptedFrenchSources = [];
-  if (finalArticles.length < MIN_NEWS) {
-    attemptedFrenchSources = prepareArticlesWithoutAI(gaming, finalArticles);
-    const sourceArticles = await enrichWithOfficialImages(attemptedFrenchSources);
+  if (finalArticles.length < MAX_NEWS) {
+    // Complète uniquement avec des articles déjà en français (jamais d'anglais).
+    const frenchSources = prepareArticlesWithoutAI(gaming, finalArticles);
+    const enrichedSources = await enrichWithOfficialImages(frenchSources);
     const missingArticles = selectImageBackedArticles(
-      sourceArticles,
+      enrichedSources,
       finalArticles,
-      MIN_NEWS - finalArticles.length,
+      MAX_NEWS - finalArticles.length,
     );
     if (missingArticles.length > 0) {
       console.log(`📰 ${missingArticles.length} article(s) français avec image source publiés directement.`);
@@ -643,40 +651,8 @@ async function main() {
     }
   }
 
-  if (finalArticles.length < MIN_NEWS) {
-    const sourceCandidates = prepareArticlesWithoutAI(gaming, finalArticles, {
-      requireFrench: false,
-      excludeUrls: attemptedFrenchSources.map(article => article.url),
-    });
-    const enrichedSources = await enrichWithOfficialImages(sourceCandidates);
-    const missingArticles = selectImageBackedArticles(
-      enrichedSources,
-      finalArticles,
-      MIN_NEWS - finalArticles.length,
-    );
-    if (missingArticles.length > 0) {
-      console.log(`📰 ${missingArticles.length} article(s) source publiés avec leur image d'origine.`);
-      finalArticles = [...finalArticles, ...missingArticles];
-    }
-  }
-
-  if (finalArticles.length < MAX_NEWS) {
-    const archivedArticles = recycleFromArchive(
-      path.join(__dirname, '..', 'public'),
-      finalArticles,
-      MAX_NEWS - finalArticles.length,
-    );
-    const enrichedArchive = await enrichWithOfficialImages(archivedArticles);
-    const imageBackedArchive = selectImageBackedArticles(
-      enrichedArchive,
-      finalArticles,
-      MAX_NEWS - finalArticles.length,
-    );
-    finalArticles = [...finalArticles, ...imageBackedArchive];
-  }
-
   if (finalArticles.length === 0) {
-    console.error('⚠️ Aucune actualité avec une image source vérifiable ; publication conservée sans modification.');
+    console.error('⚠️ Aucune actualité 100% française avec image vérifiable ; news.json du jour conservée sans modification.');
     return;
   }
 
@@ -688,4 +664,4 @@ if (require.main === module) main().catch(error => {
   process.exitCode = 1;
 });
 
-module.exports = { isFpsArticle, isLikelyFrench, keywordMatches, categorizeArticle, transformArticle, prepareArticlesWithoutAI, selectImageBackedArticles, recycleFromArchive, isRealImage, fixImages, dedupeImages, diversify, extractOgImage, enrichWithOfficialImages, parsePublishedAt, decodeHTMLEntities };
+module.exports = { isFpsArticle, isLikelyFrench, keywordMatches, categorizeArticle, transformArticle, prepareArticlesWithoutAI, selectImageBackedArticles, isRealImage, fixImages, dedupeImages, diversify, extractOgImage, enrichWithOfficialImages, removeBrokenImages, parsePublishedAt, decodeHTMLEntities };

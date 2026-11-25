@@ -5,6 +5,11 @@ const path = require('path');
 
 const PARIS_TIME_ZONE = 'Europe/Paris';
 
+// Publication prévue à 05:30 heure de Paris. GitHub déclenche en UTC : on
+// n'autorise la publication qu'à partir de 05:30 heure locale, ce qui donne
+// exactement le créneau voulu hiver comme été.
+const PUBLISH_MINUTE = 5 * 60 + 30;
+
 function parisDateKey(date = new Date()) {
   const parts = new Intl.DateTimeFormat('en-CA', {
     timeZone: PARIS_TIME_ZONE,
@@ -16,8 +21,20 @@ function parisDateKey(date = new Date()) {
   return `${values.year}-${values.month}-${values.day}`;
 }
 
+function parisMinuteOfDay(date = new Date()) {
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: PARIS_TIME_ZONE,
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).formatToParts(date);
+  const values = Object.fromEntries(parts.filter(part => part.type !== 'literal').map(part => [part.type, part.value]));
+  return Number(values.hour) * 60 + Number(values.minute);
+}
+
 function shouldPublishNews({ date = new Date(), generatedAt = null, allowManual = false } = {}) {
   if (allowManual) return true;
+  if (parisMinuteOfDay(date) < PUBLISH_MINUTE) return false;
   if (!generatedAt) return true;
 
   const lastPublication = new Date(generatedAt);
