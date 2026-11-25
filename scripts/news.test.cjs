@@ -2,7 +2,14 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { execFileSync } = require('node:child_process');
 
-const { isFpsArticle, isLikelyFrench, isRealImage, fixImages, dedupeImages } = require('./fetch-news.cjs');
+const {
+  isFpsArticle,
+  isLikelyFrench,
+  isRealImage,
+  fixImages,
+  dedupeImages,
+  prepareArticlesWithoutAI,
+} = require('./fetch-news.cjs');
 const { generateNews } = require('./generate-news.cjs');
 const { parisDateKey, shouldPublishNews } = require('./should-publish-news.cjs');
 
@@ -52,6 +59,31 @@ test('ne devine pas de remplacement et écarte une image répétée', () => {
   const [first, duplicate] = dedupeImages([withImage, withImage]);
   assert.equal(first.image, image);
   assert.equal(duplicate.image, null);
+});
+
+test('sans clé IA, publie les articles français avec leur image de source', () => {
+  const image = 'https://media.example.com/articles/cs2-update.jpg';
+  const articles = prepareArticlesWithoutAI([
+    {
+      title: 'Counter-Strike 2 reçoit une mise à jour',
+      description: 'Valve annonce une mise à jour qui concerne les joueurs et les équipes de la scène compétitive.',
+      url: 'https://news.example.com/cs2-update',
+      image,
+      source: 'News source',
+    },
+    {
+      title: 'Counter-Strike gets a major update',
+      description: 'The latest update changes the competitive scene for players.',
+      url: 'https://news.example.com/cs2-update-en',
+      image: 'https://media.example.com/articles/cs2-update-en.jpg',
+      source: 'English source',
+    },
+  ]);
+
+  assert.equal(articles.length, 1);
+  assert.equal(articles[0].url, 'https://news.example.com/cs2-update');
+  assert.equal(articles[0].image, image);
+  assert.equal(articles[0].originalSource, 'News source');
 });
 
 test('le fallback date les trois premiers articles au jour de génération', () => {
