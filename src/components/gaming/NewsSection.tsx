@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import NewsArticleImage from './NewsArticleImage';
+import { selectNewsDays } from '@/lib/news-display.mjs';
 
 type NewsArticle = {
   title: string;
@@ -166,10 +167,10 @@ const NewsSection: React.FC = () => {
 
   useEffect(() => { loadNews(); }, []);
 
-  const todayArticles = (articleDays[0]?.articles || []).slice(0, 3);
-  const previousDay = articleDays[1];
+  const todayKey = getParisDateKey(new Date());
+  const { todayArticles: articlesForToday, previousDay, olderDays } = selectNewsDays(articleDays, todayKey);
+  const todayArticles = articlesForToday.slice(0, 3);
   const previousArticles = (previousDay?.articles || []).slice(0, 3);
-  const olderDays = articleDays.slice(2);
   const totalPages = 1 + Math.ceil(olderDays.length / 2);
   const archiveArticles = olderDays.slice((page - 2) * 2, (page - 1) * 2).flatMap(day => day.articles);
 
