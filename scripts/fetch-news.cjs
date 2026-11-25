@@ -264,6 +264,18 @@ function transformArticle(article, topic, index = 0) {
   };
 }
 
+function prepareArticlesWithoutAI(articles) {
+  const frenchArticles = articles.filter(article =>
+    isLikelyFrench(`${article.title || ''} ${article.description || article.content || ''}`),
+  );
+  return diversify(frenchArticles)
+    .slice(0, MAX_NEWS)
+    .map(article => transformArticle(
+      article,
+      categorizeArticle(article.title || '', article.description || article.content || ''),
+    ));
+}
+
 async function fetchFromNewsAPI() {
   const apiKey = process.env.NEWS_API_KEY;
   if (!apiKey) { console.log('NewsAPI: pas de clé API'); return []; }
@@ -401,8 +413,9 @@ async function fetchFromRSS() {
 
 // Sujet d'une news (jeu / matériel / esport), pour ne pas publier 3 news sur le même jeu d'affilée
 function subjectKey(title, description, topic) {
-  const rule = detectRule(title || '', description || '');
-  return rule ? rule.label : String(topic || 'FPS').toUpperCase();
+  const text = `${title || ''} ${description || ''}`;
+  const keyword = FPS_KEYWORDS.find(candidate => keywordMatches(text, candidate));
+  return keyword ? keyword.toUpperCase() : String(topic || 'FPS').toUpperCase();
 }
 
 // 1 news par sujet d'abord (les plus récentes), puis le reste
@@ -543,7 +556,8 @@ async function main() {
     }
     console.log(`✅ ${finalArticles.length} articles réécrits en français`);
   } else if (!hasAI) {
-    console.log('ℹ️  Aucune clé IA (MISTRAL_API_KEY / GEMINI_API_KEY) : pas de réécriture.');
+    console.log('ℹ️  Aucune clé IA : publication des articles sources français sans réécriture.');
+    finalArticles = prepareArticlesWithoutAI(gaming);
   }
 
   // Pas assez de news fraîches : on reprend de vraies news récentes des archives
@@ -565,4 +579,4 @@ if (require.main === module) main().catch(error => {
   process.exitCode = 1;
 });
 
-module.exports = { isFpsArticle, isLikelyFrench, keywordMatches, categorizeArticle, transformArticle, isRealImage, fixImages, dedupeImages, diversify, extractOgImage, decodeHTMLEntities };
+module.exports = { isFpsArticle, isLikelyFrench, keywordMatches, categorizeArticle, transformArticle, prepareArticlesWithoutAI, isRealImage, fixImages, dedupeImages, diversify, extractOgImage, decodeHTMLEntities };
