@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useSEO } from '@/hooks/use-seo';
 import Navbar from '@/components/gaming/Navbar';
+import NewsArticleImage from '@/components/gaming/NewsArticleImage';
 
 type NewsArticle = {
   title: string;
@@ -10,7 +11,7 @@ type NewsArticle = {
   content?: string;
   review?: string;
   url: string;
-  image: string;
+  image?: string | null;
   imageCredit?: { name: string; url?: string } | null;
   dateTimePub: string;
   publishedOn?: string;
@@ -114,7 +115,7 @@ const NewsPage: React.FC = () => {
         </button>
         <div className="rounded-2xl overflow-hidden border border-gray-800 bg-gray-900">
           <div className="relative">
-            <img src={article.image} alt={article.title} className="w-full h-64 object-cover" />
+            <NewsArticleImage src={article.image} alt={article.title} className="h-64 w-full" />
             {article.imageCredit?.name && (
               <span className="absolute bottom-1 right-2 text-[10px] text-gray-300/80 bg-black/40 px-2 py-0.5 rounded">
                 Photo : {article.imageCredit.url ? (
