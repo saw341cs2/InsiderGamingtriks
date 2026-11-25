@@ -84,7 +84,6 @@ test('sans clé IA, publie les articles français avec leur image de source', ()
   assert.equal(articles[0].url, 'https://news.example.com/cs2-update');
   assert.equal(articles[0].image, image);
   assert.equal(articles[0].originalSource, 'News source');
-
   assert.deepEqual(prepareArticlesWithoutAI([
     {
       title: 'Counter-Strike 2 reçoit une mise à jour',
