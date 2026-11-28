@@ -11,3 +11,13 @@ export function selectNewsDays<T>(
   previousDay: NewsDay<T> | undefined;
   olderDays: NewsDay<T>[];
 };
+
+export function withLatestDayFallback<T>(selected: {
+  todayArticles: T[];
+  previousDay: NewsDay<T> | undefined;
+  olderDays: NewsDay<T>[];
+}): {
+  todayArticles: T[];
+  previousDay: NewsDay<T> | undefined;
+  olderDays: NewsDay<T>[];
+};

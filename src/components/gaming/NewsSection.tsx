@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import NewsArticleImage from './NewsArticleImage';
-import { selectNewsDays } from '@/lib/news-display.mjs';
+import { selectNewsDays, withLatestDayFallback } from '@/lib/news-display.mjs';
 
 type NewsArticle = {
   title: string;
@@ -168,7 +168,10 @@ const NewsSection: React.FC = () => {
   useEffect(() => { loadNews(); }, []);
 
   const todayKey = getParisDateKey(new Date());
-  const { todayArticles: articlesForToday, previousDay, olderDays } = selectNewsDays(articleDays, todayKey);
+  // Filet de sécurité : publication manquée => le jour le plus récent
+  // disponible remonte en haut de page au lieu d'une rubrique vide.
+  const { todayArticles: articlesForToday, previousDay, olderDays } =
+    withLatestDayFallback(selectNewsDays(articleDays, todayKey));
   const todayArticles = articlesForToday.slice(0, 3);
   const previousArticles = (previousDay?.articles || []).slice(0, 3);
   const totalPages = 1 + Math.ceil(olderDays.length / 2);

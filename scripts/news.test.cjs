@@ -12,6 +12,7 @@ const {
   fixImages,
   dedupeImages,
   prepareArticlesWithoutAI,
+  prepareFrenchGamingArticles,
   selectImageBackedArticles,
   enrichWithOfficialImages,
   applyOfficialImages,
@@ -196,6 +197,35 @@ test('deux news du même jeu ne partagent pas le même visuel officiel', () => {
   ]);
   assert.ok(first.image.startsWith('https://www.rockstargames.com/VI/'));
   assert.equal(second.image, 'https://media.example.com/articles/gta2.jpg');
+});
+
+test('complète le lot avec de vraies news gaming françaises hors FPS', () => {
+  const articles = prepareFrenchGamingArticles([
+    {
+      title: "Clair Obscur : Expedition 33 remporte le prix du jeu de l'année",
+      description: 'Le studio français repart avec la plus haute distinction du jeu vidéo. Un jeu magnifique qui impressionne les joueurs.',
+      url: 'https://news.example.com/clair-obscur-prix',
+      image: 'https://media.example.com/articles/clair-obscur.jpg',
+      source: 'ActuGaming',
+    },
+    {
+      title: 'The latest Nintendo Switch update breaks consoles',
+      description: 'Players report the update bricks devices worldwide.',
+      url: 'https://news.example.com/switch-en',
+      image: 'https://media.example.com/articles/switch.jpg',
+      source: 'Source EN',
+    },
+    {
+      title: 'OpenAI annonce un nouveau modèle IA',
+      description: "Le modèle sert aux développeurs pour créer des applications intelligentes.",
+      url: 'https://news.example.com/ia',
+      image: 'https://media.example.com/articles/ia.jpg',
+      source: 'Tech',
+    },
+  ], [], 1);
+
+  assert.equal(articles.length, 1);
+  assert.equal(articles[0].url, 'https://news.example.com/clair-obscur-prix');
 });
 
 test('le fallback date les trois premiers articles au jour de génération', () => {

@@ -277,12 +277,30 @@ function decodeHTMLEntities(text) {
     .replace(new RegExp(AMP + 'quot;', 'g'), '"')
     .replace(new RegExp(AMP + 'lt;', 'g'), '<')
     .replace(new RegExp(AMP + 'gt;', 'g'), '>')
-    .replace(new RegExp(AMP + 'amp;', 'g'), AMP);
+    .replace(new RegExp(AMP + 'amp;', 'g'), AMP)
+    // Entités nommées courantes : &rsquo; ('), &hellip; (…), &mdash; (-), etc.
+    .replace(new RegExp(AMP + '(rsquo|lsquo|ldquo|rdquo|hellip|mdash|ndash|oelig|eacute|egrave|agrave|ccedil|uuml|euml|auml|ouml);', 'g'), (m, name) => ({
+      rsquo: '\u2019', lsquo: '\u2018', ldquo: '\u201C', rdquo: '\u201D',
+      hellip: '\u2026', mdash: '\u2014', ndash: '\u2013', oelig: '\u0153',
+      eacute: '\u00E9', egrave: '\u00E8', agrave: '\u00E0', ccedil: '\u00E7',
+      uuml: '\u00FC', euml: '\u00EB', auml: '\u00E4', ouml: '\u00F6',
+    }[name] || m))
+    // Entités numériques : &#8217; ('), &#8230; (…), &#8211; (-), etc.
+    .replace(new RegExp(AMP + '#([0-9]+);', 'g'), (m, code) => {
+      const codePoint = Number(code);
+      return codePoint > 0 && codePoint <= 0x10ffff ? String.fromCodePoint(codePoint) : m;
+    });
 }
 
 function transformArticle(article, topic, index = 0) {
   const title = decodeHTMLEntities(article.title || '').trim();
   let body = decodeHTMLEntities((article.description || article.content || article.summary || '').replace(/<[^>]*>/g, '').trim());
+  // Certains flux préfixent le texte par le nom de la source : on le retire.
+  const sourceName = String(article.source || '').trim();
+  if (sourceName) {
+    const sourcePattern = new RegExp('^' + sourceName.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&') + '\\s*[\\n:|-]*\\s*', 'i');
+    body = body.replace(sourcePattern, '').trim();
+  }
   if (!body) body = title;
   if (body.length > 1600) body = body.substring(0, 1597) + '...';
 
@@ -414,6 +432,46 @@ function isFpsArticle(title, description) {
   return FPS_KEYWORDS.some(kw => keywordMatches(text, kw));
 }
 
+// Sujets hors jeu vidéo à écarter du lot gaming général.
+const NON_GAMING_KEYWORDS = [
+  'openai', 'chatgpt', 'ai model', 'machine learning', 'iphone', 'android',
+  'smartphone', 'film', 'cinéma', 'cinema', 'série', 'serie tv', 'netflix',
+  'crypto', 'bitcoin',
+];
+
+const GAMING_KEYWORDS = [
+  'jeu', 'jeux', 'gaming', 'gamer', 'console', 'playstation', 'ps5', 'xbox',
+  'nintendo', 'switch', 'steam', 'epic games', 'sortie', 'patch', 'mise à jour',
+  'dlc', 'extension', 'trailer', 'bande-annonce', 'gameplay', 'esport', 'e-sport',
+  'tournoi', 'remake', 'remaster', 'saison', 'season', 'battle pass', 'studio',
+  'développeur', 'test', 'preview', 'clair obscur', 'annonce',
+  'démo', 'early access', 'fps', 'shooter', 'mmorpg', 'rpg', 'annonce',
+];
+// Article gaming en français, hors FPS : sert à compléter le lot du jour
+// pour que la page 1 ne soit jamais vide.
+function isFrenchGamingArticle(title, description) {
+  const text = `${title} ${description || ''}`.toLowerCase();
+  if (NON_GAMING_KEYWORDS.some(kw => keywordMatches(text, kw))) return false;
+  if (!isLikelyFrench(text)) return false;
+  return GAMING_KEYWORDS.some(kw => keywordMatches(text, kw));
+}
+
+// Comme prepareArticlesWithoutAI mais pour tout le gaming (pas seulement le FPS).
+function prepareFrenchGamingArticles(articles, existingArticles = [], limit = MAX_NEWS) {
+  if (limit <= 0) return [];
+  const existingUrls = new Set(existingArticles.map(article => article.url || article.link).filter(Boolean));
+  const eligible = articles.filter(article =>
+    !existingUrls.has(article.url || article.link) &&
+      isFrenchGamingArticle(article.title || '', article.description || article.content || ''),
+  );
+  return diversify(eligible)
+    .slice(0, limit)
+    .map(article => transformArticle(
+      article,
+      categorizeArticle(article.title || '', article.description || article.content || ''),
+    ));
+}
+
 // Cherche la vraie image d'un item RSS : media:content > media:thumbnail > enclosure > première <img>
 function extractRssImage(item) {
   const decoded = decodeHTMLEntities(item);
@@ -439,8 +497,13 @@ function parsePublishedAt(value, fallbackDate = new Date()) {
 
 async function fetchFromRSS() {
   // Un flux qui ne répond pas est simplement ignoré
+  // Sources françaises en premier, puis sources internationales.
   const rssUrls = [
     'https://www.jeuxvideo.com/rss/rss.xml',
+    'https://www.actugaming.net/feed/',
+    'https://www.gameblog.fr/rss',
+    'https://www.gamergen.com/rss',
+    'https://www.journaldugeek.com/feed/',
     'https://www.vlr.gg/rss',
     'https://dotesports.com/feed',
     'https://www.rockpapershotgun.com/feed',
@@ -465,7 +528,8 @@ async function fetchFromRSS() {
         if (titleMatch && linkMatch) {
           const title = decodeHTMLEntities(titleMatch[1].trim());
           const description = decodeHTMLEntities((descMatch ? descMatch[1] : '').replace(/<[^>]*>/g, '').trim());
-          if (!isFpsArticle(title, description)) continue;
+          // Tout est collecté ici ; le filtrage FPS / gaming se fait ensuite
+          // dans main() pour garder les articles français non-FPS disponibles.
           all.push({
             title,
             description,
@@ -667,6 +731,22 @@ async function main() {
     }
   }
 
+  if (finalArticles.length < MAX_NEWS) {
+    // Dernier filet de sécurité : vraies news gaming françaises hors FPS,
+    // pour que la page 1 ne soit jamais vide.
+    const gamingFrench = prepareFrenchGamingArticles(unique, finalArticles, MAX_NEWS - finalArticles.length);
+    const enrichedGaming = await enrichWithOfficialImages(gamingFrench);
+    const gamingArticles = selectImageBackedArticles(
+      enrichedGaming,
+      finalArticles,
+      MAX_NEWS - finalArticles.length,
+    );
+    if (gamingArticles.length > 0) {
+      console.log(`🎮 ${gamingArticles.length} news gaming française(s) complémentaire(s).`);
+      finalArticles = [...finalArticles, ...gamingArticles];
+    }
+  }
+
   if (finalArticles.length === 0) {
     console.error('⚠️ Aucune actualité 100% française avec image vérifiable ; news.json du jour conservée sans modification.');
     return;
@@ -680,4 +760,4 @@ if (require.main === module) main().catch(error => {
   process.exitCode = 1;
 });
 
-module.exports = { isFpsArticle, isLikelyFrench, keywordMatches, categorizeArticle, transformArticle, prepareArticlesWithoutAI, selectImageBackedArticles, isRealImage, fixImages, dedupeImages, diversify, extractOgImage, enrichWithOfficialImages, removeBrokenImages, applyOfficialImages, findOfficialImage, parsePublishedAt, decodeHTMLEntities };
+module.exports = { isFpsArticle, isFrenchGamingArticle, isLikelyFrench, keywordMatches, categorizeArticle, transformArticle, prepareArticlesWithoutAI, prepareFrenchGamingArticles, selectImageBackedArticles, isRealImage, fixImages, dedupeImages, diversify, extractOgImage, enrichWithOfficialImages, removeBrokenImages, applyOfficialImages, findOfficialImage, parsePublishedAt, decodeHTMLEntities };
