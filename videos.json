@@ -1,0 +1,48 @@
+{
+  "videos": [
+    {
+      "id": 0,
+      "title": "Video Short - InsiderGamingTricks",
+      "game": "PC",
+      "topic": "FPS",
+      "duration": "",
+      "youtubeId": "",
+      "thumbnail": "",
+      "views": "0",
+      "likes": "0",
+      "date": "Aujourd'hui",
+      "youtubeUrl": "",
+      "featured": false,
+      "localVideoPath": "videos/video-short.mp4"
+    },
+    {
+      "id": 1,
+      "title": "GTA 6 : Tout ce qu'on sait sur le gameplay",
+      "game": "PC",
+      "topic": "JEUX",
+      "duration": "20:10",
+      "youtubeId": "ScNTWbKMZX4",
+      "thumbnail": "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=640&h=360&fit=crop",
+      "views": "890K",
+      "likes": "52K",
+      "date": "Aujourd'hui",
+      "youtubeUrl": "https://www.youtube.com/watch?v=ScNTWbKMZX4",
+      "featured": true
+    },
+    {
+      "id": 2,
+      "title": "Top 10 jeux FPS à tester absolument en 2026",
+      "game": "PC",
+      "topic": "JEUX",
+      "duration": "15:45",
+      "youtubeId": "ScNTWbKMZX4",
+      "thumbnail": "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=640&h=360&fit=crop",
+      "views": "445K",
+      "likes": "28K",
+      "date": "Aujourd'hui",
+      "youtubeUrl": "https://www.youtube.com/watch?v=ScNTWbKMZX4",
+      "featured": false
+    }
+  ],
+  "generatedAt": "2026-11-28T18:22:01.076Z"
+}
