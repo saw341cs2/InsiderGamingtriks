@@ -181,10 +181,13 @@ async function callMistral(prompt) {
 async function callGemini(prompt) {
   const key = process.env.GEMINI_API_KEY;
   if (!key) return null;
-  const models = ['gemini-2.0-flash-001', 'gemini-1.5-flash-001', 'gemini-1.0-pro'];
+  // Modèles actuels de l'API Gemini (generativelanguage v1beta).
+  // Les anciens noms (gemini-1.0-pro, gemini-2.0-flash-001) renvoient 404 avec
+  // les clés récentes de Google AI Studio.
+  const models = ['gemini-2.5-flash', 'gemini-flash-latest', 'gemini-2.0-flash'];
   for (const model of models) {
     try {
-      const res = await fetch(`https://generativelanguage.googleapis.com/v1/models/${model}:generateContent?key=${key}`, {
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contents: [{ parts: [{ text: AI_SYSTEM_PROMPT + '\n\n' + prompt }] }], generationConfig: { temperature: 0.8, maxOutputTokens: 1200 } }),
